@@ -135,6 +135,10 @@ const L = {
       <div>
         <h2>{t(about.title, lang)}</h2>
         {about.body[lang].map((p) => <p>{p}</p>)}
+        <h3 class="highlights-title">{t(about.highlightsTitle, lang)}</h3>
+        <ul class="highlights">
+          {about.highlights.map((h) => <li>{t(h, lang)}</li>)}
+        </ul>
       </div>
       <div>
         <h3>{t(L.expTitle, lang)}</h3>
@@ -338,6 +342,27 @@ const L = {
     .about {
       grid-template-columns: 1fr;
     }
+  }
+  .highlights-title {
+    margin-top: 1.75rem;
+  }
+  .highlights {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .highlights li {
+    position: relative;
+    padding-inline-start: 1.6rem;
+  }
+  .highlights li::before {
+    content: "✓";
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--accent);
+    font-weight: 700;
   }
   .timeline {
     list-style: none;

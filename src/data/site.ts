@@ -207,6 +207,29 @@ export const about = {
       "الان نبض را می‌سازم، محصولی سلامت برای کسانی که آزمایش و درمان را طی می‌کنند، و یک چالش رایگان ۳۰ روزهٔ مصاحبهٔ اندروید را در لینکدین منتشر می‌کنم. برایم مهم است محصول به آدم‌ها حس امنیت و آرامش بدهد، و کدی بنویسم که تیم دو سال بعد هم بتواند تغییرش دهد.",
     ],
   },
+  highlightsTitle: { en: "Selected achievements", fa: "دستاوردهای منتخب" },
+  highlights: [
+    {
+      en: "Led an AOSP build-system migration from Make to Gradle, improving developer productivity by 20%.",
+      fa: "مهاجرت سیستم build در AOSP از Make به Gradle را رهبری کردم و بهره‌وری توسعه‌دهنده‌ها ۲۰٪ بهتر شد.",
+    },
+    {
+      en: "Architected and delivered Clean Architecture / MVVM apps from scratch, cutting initial load time by 30%.",
+      fa: "اپ‌هایی با Clean Architecture و MVVM را از صفر طراحی و تحویل دادم و زمان بارگذاری اولیه ۳۰٪ کم شد.",
+    },
+    {
+      en: "Customized and optimized core AOSP system apps — Camera, Messaging, Contacts — for embedded devices.",
+      fa: "اپ‌های سیستمی اصلی AOSP مثل Camera، Messaging و Contacts را برای دستگاه‌های embedded شخصی‌سازی و بهینه کردم.",
+    },
+    {
+      en: "Built a non-custodial Web3 wallet with hand-written key derivation and Keystore-backed encryption.",
+      fa: "یک کیف پول غیرامانی Web3 ساختم، با مشتق‌سازی کلید دست‌نویس و رمزنگاری متکی به Keystore.",
+    },
+    {
+      en: "Led and mentored Android teams since 2020, setting clean, testable coding practices.",
+      fa: "از ۲۰۲۰ تیم‌های اندروید را رهبری و منتورینگ کرده‌ام و روش‌های کدنویسی تمیز و تست‌پذیر را جا انداخته‌ام.",
+    },
+  ],
 };
 
 export const contact = {
