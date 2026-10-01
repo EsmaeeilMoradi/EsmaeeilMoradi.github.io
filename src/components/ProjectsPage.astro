@@ -31,6 +31,15 @@ const isInternal = (h: string) => h.startsWith("/");
               <h2>{t(p.name, lang)}</h2>
               <p class="muted">{t(p.summary, lang)}</p>
               <ul class="chips">{p.stack.map((s) => <li>{s}</li>)}</ul>
+              {p.repos && (
+                <ul class="repos" dir="ltr">
+                  {p.repos.map((r) => (
+                    <li>
+                      <a href={r.href} target="_blank" rel="noopener">{r.name}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <a
                 class="btn btn-ghost"
                 href={isInternal(p.href) ? href(p.href, lang) : p.href}
@@ -76,6 +85,31 @@ const isInternal = (h: string) => h.startsWith("/");
   }
   .chips {
     margin-bottom: 1.25rem;
+  }
+  .repos {
+    list-style: none;
+    padding: 0;
+    margin: -0.25rem 0 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+  }
+  .repos a {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    padding: 0.25rem 0.6rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .repos a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  :global([dir="rtl"]) .repos {
+    justify-content: flex-end;
   }
   @media (max-width: 700px) {
     .project {

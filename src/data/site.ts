@@ -138,12 +138,24 @@ export const projects = [
     name: { en: "AOSP system apps", fa: "اپ‌های سیستمی AOSP" },
     tag: { en: "Android framework · System apps", fa: "فریم‌ورک اندروید، اپ‌های سیستمی" },
     summary: {
-      en: "Gradle builds that let AOSP Settings, SettingsIntelligence, Messaging, Dialer and Launcher3 be developed in Android Studio, plus custom ROM builds — the platform knowledge behind my app work.",
-      fa: "buildهای Gradle برای توسعهٔ Settings، SettingsIntelligence، Messaging، Dialer و Launcher3 از AOSP داخل Android Studio، به‌علاوهٔ build کردن ROM سفارشی — دانش پلتفرمی که پشت کار اپ‌هایم است.",
+      en: "Standalone Gradle builds that take AOSP system apps out of the platform tree so they can be built, debugged and studied in Android Studio — plus samples built on Settings search and custom ROM builds. The platform knowledge behind my app work.",
+      fa: "buildهای Gradle مستقل که اپ‌های سیستمی AOSP را از درخت پلتفرم جدا می‌کنند تا داخل Android Studio بشود build، دیباگ و بررسی‌شان کرد — به‌علاوهٔ نمونه‌هایی روی جست‌وجوی Settings و build کردن ROM سفارشی. دانش پلتفرمی که پشت کار اپ‌هایم است.",
     },
     stack: ["AOSP", "System apps", "Gradle", "Linux"],
-    href: "https://github.com/EsmaeeilMoradi?tab=repositories&q=platform_packages",
-    cta: { en: "Browse the repos", fa: "دیدن ریپوها" },
+    repos: [
+      { name: "Settings", href: "https://github.com/EsmaeeilMoradi/platform_packages_apps_Settings" },
+      { name: "SettingsIntelligence", href: "https://github.com/EsmaeeilMoradi/platform_packages_apps_SettingsIntelligence" },
+      { name: "Launcher3", href: "https://github.com/EsmaeeilMoradi/platform_packages_apps_launcher3" },
+      { name: "Dialer", href: "https://github.com/EsmaeeilMoradi/platform_packages_apps_Dialer" },
+      { name: "Messaging", href: "https://github.com/EsmaeeilMoradi/AOSP_Messaging" },
+      { name: "Messaging (Android 12)", href: "https://github.com/EsmaeeilMoradi/AOSP_Messaging_android-12.0.0_r21" },
+      { name: "Contacts", href: "https://github.com/EsmaeeilMoradi/AOSP_Contacts" },
+      { name: "Gallery3D", href: "https://github.com/EsmaeeilMoradi/-android_packages_apps_Gallery3D" },
+      { name: "AppSearchSample", href: "https://github.com/EsmaeeilMoradi/AppSearchSample" },
+      { name: "SettingsIntelligenceSample", href: "https://github.com/EsmaeeilMoradi/SettingsIntelligenceSample" },
+    ],
+    href: "https://github.com/EsmaeeilMoradi?tab=repositories",
+    cta: { en: "All repositories", fa: "همهٔ ریپوها" },
   },
 ];
 
