@@ -1,0 +1,197 @@
+---
+import Base from "../layouts/Base.astro";
+import { links, t, href, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const C = {
+  title: { en: "Nabz — a calm companion through medical tests", fa: "نبض — همراهی آرام در مسیر آزمایش و درمان" },
+  tag: { en: "Case study · Product & engineering lead", fa: "مطالعهٔ موردی، مسئول محصول و فنی" },
+  lead: {
+    en: "Nabz is a patient-first health app by Azma. Its mission: give people going through treatment a sense of safety, calm and ease. I lead the product and build it end to end — the Kotlin Multiplatform app, the Ktor backend, the admin panel and the infrastructure.",
+    fa: "نبض اپ سلامت بیمارمحور آزماست، با این مأموریت: ایجاد حس امنیت، آرامش و آسایش برای کسانی که فرایند درمان را طی می‌کنند. مسئول محصول هستم و آن را کامل می‌سازم — اپ Kotlin Multiplatform، بک‌اند Ktor، پنل ادمین و زیرساخت.",
+  },
+  status: { en: "Status: launching on Cafe Bazaar, Iran's Android store — 2026", fa: "وضعیت: در آستانهٔ انتشار در کافه‌بازار — ۲۰۲۶" },
+  visit: { en: "Visit azmaapp.ir", fa: "دیدن azmaapp.ir" },
+  problemT: { en: "The problem", fa: "مسئله" },
+  problem: {
+    en: "Lab tests are stressful. People don't know how to prepare, what a test is for, or what their results mean — and their results end up scattered across paper and chat apps. Most health apps add noise: ads, pressure, alarming language.",
+    fa: "آزمایش دادن استرس دارد. آدم‌ها نمی‌دانند چطور آماده شوند، آزمایش برای چیست یا نتیجه‌اش چه معنایی دارد — و جواب‌ها بین کاغذ و پیام‌رسان‌ها پخش می‌شوند. بیشتر اپ‌های سلامت هم شلوغی اضافه می‌کنند: تبلیغ، فشار و لحن نگران‌کننده.",
+  },
+  featuresT: { en: "What it does", fa: "چه کار می‌کند" },
+  features: {
+    en: [
+      ["Test encyclopedia", "Plain-language explanations of common lab tests."],
+      ["Preparation guides", "What to do before a test — fasting, medication, timing."],
+      ["Private results archive", "Results stay on the device; nothing is uploaded without consent."],
+      ["Medication reminders", "Local reminders that work offline."],
+      ["Nabz service", "Request help; the team follows up personally."],
+    ],
+    fa: [
+      ["دانشنامهٔ آزمایش‌ها", "توضیح ساده و قابل فهم آزمایش‌های رایج."],
+      ["راهنمای آمادگی", "قبل از آزمایش چه کنیم — ناشتایی، دارو و زمان‌بندی."],
+      ["آرشیو خصوصی نتایج", "نتایج روی گوشی می‌مانند و بدون رضایت جایی آپلود نمی‌شوند."],
+      ["یادآور دارو", "یادآورهای محلی که آفلاین هم کار می‌کنند."],
+      ["سرویس نبض", "درخواست کمک؛ تیم شخصاً پیگیری می‌کند."],
+    ],
+  },
+  archT: { en: "Architecture", fa: "معماری" },
+  arch: {
+    en: [
+      ["Kotlin Multiplatform app", "Shared UI, ViewModels, repositories, networking and storage in commonMain with Compose Multiplatform; Android ships first, desktop runs from the same code."],
+      ["MVVM with clear boundaries", "Koin for DI. Screens never talk to the API client or the database directly — only through repositories."],
+      ["Offline-aware data layer", "Ktor client plus Room KMP (8 local tables) with a cache and invalidation strategy."],
+      ["Ktor backend", "Routes → services → Exposed → PostgreSQL (17 tables), 80+ endpoints with authentication and rate limits, an HTML + JSON admin panel."],
+      ["Auth that respects users", "Phone OTP via SMS, short-lived JWT access tokens, rotating refresh tokens stored only as hashes, automatic refresh on 401."],
+      ["Shipping", "Docker Compose on a VPS behind nginx, FCM push, documented endpoints and data flow for every screen."],
+    ],
+    fa: [
+      ["اپ Kotlin Multiplatform", "UI، ViewModelها، repositoryها، شبکه و ذخیره‌سازی مشترک در commonMain با Compose Multiplatform؛ اول اندروید منتشر می‌شود و نسخهٔ دسکتاپ از همان کد اجرا می‌شود."],
+      ["MVVM با مرزهای روشن", "Koin برای DI. صفحه‌ها هیچ‌وقت مستقیم با API یا دیتابیس حرف نمی‌زنند — فقط از طریق repository."],
+      ["لایهٔ داده با پشتیبانی آفلاین", "کلاینت Ktor و Room KMP با ۸ جدول محلی، همراه با استراتژی کش و invalidation."],
+      ["بک‌اند Ktor", "لایه‌های route، service و Exposed روی PostgreSQL با ۱۷ جدول، بیش از ۸۰ endpoint با احراز هویت و محدودیت نرخ، و پنل ادمین HTML و JSON."],
+      ["احراز هویت محترمانه", "ورود با کد یک‌بارمصرف پیامکی، توکن JWT کوتاه‌عمر، refresh token چرخشی که فقط hash آن ذخیره می‌شود، و تمدید خودکار با خطای ۴۰۱."],
+      ["انتشار", "Docker Compose روی VPS پشت nginx، پوش FCM، و مستندسازی endpointها و جریان داده برای هر صفحه."],
+    ],
+  },
+  decisionsT: { en: "Product decisions I'm proud of", fa: "تصمیم‌های محصولی که به آن‌ها افتخار می‌کنم" },
+  decisions: {
+    en: [
+      "Launch with real value before any lab partnership: knowledge, preparation and a private archive — instead of waiting for contracts.",
+      "Keep the marketplace architecture intact: the labs list says \"coming soon\" and switches to real labs automatically when the backend has active partners.",
+      "Privacy by default: medical results stay on the device in the first release.",
+      "Calm UI as a requirement — every empty state, notification and CTA is reviewed against the mission: safety, calm, ease.",
+    ],
+    fa: [
+      "لانچ با ارزش واقعی قبل از هر قرارداد با آزمایشگاه: دانش، آمادگی و آرشیو خصوصی — به‌جای منتظر ماندن برای قرارداد.",
+      "حفظ معماری مارکت‌پلیس: لیست آزمایشگاه‌ها «به‌زودی» نشان می‌دهد و وقتی بک‌اند آزمایشگاه فعال داشته باشد، خودکار به لیست واقعی تبدیل می‌شود.",
+      "حریم خصوصی به‌صورت پیش‌فرض: در نسخهٔ اول نتایج پزشکی روی گوشی می‌مانند.",
+      "UI آرام به‌عنوان یک نیازمندی — هر empty state، نوتیفیکیشن و CTA با مأموریت سنجیده می‌شود: امنیت، آرامش، آسایش.",
+    ],
+  },
+  cta: { en: "Need a product like this built?", fa: "محصولی شبیه این لازم دارید؟" },
+  ctaBtn: { en: "Let's talk", fa: "صحبت کنیم" },
+};
+const shots = ["05-home", "06-encyclopedia", "07-prep", "08-history", "09-med-reminders"];
+---
+
+<Base lang={lang} path="/projects/nabz/" title={t(C.title, lang)} description={t(C.lead, lang)} image="/img/nabz/05-home.png">
+  <section class="section container intro">
+    <div>
+      <span class="eyebrow">{t(C.tag, lang)}</span>
+      <h1>{t(C.title, lang)}</h1>
+      <p class="lead muted">{t(C.lead, lang)}</p>
+      <p class="status">{t(C.status, lang)}</p>
+      <a class="btn btn-ghost" href={links.azma} target="_blank" rel="noopener"><span class="arrow">{t(C.visit, lang)} </span></a>
+    </div>
+    <img class="icon" src="/img/nabz/app-icon-512.png" alt="Nabz" width="160" height="160" />
+  </section>
+
+  <section class="shots container" aria-label="Screenshots">
+    {shots.map((s) => <img src={`/img/nabz/${s}.png`} alt="" loading="lazy" />)}
+  </section>
+
+  <section class="section container prose">
+    <h2>{t(C.problemT, lang)}</h2>
+    <p class="muted">{t(C.problem, lang)}</p>
+
+    <h2>{t(C.featuresT, lang)}</h2>
+    <div class="grid grid-3">
+      {C.features[lang].map(([h, p]) => <div class="card mini"><h3>{h}</h3><p class="muted">{p}</p></div>)}
+    </div>
+
+    <h2>{t(C.archT, lang)}</h2>
+    <div class="grid grid-2">
+      {C.arch[lang].map(([h, p]) => <div class="card mini"><h3>{h}</h3><p class="muted">{p}</p></div>)}
+    </div>
+
+    <h2>{t(C.decisionsT, lang)}</h2>
+    <ul class="decisions">
+      {C.decisions[lang].map((d) => <li>{d}</li>)}
+    </ul>
+
+    <div class="card cta">
+      <h3>{t(C.cta, lang)}</h3>
+      <a class="btn btn-primary" href={href("/#contact", lang)}>{t(C.ctaBtn, lang)}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    padding-bottom: 2rem;
+  }
+  .lead {
+    font-size: 1.15rem;
+    max-width: 720px;
+  }
+  .status {
+    font-weight: 600;
+  }
+  .icon {
+    width: 160px;
+    border-radius: 36px;
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 700px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+    .icon {
+      order: -1;
+      width: 96px;
+      border-radius: 22px;
+    }
+  }
+  .shots {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+  }
+  .shots img {
+    width: 210px;
+    flex: none;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    scroll-snap-align: start;
+  }
+  .prose h2 {
+    margin-top: 3rem;
+  }
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+  .mini h3 {
+    font-size: 1.05rem;
+  }
+  .mini p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .decisions {
+    padding-inline-start: 1.25rem;
+  }
+  .decisions li {
+    margin-bottom: 0.6rem;
+  }
+  .cta {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cta h3 {
+    margin: 0;
+  }
+</style>

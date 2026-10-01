@@ -1,0 +1,184 @@
+---
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import { ui, links, t, href, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+  path: string;
+  title?: string;
+  description: string;
+  image?: string;
+}
+
+const { lang, path, title, description, image = "/og.png" } = Astro.props;
+const fullTitle = title ? `${title} — ${t(ui.name, lang)}` : `${t(ui.name, lang)} — ${t(ui.role, lang)}`;
+const site = Astro.site!;
+const canonical = new URL(href(path, lang), site).href;
+const enUrl = new URL(href(path, "en"), site).href;
+const faUrl = new URL(href(path, "fa"), site).href;
+const other: Lang = lang === "en" ? "fa" : "en";
+const nav = [
+  { label: ui.nav.work, to: "/projects/" },
+  { label: ui.nav.challenge, to: "/challenge/" },
+  { label: ui.nav.about, to: "/#about" },
+];
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang={lang} dir={lang === "fa" ? "rtl" : "ltr"}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="fa" href={faUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, site).href} />
+    <meta property="og:locale" content={lang === "fa" ? "fa_IR" : "en_US"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container bar">
+        <a class="brand" href={href("/", lang)}>
+          <img src="/img/avatar.png" alt="" width="36" height="36" />
+          <span>{t(ui.name, lang)}</span>
+        </a>
+        <nav aria-label="Main">
+          {nav.map((n) => <a class:list={[{ "hide-sm": n.to === "/#about" }]} href={href(n.to, lang)}>{t(n.label, lang)}</a>)}
+          <a class="lang" href={href(path, other)} hreflang={other} lang={other}>{t(ui.nav.switchLang, lang)}</a>
+          <a class="btn btn-primary btn-sm" href={href("/#contact", lang)}>{t(ui.nav.contact, lang)}</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container foot">
+        <div>
+          <strong>{t(ui.name, lang)}</strong>
+          <p class="muted">{t(ui.role, lang)}<br />{t(ui.footer, lang)}</p>
+        </div>
+        <div class="foot-links">
+          <a href={`mailto:${links.email}`}>Email</a>
+          <a href={links.linkedin} rel="me noopener" target="_blank">LinkedIn</a>
+          <a href={links.github} rel="me noopener" target="_blank">GitHub</a>
+          <a href={links.telegram} rel="noopener" target="_blank">Telegram</a>
+        </div>
+      </div>
+      <div class="container copy muted">© {year} {t(ui.name, lang)}</div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 64px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .brand img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    background: var(--surface-2);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: 0.95rem;
+  }
+  nav a:not(.btn) {
+    color: var(--muted);
+  }
+  nav a:not(.btn):hover {
+    color: var(--text);
+  }
+  .btn-sm {
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 760px) {
+    .bar {
+      flex-wrap: wrap;
+      padding-block: 0.6rem;
+    }
+    nav {
+      width: 100%;
+      overflow-x: auto;
+      gap: 0.85rem;
+      padding: 0.15rem 0.1rem 0.25rem;
+      font-size: 0.9rem;
+    }
+    nav a {
+      white-space: nowrap;
+    }
+    nav .btn {
+      margin-inline-start: auto;
+    }
+  }
+  @media (max-width: 440px) {
+    .hide-sm {
+      display: none;
+    }
+  }
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding-block: 2.5rem 1.5rem;
+    margin-top: 2rem;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .foot p {
+    margin-top: 0.4rem;
+    font-size: 0.92rem;
+  }
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .copy {
+    font-size: 0.85rem;
+    margin-top: 1.5rem;
+  }
+</style>

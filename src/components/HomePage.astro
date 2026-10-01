@@ -1,0 +1,387 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "./Icon.astro";
+import { ui, hero, offersIntro, offers, projects, experience, about, contact, links, t, href, type Lang } from "../data/site";
+import { getDays, num } from "../lib/challenge";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const featured = projects.slice(0, 3);
+const days = getDays(lang);
+const preview = [days[0], days[7], days[29]];
+const L = {
+  workTitle: { en: "Selected work", fa: "نمونه‌کارهای منتخب" },
+  workLead: {
+    en: "A product I'm building, and open-source tools I've shared.",
+    fa: "محصولی که می‌سازم، و ابزارهای متن‌بازی که منتشر کرده‌ام.",
+  },
+  allWork: { en: "All projects", fa: "همهٔ پروژه‌ها" },
+  chTitle: { en: "The 30-Day Android Interview Challenge", fa: "چالش ۳۰ روزهٔ مصاحبهٔ اندروید" },
+  chLead: {
+    en: "30 in-depth carousels, from the Activity lifecycle to system design, with questions and detailed answers at four levels — Junior to Architect. Free to read and download.",
+    fa: "۳۰ کاروسل مفصل، از چرخهٔ عمر Activity تا طراحی سیستم، با سؤال و جواب کامل در چهار سطح — از جونیور تا آرکیتکت. رایگان برای خواندن و دانلود.",
+  },
+  chCta: { en: "Open the challenge", fa: "دیدن چالش" },
+  day: { en: "Day", fa: "روز" },
+  expTitle: { en: "Experience", fa: "سابقهٔ کاری" },
+};
+---
+
+<Base lang={lang} path="/" description={t(hero.lead, lang)}>
+  <section class="hero container">
+    <div class="hero-text">
+      <span class="eyebrow">{t(ui.role, lang)}</span>
+      <h1>{t(hero.title, lang)}</h1>
+      <p class="lead">{t(hero.lead, lang)}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={href("/#contact", lang)}>{t(hero.ctaPrimary, lang)}</a>
+        <a class="btn btn-ghost" href={href("/projects/", lang)}>{t(hero.ctaSecondary, lang)}</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img src="/img/avatar.png" alt={t(ui.name, lang)} width="300" height="387" />
+    </div>
+  </section>
+
+  <section class="container facts">
+    {
+      hero.facts.map((f) => (
+        <div>
+          <strong>{t(f.value, lang)}</strong>
+          <span>{t(f.label, lang)}</span>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="section container" id="services">
+    <div class="section-head">
+      <h2>{t(offersIntro.title, lang)}</h2>
+      <p>{t(offersIntro.lead, lang)}</p>
+    </div>
+    <div class="grid grid-3">
+      {
+        offers.map((o) => (
+          <article class="card offer">
+            <Icon name={o.icon} />
+            <p class="who">{t(o.who, lang)}</p>
+            <h3>{t(o.title, lang)}</h3>
+            <p class="muted">{t(o.body, lang)}</p>
+            <a class="proof arrow" href={href(o.href, lang)}>{t(o.proof, lang)} </a>
+          </article>
+        ))
+      }
+    </div>
+    <p class="muted breadth">{t(offersIntro.breadth, lang)}</p>
+  </section>
+
+  <section class="section alt" id="work">
+    <div class="container">
+      <div class="section-head">
+        <h2>{t(L.workTitle, lang)}</h2>
+        <p>{t(L.workLead, lang)}</p>
+      </div>
+      <a class="card feature" href={href(featured[0].href, lang)}>
+        <div>
+          <p class="who">{t(featured[0].tag, lang)}</p>
+          <h3>{t(featured[0].name, lang)}</h3>
+          <p class="muted">{t(featured[0].summary, lang)}</p>
+          <ul class="chips">{featured[0].stack.map((s) => <li>{s}</li>)}</ul>
+          <span class="proof arrow">{t(featured[0].cta, lang)} </span>
+        </div>
+        <div class="shots">
+          <img src="/img/nabz/05-home.png" alt="" loading="lazy" />
+          <img src="/img/nabz/06-encyclopedia.png" alt="" loading="lazy" />
+        </div>
+      </a>
+      <div class="grid grid-2" style="margin-top:1.25rem">
+        {
+          featured.slice(1).map((p) => (
+            <a class="card" href={p.href} target="_blank" rel="noopener">
+              <p class="who">{t(p.tag, lang)}</p>
+              <h3>{t(p.name, lang)}</h3>
+              <p class="muted">{t(p.summary, lang)}</p>
+              <ul class="chips">{p.stack.map((s) => <li>{s}</li>)}</ul>
+            </a>
+          ))
+        }
+      </div>
+      <p style="margin-top:1.5rem"><a class="arrow" href={href("/projects/", lang)}>{t(L.allWork, lang)} </a></p>
+    </div>
+  </section>
+
+  <section class="section container challenge">
+    <div class="ch-text">
+      <h2>{t(L.chTitle, lang)}</h2>
+      <p class="muted lead">{t(L.chLead, lang)}</p>
+      <a class="btn btn-primary" href={href("/challenge/", lang)}>{t(L.chCta, lang)}</a>
+    </div>
+    <div class="ch-covers">
+      {
+        preview.map((d) => (
+          <a href={href(`/challenge/${d.slug}/`, lang)} title={`${t(L.day, lang)} ${num(d.n, lang)} — ${d.title}`}>
+            <img src={d.cover} alt={`${t(L.day, lang)} ${num(d.n, lang)} — ${d.title}`} loading="lazy" width="480" height="600" />
+            <span>{t(L.day, lang)} {num(d.n, lang)}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section alt" id="about">
+    <div class="container about">
+      <div>
+        <h2>{t(about.title, lang)}</h2>
+        {about.body[lang].map((p) => <p>{p}</p>)}
+      </div>
+      <div>
+        <h3>{t(L.expTitle, lang)}</h3>
+        <ol class="timeline">
+          {
+            experience.map((e) => (
+              <li>
+                <span class="years">{t(e.years, lang)}</span>
+                <strong>{t(e.role, lang)}</strong>
+                {t(e.note, lang) && <p class="muted">{t(e.note, lang)}</p>}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="contact">
+    <div class="card contact">
+      <h2>{t(contact.title, lang)}</h2>
+      <p class="muted lead">{t(contact.lead, lang)}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={`mailto:${links.email}`}>{t(contact.emailCta, lang)}</a>
+        <a class="btn btn-ghost" href={links.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost" href={links.telegram} target="_blank" rel="noopener">Telegram</a>
+        <a class="btn btn-ghost" href={links.github} target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="muted small"><span class="ltr">{links.email}</span>{lang === "fa" ? "، " : " · "}{t(ui.footer, lang)}</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding-block: clamp(3rem, 8vw, 5.5rem) 2rem;
+  }
+  .lead {
+    font-size: 1.18rem;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 2rem;
+  }
+  .hero-photo {
+    justify-self: center;
+  }
+  .hero-photo img {
+    width: min(300px, 70vw);
+    height: auto;
+    aspect-ratio: 300 / 387;
+    object-fit: cover;
+    border-radius: 28px;
+    background: linear-gradient(160deg, var(--accent-soft), var(--surface-2));
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 820px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+    .hero-photo {
+      order: -1;
+      justify-self: start;
+    }
+    .hero-photo img {
+      width: 120px;
+      border-radius: 20px;
+    }
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    border-block: 1px solid var(--border);
+    padding-block: 1.5rem;
+  }
+  .facts div {
+    display: flex;
+    flex-direction: column;
+  }
+  .facts strong {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .facts span {
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  @media (max-width: 700px) {
+    .facts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .offer {
+    display: flex;
+    flex-direction: column;
+  }
+  .offer .proof {
+    margin-top: auto;
+    font-weight: 600;
+  }
+  .who {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 1rem 0 0.4rem;
+  }
+  .breadth {
+    margin-top: 1.5rem;
+  }
+  .alt {
+    background: var(--surface-2);
+  }
+  a.card {
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  a.card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  a.card .who {
+    margin-top: 0;
+  }
+  .feature {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  .feature .chips {
+    margin-bottom: 1.25rem;
+  }
+  .feature .proof {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .shots {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  .shots img {
+    width: 46%;
+    max-width: 200px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+  }
+  .shots img:last-child {
+    margin-top: 2rem;
+  }
+  @media (max-width: 820px) {
+    .feature {
+      grid-template-columns: 1fr;
+    }
+  }
+  .card .chips {
+    margin-top: 0.5rem;
+  }
+  .challenge {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .ch-covers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .ch-covers img {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease;
+  }
+  .ch-covers a:hover img {
+    transform: translateY(-4px);
+  }
+  .ch-covers span {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 820px) {
+    .challenge {
+      grid-template-columns: 1fr;
+    }
+  }
+  .about {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+  }
+  @media (max-width: 820px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-inline-start: 2px solid var(--border);
+  }
+  .timeline li {
+    position: relative;
+    padding-inline-start: 1.25rem;
+    padding-bottom: 1.1rem;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -7px;
+    top: 0.5em;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--surface-2);
+  }
+  .timeline .years {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .timeline p {
+    font-size: 0.92rem;
+    margin: 0.2rem 0 0;
+  }
+  .contact {
+    text-align: center;
+    padding: clamp(2rem, 6vw, 3.5rem);
+  }
+  .contact .lead {
+    margin-inline: auto;
+  }
+  .contact .btn-row {
+    justify-content: center;
+  }
+  .small {
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+  }
+</style>

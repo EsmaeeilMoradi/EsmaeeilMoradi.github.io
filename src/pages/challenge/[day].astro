@@ -1,0 +1,10 @@
+---
+import ChallengeDay from "../../components/ChallengeDay.astro";
+import { getDays } from "../../lib/challenge";
+export function getStaticPaths() {
+  return getDays("en").map((d) => ({ params: { day: d.slug } }));
+}
+const { day } = Astro.params;
+---
+
+<ChallengeDay lang="en" slug={day!} />
