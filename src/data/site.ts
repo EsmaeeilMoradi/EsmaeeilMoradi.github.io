@@ -164,8 +164,16 @@ export const experience = [
     years: { en: "2024 — now", fa: "۲۰۲۴ — اکنون" },
     role: { en: "CTO, Azma — building Nabz", fa: "CTO آزما — ساخت نبض" },
     note: {
-      en: "Product, Kotlin Multiplatform app, Ktor backend, infrastructure. Alongside full-time senior Android work.",
-      fa: "محصول، اپ Kotlin Multiplatform، بک‌اند Ktor و زیرساخت. هم‌زمان با کار تمام‌وقت اندروید در سطح سینیور.",
+      en: "Product, Kotlin Multiplatform app, Ktor backend, infrastructure.",
+      fa: "محصول، اپ Kotlin Multiplatform، بک‌اند Ktor و زیرساخت.",
+    },
+  },
+  {
+    years: { en: "2024 — now", fa: "۲۰۲۴ — اکنون" },
+    role: { en: "Independent Android Consultant", fa: "مشاور مستقل اندروید" },
+    note: {
+      en: "Architecture, delivery and code audits for client Android apps.",
+      fa: "معماری، توسعه و ممیزی کد اپ‌های اندروید برای مشتری‌ها.",
     },
   },
   {
