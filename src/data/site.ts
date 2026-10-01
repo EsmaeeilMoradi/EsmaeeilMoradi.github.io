@@ -203,7 +203,10 @@ export const experience = [
   {
     years: { en: "2018 — 2019", fa: "۲۰۱۸ — ۲۰۱۹" },
     role: { en: "Android Developer & Linux Administrator, PIDO", fa: "برنامه‌نویس اندروید و مدیر لینوکس، پیدو" },
-    note: { en: "", fa: "" },
+    note: {
+      en: "Electronic payments: fuel-station Android systems, Worldline VALINA terminal testing, Linux servers.",
+      fa: "پرداخت الکترونیک: سیستم‌های اندرویدی جایگاه سوخت، تست ترمینال‌های Worldline VALINA و سرورهای لینوکس.",
+    },
   },
   {
     years: { en: "2016 — 2018", fa: "۲۰۱۶ — ۲۰۱۸" },
