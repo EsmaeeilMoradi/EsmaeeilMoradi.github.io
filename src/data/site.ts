@@ -187,7 +187,10 @@ export const experience = [
   {
     years: { en: "2020 — 2021", fa: "۲۰۲۰ — ۲۰۲۱" },
     role: { en: "Android Developer → Team Lead, BATNA", fa: "برنامه‌نویس اندروید ← لید تیم، باتنا" },
-    note: { en: "", fa: "" },
+    note: {
+      en: "Custom AOSP ROMs and Google-free devices with microG; upstream contributions to F-Droid and Matrix.",
+      fa: "ROM سفارشی AOSP و دستگاه بدون سرویس‌های گوگل با microG؛ مشارکت در F-Droid و Matrix.",
+    },
   },
   {
     years: { en: "2019 — 2020", fa: "۲۰۱۹ — ۲۰۲۰" },
