@@ -211,7 +211,10 @@ export const experience = [
   {
     years: { en: "2016 — 2018", fa: "۲۰۱۶ — ۲۰۱۸" },
     role: { en: "Freelance Android Developer", fa: "برنامه‌نویس فریلنس اندروید" },
-    note: { en: "", fa: "" },
+    note: {
+      en: "First complete apps in Java: an offline learning app and an invoicing app with PDF export.",
+      fa: "اولین اپ‌های کامل با Java: یک اپ آموزشی آفلاین و یک اپ صدور فاکتور با خروجی PDF.",
+    },
   },
 ];
 
