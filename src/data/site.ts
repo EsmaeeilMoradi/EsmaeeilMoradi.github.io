@@ -195,7 +195,10 @@ export const experience = [
   {
     years: { en: "2019 — 2020", fa: "۲۰۱۹ — ۲۰۲۰" },
     role: { en: "Android Developer, Atrin Group", fa: "برنامه‌نویس اندروید، گروه آترین" },
-    note: { en: "", fa: "" },
+    note: {
+      en: "Three internal apps end to end: team management, trading and inventory, and financial analytics.",
+      fa: "سه اپ داخلی از صفر تا انتشار: مدیریت تیم، معاملات و انبار، و تحلیل مالی.",
+    },
   },
   {
     years: { en: "2018 — 2019", fa: "۲۰۱۸ — ۲۰۱۹" },
