@@ -34,13 +34,13 @@ export const hero = {
     fa: "محصول موبایل را از اولین صفحه تا انتشار در فروشگاه، کامل می‌سازم.",
   },
   lead: {
-    en: "Ten years of Android, from AOSP internals to Jetpack Compose and Kotlin Multiplatform. I design the app, the backend behind it and the release pipeline — and I teach other engineers to do the same.",
-    fa: "ده سال اندروید؛ از لایه‌های داخلی AOSP تا Jetpack Compose و Kotlin Multiplatform. اپ، بک‌اند پشت آن و مسیر انتشار را طراحی می‌کنم — و همین را به برنامه‌نویس‌های دیگر هم یاد می‌دهم.",
+    en: "10+ years of Android, from AOSP internals to Jetpack Compose and Kotlin Multiplatform. I design the app, the backend behind it and the release pipeline — and I teach other engineers to do the same.",
+    fa: "بیش از ده سال اندروید؛ از لایه‌های داخلی AOSP تا Jetpack Compose و Kotlin Multiplatform. اپ، بک‌اند پشت آن و مسیر انتشار را طراحی می‌کنم — و همین را به برنامه‌نویس‌های دیگر هم یاد می‌دهم.",
   },
   ctaPrimary: { en: "Start a project", fa: "شروع همکاری" },
   ctaSecondary: { en: "See my work", fa: "دیدن نمونه‌کارها" },
   facts: [
-    { value: { en: "10 yrs", fa: "۱۰ سال" }, label: { en: "building Android apps", fa: "ساخت اپ اندروید" } },
+    { value: { en: "10+ yrs", fa: "۱۰+ سال" }, label: { en: "building Android apps", fa: "ساخت اپ اندروید" } },
     { value: { en: "Since 2020", fa: "از ۲۰۲۰" }, label: { en: "leading Android teams", fa: "رهبری تیم اندروید" } },
     { value: { en: "AOSP", fa: "AOSP" }, label: { en: "framework & system apps", fa: "فریم‌ورک و اپ‌های سیستمی" } },
     { value: { en: "30 days", fa: "۳۰ روز" }, label: { en: "free interview challenge", fa: "چالش رایگان مصاحبه" } },
