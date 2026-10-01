@@ -179,7 +179,10 @@ export const experience = [
   {
     years: { en: "2021 — 2024", fa: "۲۰۲۱ — ۲۰۲۴" },
     role: { en: "Android Technical Team Lead, Daria", fa: "لید فنی تیم اندروید، داریا" },
-    note: { en: "", fa: "" },
+    note: {
+      en: "Led the team behind the pre-installed system apps on Daria smartphones — Calendar, Camera, Clock, Contacts, Files, Messages, Recorder.",
+      fa: "رهبری تیم اپ‌های سیستمی پیش‌نصب گوشی‌های داریا — تقویم، دوربین، ساعت، مخاطبین، فایل، پیام‌ها و ضبط صدا.",
+    },
   },
   {
     years: { en: "2020 — 2021", fa: "۲۰۲۰ — ۲۰۲۱" },
