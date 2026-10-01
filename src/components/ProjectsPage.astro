@@ -1,0 +1,88 @@
+---
+import Base from "../layouts/Base.astro";
+import { projects, t, href, type Lang } from "../data/site";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const L = {
+  title: { en: "Projects", fa: "پروژه‌ها" },
+  lead: {
+    en: "Products I build, tools I open-source, and the platform work underneath.",
+    fa: "محصولی که می‌سازم، ابزارهایی که متن‌باز کرده‌ام، و کار پلتفرمی که زیر همهٔ این‌هاست.",
+  },
+};
+const isInternal = (h: string) => h.startsWith("/");
+---
+
+<Base lang={lang} path="/projects/" title={t(L.title, lang)} description={t(L.lead, lang)}>
+  <section class="section container">
+    <div class="section-head">
+      <h1>{t(L.title, lang)}</h1>
+      <p>{t(L.lead, lang)}</p>
+    </div>
+    <div class="list">
+      {
+        projects.map((p) => (
+          <article class="card project" id={p.id}>
+            <div class="body">
+              <p class="tag">{t(p.tag, lang)}</p>
+              <h2>{t(p.name, lang)}</h2>
+              <p class="muted">{t(p.summary, lang)}</p>
+              <ul class="chips">{p.stack.map((s) => <li>{s}</li>)}</ul>
+              <a
+                class="btn btn-ghost"
+                href={isInternal(p.href) ? href(p.href, lang) : p.href}
+                target={isInternal(p.href) ? undefined : "_blank"}
+                rel={isInternal(p.href) ? undefined : "noopener"}
+              >
+                <span class="arrow">{t(p.cta, lang)} </span>
+              </a>
+            </div>
+            {p.image && <img src={p.image} alt="" loading="lazy" />}
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .list {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .project {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    scroll-margin-top: 90px;
+  }
+  .project h2 {
+    font-size: 1.5rem;
+  }
+  .project img {
+    width: 170px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+  }
+  .tag {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .chips {
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 700px) {
+    .project {
+      grid-template-columns: 1fr;
+    }
+    .project img {
+      display: none;
+    }
+  }
+</style>

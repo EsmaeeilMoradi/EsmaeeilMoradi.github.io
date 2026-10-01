@@ -1,0 +1,140 @@
+---
+import Base from "../layouts/Base.astro";
+import { links, t, href, type Lang } from "../data/site";
+import { getDays, groups, num } from "../lib/challenge";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const days = getDays(lang);
+const L = {
+  title: { en: "30-Day Android Interview Challenge", fa: "چالش ۳۰ روزهٔ مصاحبهٔ اندروید" },
+  edition: { en: "2025 Edition · English", fa: "نسخهٔ ۲۰۲۵، انگلیسی" },
+  lead: {
+    en: "Thirty in-depth carousels that take you from the Activity lifecycle to system design. Each day answers interview questions at four levels — Junior, Mid, Senior and Architect — with code and real-world examples.",
+    fa: "سی کاروسل مفصل که شما را از چرخهٔ عمر Activity تا طراحی سیستم می‌برد. هر روز به سؤال‌های مصاحبه در چهار سطح جواب می‌دهد — جونیور، مید، سینیور و آرکیتکت — همراه با کد و مثال واقعی.",
+  },
+  note: {
+    en: "The 2026 edition — rebuilt from your feedback, in English and Persian — is being published on LinkedIn right now.",
+    fa: "نسخهٔ ۲۰۲۶ — بازسازی‌شده بر اساس بازخوردهای شما، به فارسی و انگلیسی — همین حالا در لینکدین در حال انتشار است. این نسخه فقط به انگلیسی است.",
+  },
+  follow: { en: "Follow on LinkedIn", fa: "دنبال کردن در لینکدین" },
+  day: { en: "Day", fa: "روز" },
+  days: { en: "Days", fa: "روزهای" },
+  slides: { en: "slides", fa: "اسلاید" },
+};
+---
+
+<Base lang={lang} path="/challenge/" title={t(L.title, lang)} description={t(L.lead, lang)} image={days[0].cover}>
+  <section class="section container">
+    <div class="section-head wide">
+      <span class="eyebrow">{t(L.edition, lang)}</span>
+      <h1>{t(L.title, lang)}</h1>
+      <p>{t(L.lead, lang)}</p>
+      <p class="note">
+        {t(L.note, lang)}
+        <a href={links.linkedin} target="_blank" rel="noopener" class="arrow">{t(L.follow, lang)} </a>
+      </p>
+    </div>
+
+    {
+      groups.map((g) => (
+        <section class="group">
+          <h2>
+            <span class="range">{t(L.days, lang)} {num(g.from, lang)}–{num(g.to, lang)}</span>
+            {g[lang]}
+          </h2>
+          <div class="days">
+            {days
+              .filter((d) => d.n >= g.from && d.n <= g.to)
+              .map((d) => (
+                <a class="day" href={href(`/challenge/${d.slug}/`, lang)}>
+                  <span class="thumb">
+                    <img src={d.cover} alt="" loading="lazy" width="480" height="600" />
+                  </span>
+                  <span class="n">
+                    {t(L.day, lang)} {num(d.n, lang)}{lang === "fa" ? "، " : " · "}{num(d.slides, lang)} {t(L.slides, lang)}
+                  </span>
+                  <span class="title">{d.title}</span>
+                </a>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </section>
+</Base>
+
+<style>
+  .wide {
+    max-width: 820px;
+  }
+  .note {
+    font-size: 1rem !important;
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: 1rem;
+  }
+  .note a {
+    display: inline-block;
+    font-weight: 600;
+    margin-inline-start: 0.25rem;
+  }
+  .group {
+    margin-top: 3rem;
+  }
+  .group h2 {
+    font-size: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .range {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .days {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1.25rem;
+  }
+  .day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: var(--text);
+  }
+  .thumb {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 0.4rem;
+    background: #a8c6e8;
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+    transition: transform 0.2s ease;
+  }
+  .day:hover img {
+    transform: scale(1.04);
+  }
+  .day:hover .title {
+    color: var(--accent);
+  }
+  .n {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+</style>
