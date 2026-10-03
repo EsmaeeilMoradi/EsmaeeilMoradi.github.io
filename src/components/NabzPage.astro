@@ -14,7 +14,8 @@ const C = {
     en: "Nabz is a patient-first health app by Azma. Its mission: give people going through treatment a sense of safety, calm and ease. I lead the product and build it end to end — the Kotlin Multiplatform app, the Ktor backend, the admin panel and the infrastructure.",
     fa: "نبض اپ سلامت بیمارمحور آزماست، با این مأموریت: ایجاد حس امنیت، آرامش و آسایش برای کسانی که فرایند درمان را طی می‌کنند. مسئول محصول هستم و آن را کامل می‌سازم — اپ Kotlin Multiplatform، بک‌اند Ktor، پنل ادمین و زیرساخت.",
   },
-  status: { en: "Status: launching on Cafe Bazaar, Iran's Android store — 2026", fa: "وضعیت: در آستانهٔ انتشار در کافه‌بازار — ۲۰۲۶" },
+  status: { en: "Status: live on Cafe Bazaar, Iran's Android store — since October 2026", fa: "وضعیت: منتشرشده در کافه‌بازار — از مهر ۱۴۰۵" },
+  bazaar: { en: "Get it on Cafe Bazaar", fa: "دریافت از کافه‌بازار" },
   visit: { en: "Visit azmaapp.ir", fa: "دیدن azmaapp.ir" },
   problemT: { en: "The problem", fa: "مسئله" },
   problem: {
@@ -44,7 +45,7 @@ const C = {
       ["Kotlin Multiplatform app", "Shared UI, ViewModels, repositories, networking and storage in commonMain with Compose Multiplatform; Android ships first, desktop runs from the same code."],
       ["MVVM with clear boundaries", "Koin for DI. Screens never talk to the API client or the database directly — only through repositories."],
       ["Offline-aware data layer", "Ktor client plus Room KMP (8 local tables) with a cache and invalidation strategy."],
-      ["Ktor backend", "Routes → services → Exposed → PostgreSQL (17 tables), 80+ endpoints with authentication and rate limits, an HTML + JSON admin panel."],
+      ["Ktor backend", "Routes → services → Exposed → PostgreSQL (19 tables), 80+ endpoints with authentication and rate limits, an HTML + JSON admin panel."],
       ["Auth that respects users", "Phone OTP via SMS, short-lived JWT access tokens, rotating refresh tokens stored only as hashes, automatic refresh on 401."],
       ["Shipping", "Docker Compose on a VPS behind nginx, FCM push, documented endpoints and data flow for every screen."],
     ],
@@ -52,7 +53,7 @@ const C = {
       ["اپ Kotlin Multiplatform", "UI، ViewModelها، repositoryها، شبکه و ذخیره‌سازی مشترک در commonMain با Compose Multiplatform؛ اول اندروید منتشر می‌شود و نسخهٔ دسکتاپ از همان کد اجرا می‌شود."],
       ["MVVM با مرزهای روشن", "Koin برای DI. صفحه‌ها هیچ‌وقت مستقیم با API یا دیتابیس حرف نمی‌زنند — فقط از طریق repository."],
       ["لایهٔ داده با پشتیبانی آفلاین", "کلاینت Ktor و Room KMP با ۸ جدول محلی، همراه با استراتژی کش و invalidation."],
-      ["بک‌اند Ktor", "لایه‌های route، service و Exposed روی PostgreSQL با ۱۷ جدول، بیش از ۸۰ endpoint با احراز هویت و محدودیت نرخ، و پنل ادمین HTML و JSON."],
+      ["بک‌اند Ktor", "لایه‌های route، service و Exposed روی PostgreSQL با ۱۹ جدول، بیش از ۸۰ endpoint با احراز هویت و محدودیت نرخ، و پنل ادمین HTML و JSON."],
       ["احراز هویت محترمانه", "ورود با کد یک‌بارمصرف پیامکی، توکن JWT کوتاه‌عمر، refresh token چرخشی که فقط hash آن ذخیره می‌شود، و تمدید خودکار با خطای ۴۰۱."],
       ["انتشار", "Docker Compose روی VPS پشت nginx، پوش FCM، و مستندسازی endpointها و جریان داده برای هر صفحه."],
     ],
@@ -85,7 +86,10 @@ const shots = ["05-home", "06-encyclopedia", "07-prep", "08-history", "09-med-re
       <h1>{t(C.title, lang)}</h1>
       <p class="lead muted">{t(C.lead, lang)}</p>
       <p class="status">{t(C.status, lang)}</p>
-      <a class="btn btn-ghost" href={links.azma} target="_blank" rel="noopener"><span class="arrow">{t(C.visit, lang)} </span></a>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={links.bazaar} target="_blank" rel="noopener">{t(C.bazaar, lang)}</a>
+        <a class="btn btn-ghost" href={links.azma} target="_blank" rel="noopener"><span class="arrow">{t(C.visit, lang)} </span></a>
+      </div>
     </div>
     <img class="icon" src="/img/nabz/app-icon-512.png" alt="Nabz" width="160" height="160" />
   </section>

@@ -7,6 +7,7 @@ export const links = {
   github: "https://github.com/EsmaeeilMoradi",
   telegram: "https://t.me/esmaeeilmoradi",
   azma: "https://azmaapp.ir",
+  bazaar: "https://cafebazaar.ir/app/ir.azmaapp.nabz",
 };
 
 export const ui = {
@@ -34,8 +35,8 @@ export const hero = {
     fa: "محصول موبایل را از اولین صفحه تا انتشار در فروشگاه، کامل می‌سازم.",
   },
   lead: {
-    en: "10+ years of Android, from AOSP internals to Jetpack Compose and Kotlin Multiplatform. I design the app, the backend behind it and the release pipeline — and I teach other engineers to do the same.",
-    fa: "بیش از ده سال اندروید؛ از لایه‌های داخلی AOSP تا Jetpack Compose و Kotlin Multiplatform. اپ، بک‌اند پشت آن و مسیر انتشار را طراحی می‌کنم — و همین را به برنامه‌نویس‌های دیگر هم یاد می‌دهم.",
+    en: "10+ years of Android, from AOSP internals to Jetpack Compose and Kotlin Multiplatform. I design the app, the backend behind it, its security and the release pipeline — and I teach other engineers to do the same.",
+    fa: "بیش از ده سال اندروید؛ از لایه‌های داخلی AOSP تا Jetpack Compose و Kotlin Multiplatform. اپ، بک‌اند پشت آن، امنیتش و مسیر انتشار را طراحی می‌کنم — و همین را به برنامه‌نویس‌های دیگر هم یاد می‌دهم.",
   },
   ctaPrimary: { en: "Start a project", fa: "شروع همکاری" },
   ctaSecondary: { en: "See my work", fa: "دیدن نمونه‌کارها" },
@@ -54,8 +55,8 @@ export const offersIntro = {
     fa: "سه خدمت مشخص، که پشت هر کدام کاری هست که می‌توانید ببینید.",
   },
   breadth: {
-    en: "Also on request: Ktor backends, Telegram bots, AI integrations and AOSP customization.",
-    fa: "در صورت نیاز: بک‌اند Ktor، بات تلگرام، یکپارچه‌سازی هوش مصنوعی و شخصی‌سازی AOSP.",
+    en: "Also on request: end-to-end encryption with the Signal Protocol, Ktor backends, Telegram bots, AI integrations and AOSP customization.",
+    fa: "در صورت نیاز: رمزنگاری سرتاسری با پروتکل Signal، بک‌اند Ktor، بات تلگرام، یکپارچه‌سازی هوش مصنوعی و شخصی‌سازی AOSP.",
   },
 };
 
@@ -101,8 +102,8 @@ export const projects = [
     name: { en: "Nabz — patient-first health app", fa: "نبض — اپ سلامت بیمارمحور" },
     tag: { en: "Product · Kotlin Multiplatform · Ktor", fa: "محصول، Kotlin Multiplatform، Ktor" },
     summary: {
-      en: "A calm companion for people going through lab tests: a test encyclopedia, preparation guides, a private results archive and medication reminders. I lead product and engineering — app, backend, admin panel and infrastructure.",
-      fa: "همراهی آرام برای کسانی که آزمایش می‌دهند: دانشنامهٔ آزمایش‌ها، راهنمای آمادگی، آرشیو خصوصی نتایج و یادآور دارو. مسئول محصول و فنی‌ام — اپ، بک‌اند، پنل ادمین و زیرساخت.",
+      en: "A calm companion for people going through lab tests: a test encyclopedia, preparation guides, a private results archive and medication reminders. Live on Cafe Bazaar. I lead product and engineering — app, backend, admin panel and infrastructure.",
+      fa: "همراهی آرام برای کسانی که آزمایش می‌دهند: دانشنامهٔ آزمایش‌ها، راهنمای آمادگی، آرشیو خصوصی نتایج و یادآور دارو. منتشرشده در کافه‌بازار. مسئول محصول و فنی‌ام — اپ، بک‌اند، پنل ادمین و زیرساخت.",
     },
     stack: ["Compose Multiplatform", "Koin", "Room KMP", "Ktor", "PostgreSQL", "FCM"],
     image: "/img/nabz/05-home.png",
@@ -162,31 +163,31 @@ export const projects = [
 export const experience = [
   {
     years: { en: "2024 — now", fa: "۲۰۲۴ — اکنون" },
-    role: { en: "CTO, Azma — building Nabz", fa: "CTO آزما — ساخت نبض" },
+    role: { en: "CTO, Azma — building Nabz", fa: "مدیر فنی آزما — ساخت نبض" },
     note: {
-      en: "Product, Kotlin Multiplatform app, Ktor backend, infrastructure.",
-      fa: "محصول، اپ Kotlin Multiplatform، بک‌اند Ktor و زیرساخت.",
+      en: "Took Nabz from idea to public release on Cafe Bazaar: technical strategy, Kotlin Multiplatform app, Ktor backend, security and infrastructure.",
+      fa: "نبض را از ایده تا انتشار عمومی در کافه‌بازار رساندم: استراتژی فنی، اپ Kotlin Multiplatform، بک‌اند Ktor، امنیت و زیرساخت.",
     },
   },
   {
     years: { en: "2024 — now", fa: "۲۰۲۴ — اکنون" },
     role: { en: "Independent Android Consultant", fa: "مشاور مستقل اندروید" },
     note: {
-      en: "Architecture, delivery and code audits for client Android apps.",
-      fa: "معماری، توسعه و ممیزی کد اپ‌های اندروید برای مشتری‌ها.",
+      en: "End-to-end encryption with the Signal Protocol for a secure communication platform (confidential) — messages, files, calls and multi-device sync. Plus architecture and code audits.",
+      fa: "رمزنگاری سرتاسری با پروتکل Signal برای یک پلتفرم ارتباطات امن، محرمانه — پیام، فایل، تماس و همگام‌سازی چنددستگاهی. به‌علاوهٔ ممیزی کد و معماری.",
     },
   },
   {
     years: { en: "2021 — 2024", fa: "۲۰۲۱ — ۲۰۲۴" },
-    role: { en: "Android Technical Team Lead, Daria", fa: "لید فنی تیم اندروید، داریا" },
+    role: { en: "Android Tech Lead, Daria", fa: "لید فنی اندروید، داریا" },
     note: {
-      en: "Led the team behind the pre-installed system apps on Daria smartphones — Calendar, Camera, Clock, Contacts, Files, Messages, Recorder.",
-      fa: "رهبری تیم اپ‌های سیستمی پیش‌نصب گوشی‌های داریا — تقویم، دوربین، ساعت، مخاطبین، فایل، پیام‌ها و ضبط صدا.",
+      en: "Led the team behind the pre-installed system apps on Daria smartphones. Moved system-app builds from Make to Gradle (+20% productivity) and improved system stability by 20%.",
+      fa: "رهبری تیم اپ‌های سیستمی پیش‌نصب گوشی‌های داریا. انتقال build اپ‌های سیستمی از Make به Gradle با ۲۰٪ بهره‌وری بیشتر، و ۲۰٪ بهبود پایداری سیستم.",
     },
   },
   {
     years: { en: "2020 — 2021", fa: "۲۰۲۰ — ۲۰۲۱" },
-    role: { en: "Android Developer → Team Lead, BATNA", fa: "برنامه‌نویس اندروید ← لید تیم، باتنا" },
+    role: { en: "Android Developer → Android Lead, BATNA", fa: "برنامه‌نویس اندروید و سپس لید اندروید، بتنا" },
     note: {
       en: "Custom AOSP ROMs and Google-free devices with microG; upstream contributions to F-Droid and Matrix.",
       fa: "ROM سفارشی AOSP و دستگاه بدون سرویس‌های گوگل با microG؛ مشارکت در F-Droid و Matrix.",
@@ -224,10 +225,12 @@ export const about = {
     en: [
       "I studied civil engineering, then taught myself programming and moved into Android in 2016. Since then I've shipped apps for companies, led Android teams, and gone deep into the platform itself — AOSP, system apps and custom ROMs.",
       "Today I build Nabz, a health product for people going through medical tests, and I publish a free 30-day Android interview challenge on LinkedIn. I care about products that make people feel safe and calm, and about code a team can still change two years later.",
+      "I work AI-native: coding agents with project rules, shared context across repositories and agent-driven code and security audits let a very small team ship a full product. A long-standing interest in psychology shapes how I mentor engineers, give feedback and design calm products.",
     ],
     fa: [
       "مهندسی عمران خواندم، بعد برنامه‌نویسی را خودم یاد گرفتم و از ۲۰۱۶ وارد اندروید شدم. از آن موقع برای شرکت‌ها اپ ساخته‌ام، تیم اندروید را رهبری کرده‌ام و تا عمق خود پلتفرم رفته‌ام — AOSP، اپ‌های سیستمی و ROM سفارشی.",
       "الان نبض را می‌سازم، محصولی سلامت برای کسانی که آزمایش و درمان را طی می‌کنند، و یک چالش رایگان ۳۰ روزهٔ مصاحبهٔ اندروید را در لینکدین منتشر می‌کنم. برایم مهم است محصول به آدم‌ها حس امنیت و آرامش بدهد، و کدی بنویسم که تیم دو سال بعد هم بتواند تغییرش دهد.",
+      "با ایجنت‌های هوش مصنوعی کار می‌کنم: قواعد پروژه، زمینهٔ مشترک بین ریپوها و ممیزی کد و امنیت با ایجنت، به یک تیم خیلی کوچک اجازه می‌دهد محصولی کامل بسازد. علاقهٔ قدیمی‌ام به روانشناسی هم در منتورینگ، بازخورد دادن و طراحی محصول آرام اثر گذاشته است.",
     ],
   },
   highlightsTitle: { en: "Selected achievements", fa: "دستاوردهای منتخب" },
@@ -241,8 +244,16 @@ export const about = {
       fa: "اپ‌هایی با Clean Architecture و MVVM را از صفر طراحی و تحویل دادم و زمان بارگذاری اولیه ۳۰٪ کم شد.",
     },
     {
-      en: "Customized and optimized core AOSP system apps — Camera, Messaging, Contacts — for embedded devices.",
-      fa: "اپ‌های سیستمی اصلی AOSP مثل Camera، Messaging و Contacts را برای دستگاه‌های embedded شخصی‌سازی و بهینه کردم.",
+      en: "Implemented Signal Protocol end-to-end encryption (X3DH + Double Ratchet) for messages, files, calls and multi-device sync on a secure communication platform.",
+      fa: "رمزنگاری سرتاسری با پروتکل Signal را برای پیام، فایل، تماس و همگام‌سازی چنددستگاهی در یک پلتفرم ارتباطات امن پیاده کردم.",
+    },
+    {
+      en: "Took Nabz, a patient-first health app, from idea to public release on Cafe Bazaar as CTO of Azma.",
+      fa: "به‌عنوان مدیر فنی آزما، اپ سلامت نبض را از ایده تا انتشار عمومی در کافه‌بازار رساندم.",
+    },
+    {
+      en: "Improved system stability by 20% across the pre-installed system apps of a smartphone brand.",
+      fa: "پایداری سیستم را در اپ‌های سیستمی پیش‌نصب یک برند گوشی ۲۰٪ بهبود دادم.",
     },
     {
       en: "Built a non-custodial Web3 wallet with hand-written key derivation and Keystore-backed encryption.",
