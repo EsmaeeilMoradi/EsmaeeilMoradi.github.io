@@ -21,6 +21,7 @@ const other: Lang = lang === "en" ? "fa" : "en";
 const nav = [
   { label: ui.nav.work, to: "/projects/" },
   { label: ui.nav.challenge, to: "/challenge/" },
+  { label: ui.nav.articles, to: "/articles/" },
   { label: ui.nav.about, to: "/#about" },
 ];
 const year = new Date().getFullYear();
@@ -154,6 +155,19 @@ const year = new Date().getFullYear();
   @media (max-width: 440px) {
     .hide-sm {
       display: none;
+    }
+    nav {
+      gap: 0.6rem;
+      font-size: 0.85rem;
+    }
+  }
+  @media (max-width: 380px) {
+    nav {
+      gap: 0.45rem;
+      font-size: 0.8rem;
+    }
+    nav .btn-sm {
+      padding: 0.45em 0.8em;
     }
   }
   .site-footer {

@@ -22,6 +22,8 @@ npm run build    # static output in dist/
 | 30-Day Challenge captions | `src/content/challenge/NN-en.md`, `NN-fa.md` |
 | Challenge carousels and covers | `public/challenge/` |
 | Slide counts per day | `src/data/challenge-pages.json` |
+| Articles (titles, descriptions, series, dates) | `src/data/articles.ts` |
+| Article PDFs and covers | `public/articles/`, `public/articles/covers/` |
 
 To add a challenge day or update a carousel, replace the caption and PDF, regenerate the cover with
 `pdftoppm -f 1 -l 1 -scale-to-x 480 -scale-to-y -1 -jpeg day-NN-en.pdf covers/NN-en`, and update the slide count.

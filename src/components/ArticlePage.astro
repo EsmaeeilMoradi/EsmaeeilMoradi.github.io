@@ -1,0 +1,159 @@
+---
+import Base from "../layouts/Base.astro";
+import { links, t, href, type Lang } from "../data/site";
+import { getArticles, series } from "../lib/articles";
+import { num } from "../lib/challenge";
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+const { lang, slug } = Astro.props;
+const articles = getArticles(lang);
+const i = articles.findIndex((a) => a.slug === slug);
+const article = articles[i];
+const prev = articles[i - 1];
+const next = articles[i + 1];
+const seriesTitle = t(series.find((s) => s.id === article.series)!.title, lang);
+const L = {
+  back: { en: "All articles", fa: "همهٔ مقاله‌ها" },
+  open: { en: "Read the article (PDF)", fa: "خواندن مقاله (PDF)" },
+  slides: { en: "slides · English", fa: "اسلاید، انگلیسی" },
+  published: { en: "First published on", fa: "اولین بار منتشر شده در" },
+  faNote: {
+    en: "",
+    fa: "این مقاله به انگلیسی است.",
+  },
+  prev: { en: "Previous", fa: "قبلی" },
+  next: { en: "Next", fa: "بعدی" },
+  hire: {
+    en: "Need this kind of architecture thinking on your team? I consult on Android, Kotlin Multiplatform and mobile system design.",
+    fa: "این نوع نگاه معماری را در تیم‌تان لازم دارید؟ در اندروید، Kotlin Multiplatform و طراحی سیستم موبایل مشاوره می‌دهم.",
+  },
+  hireCta: { en: "Get in touch", fa: "در تماس باشیم" },
+};
+---
+
+<Base lang={lang} path={`/articles/${slug}/`} title={article.title} description={article.description} image={article.cover}>
+  <article class="section container layout">
+    <div class="text">
+      <a class="back" href={href("/articles/", lang)}>{t(L.back, lang)}</a>
+      <p class="eyebrow">{seriesTitle}</p>
+      <h1>{article.title}</h1>
+      {lang === "fa" && <p class="en-title ltr">{article.titleEn}</p>}
+      <p class="lead">{article.description}</p>
+      {t(L.faNote, lang) && <p class="fa-note">{t(L.faNote, lang)}</p>}
+      <div class="btn-row cta">
+        <a class="btn btn-primary" href={article.pdf} target="_blank" rel="noopener">{t(L.open, lang)}</a>
+      </div>
+      <p class="muted meta">
+        {num(article.slides, lang)} {t(L.slides, lang)}{lang === "fa" ? "، " : " · "}{t(L.published, lang)}{" "}
+        <a href={links.linkedin} target="_blank" rel="noopener">LinkedIn</a>{lang === "fa" ? "، " : ", "}{article.dateLabel}
+      </p>
+      <nav class="pager">
+        {prev ? <a href={href(`/articles/${prev.slug}/`, lang)}><small>{t(L.prev, lang)}</small>{prev.title}</a> : <span />}
+        {next ? <a class="next" href={href(`/articles/${next.slug}/`, lang)}><small>{t(L.next, lang)}</small>{next.title}</a> : <span />}
+      </nav>
+    </div>
+    <aside class="side">
+      <a href={article.pdf} target="_blank" rel="noopener">
+        <img src={article.cover} alt={article.title} width="480" height="600" />
+      </a>
+      <div class="card hire">
+        <p>{t(L.hire, lang)}</p>
+        <a class="arrow" href={href("/#contact", lang)}>{t(L.hireCta, lang)} </a>
+      </div>
+    </aside>
+  </article>
+</Base>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+    align-items: start;
+  }
+  .back {
+    display: block;
+    width: fit-content;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  }
+  .en-title {
+    color: var(--muted);
+    margin-top: -0.5rem;
+  }
+  .lead {
+    font-size: 1.15rem;
+  }
+  .fa-note {
+    font-size: 0.95rem;
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: 1rem;
+  }
+  .cta {
+    margin-top: 1.75rem;
+  }
+  .meta {
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+  }
+  .side {
+    position: sticky;
+    top: 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .side img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .hire {
+    padding: 1.25rem;
+    font-size: 0.95rem;
+  }
+  .hire p {
+    margin-bottom: 0.5rem;
+  }
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .pager small {
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .pager .next {
+    text-align: end;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .side {
+      position: static;
+    }
+    .side > a:first-child {
+      display: none;
+    }
+  }
+</style>
