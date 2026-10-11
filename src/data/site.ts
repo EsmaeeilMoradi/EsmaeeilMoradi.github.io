@@ -275,6 +275,8 @@ export const contact = {
     fa: "بگویید چه می‌سازید یا کجا گیر کرده‌اید. ظرف دو روز کاری جواب می‌دهم.",
   },
   emailCta: { en: "Email me", fa: "ایمیل بزنید" },
+  video: { src: "/video/intro.mp4", poster: "/video/intro.jpg" },
+  videoCaption: { en: "My 80-second intro", fa: "معرفی ۸۰ ثانیه‌ای من (به انگلیسی)" },
 };
 
 export const t = (v: T, lang: Lang) => v[lang];
