@@ -120,6 +120,7 @@ export const projects = [
       fa: "ابزارهای Kotlin Script برای پیدا کردن ریسورس‌های بلااستفاده و کد مردهٔ Kotlin/Java. روی پروژهٔ متن‌باز Unstoppable Wallet، ۱۷ ریسورس بلااستفاده و ۶۶ declaration احتمالاً بلااستفاده پیدا کردند.",
     },
     stack: ["Kotlin Script", "Static analysis", "CI"],
+    video: { src: "/video/android-code-cleaner-demo.mp4", poster: "/video/android-code-cleaner-demo.jpg" },
     href: "https://github.com/EsmaeeilMoradi/AndroidCodeCleaner",
     cta: { en: "View on GitHub", fa: "دیدن در گیت‌هاب" },
   },

@@ -12,6 +12,7 @@ const L = {
     en: "Products I build, tools I open-source, and the platform work underneath.",
     fa: "محصولی که می‌سازم، ابزارهایی که متن‌باز کرده‌ام، و کار پلتفرمی که زیر همهٔ این‌هاست.",
   },
+  demo: { en: "Demo video", fa: "ویدیوی دمو" },
 };
 const isInternal = (h: string) => h.startsWith("/");
 ---
@@ -25,7 +26,7 @@ const isInternal = (h: string) => h.startsWith("/");
     <div class="list">
       {
         projects.map((p) => (
-          <article class="card project" id={p.id}>
+          <article class:list={["card project", { "has-video": p.video }]} id={p.id}>
             <div class="body">
               <p class="tag">{t(p.tag, lang)}</p>
               <h2>{t(p.name, lang)}</h2>
@@ -50,6 +51,18 @@ const isInternal = (h: string) => h.startsWith("/");
               </a>
             </div>
             {p.image && <img src={p.image} alt="" loading="lazy" />}
+            {p.video && (
+              <video
+                src={p.video.src}
+                poster={p.video.poster}
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label={t(L.demo, lang)}
+              />
+            )}
           </article>
         ))
       }
@@ -76,6 +89,16 @@ const isInternal = (h: string) => h.startsWith("/");
     width: 170px;
     border-radius: 18px;
     border: 1px solid var(--border);
+  }
+  .project.has-video {
+    grid-template-columns: 1fr 1.3fr;
+  }
+  .project video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #1e1f22;
   }
   .tag {
     font-size: 0.85rem;
@@ -112,7 +135,8 @@ const isInternal = (h: string) => h.startsWith("/");
     justify-content: flex-end;
   }
   @media (max-width: 700px) {
-    .project {
+    .project,
+    .project.has-video {
       grid-template-columns: 1fr;
     }
     .project img {
