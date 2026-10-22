@@ -1,22 +1,28 @@
 ---
 import Base from "../layouts/Base.astro";
-import { links, t, href, type Lang } from "../data/site";
-import { getDays, num } from "../lib/challenge";
+import { t, href, type Lang } from "../data/site";
+import { getDays, num, type Edition } from "../lib/challenge";
+import { loadDaySlides } from "../lib/renderChallengeMd";
 
 interface Props {
   lang: Lang;
   slug: string;
+  edition?: Edition;
 }
-const { lang, slug } = Astro.props;
-const days = getDays(lang);
+const { lang, slug, edition = "2026" } = Astro.props;
+const days = getDays(lang, edition);
 const i = days.findIndex((d) => d.slug === slug);
 const day = days[i];
 const prev = days[i - 1];
 const next = days[i + 1];
+const base = edition === "2026" ? "/challenge/" : "/challenge/2025/";
+const slides2026 = edition === "2026" ? loadDaySlides(day.n, lang) : [];
+
 const L = {
   back: { en: "All 30 days", fa: "همهٔ ۳۰ روز" },
   day: { en: "Day", fa: "روز" },
-  edition: { en: "2025 Edition", fa: "نسخهٔ ۲۰۲۵" },
+  edition2026: { en: "2026 Edition", fa: "نسخهٔ ۲۰۲۶" },
+  edition2025: { en: "2025 Edition", fa: "نسخهٔ ۲۰۲۵" },
   open: { en: "Open the carousel (PDF)", fa: "باز کردن کاروسل (PDF)" },
   slides: { en: "slides · English", fa: "اسلاید، انگلیسی" },
   levelsT: { en: "Inside this day", fa: "در این روز" },
@@ -28,10 +34,6 @@ const L = {
     en: "Try answering each question out loud before you read the answer — that's the closest thing to a real interview.",
     fa: "قبل از خواندن هر جواب، سعی کنید سؤال را با صدای بلند جواب بدهید — این نزدیک‌ترین تمرین به مصاحبهٔ واقعی است.",
   },
-  faNote: {
-    en: "",
-    fa: "این نسخه به انگلیسی است. نسخهٔ فارسی ۲۰۲۶ در لینکدین منتشر می‌شود.",
-  },
   prev: { en: "Previous", fa: "قبلی" },
   next: { en: "Next", fa: "بعدی" },
   mentor: {
@@ -39,35 +41,94 @@ const L = {
     fa: "برای مصاحبهٔ سینیور اندروید آماده می‌شوید؟ مصاحبهٔ آزمایشی به فارسی و انگلیسی برگزار می‌کنم.",
   },
   mentorCta: { en: "Get in touch", fa: "در تماس باشیم" },
+  archiveNote: {
+    en: "This is the 2025 PDF archive. Prefer the rebuilt 2026 web notes?",
+    fa: "این آرشیو PDF نسخهٔ ۲۰۲۵ است. نسخهٔ بازسازی‌شدهٔ ۲۰۲۶ را می‌خواهید؟",
+  },
+  go2026: { en: "Open 2026 edition", fa: "رفتن به نسخهٔ ۲۰۲۶" },
 };
+const editionLabel = edition === "2026" ? L.edition2026 : L.edition2025;
 const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
 ---
 
-<Base lang={lang} path={`/challenge/${slug}/`} title={heading} description={day.description} image={day.cover}>
-  <article class="section container layout">
+<Base lang={lang} path={`${base}${slug}/`} title={heading} description={day.description} image={day.cover}>
+  <article class="section container layout" class:list={[{ web: edition === "2026" }]}>
     <div class="text">
-      <a class="back" href={href("/challenge/", lang)}>{t(L.back, lang)}</a>
-      <p class="eyebrow">{t(L.day, lang)} {num(day.n, lang)} / {num(30, lang)}{lang === "fa" ? "، " : " · "}{t(L.edition, lang)}</p>
+      <a class="back" href={href(base, lang)}>{t(L.back, lang)}</a>
+      <p class="eyebrow">
+        {t(L.day, lang)} {num(day.n, lang)} / {num(30, lang)}{lang === "fa" ? "، " : " · "}{t(editionLabel, lang)}
+      </p>
       <h1>{day.title}</h1>
-      {lang === "fa" && <p class="en-title ltr">{day.titleEn}</p>}
+      {lang === "fa" && edition === "2025" && <p class="en-title ltr">{day.titleEn}</p>}
       <p class="lead">{day.description}</p>
-      <h2>{t(L.levelsT, lang)}</h2>
-      <p class="muted">{t(L.levels, lang)}</p>
-      <p class="muted">{t(L.how, lang)}</p>
-      {t(L.faNote, lang) && <p class="fa-note">{t(L.faNote, lang)} <a href={links.linkedin} target="_blank" rel="noopener">LinkedIn</a></p>}
-      <div class="btn-row cta">
-        <a class="btn btn-primary" href={day.pdf} target="_blank" rel="noopener">{t(L.open, lang)}</a>
-      </div>
-      <p class="muted meta">{num(day.slides, lang)} {t(L.slides, lang)}</p>
+
+      {
+        edition === "2025" ? (
+          <>
+            <h2>{t(L.levelsT, lang)}</h2>
+            <p class="muted">{t(L.levels, lang)}</p>
+            <p class="muted">{t(L.how, lang)}</p>
+            <p class="fa-note">
+              {t(L.archiveNote, lang)}{" "}
+              <a href={href(`/challenge/${slug}/`, lang)}>{t(L.go2026, lang)}</a>
+            </p>
+            <div class="btn-row cta">
+              <a class="btn btn-primary" href={day.pdf} target="_blank" rel="noopener">
+                {t(L.open, lang)}
+              </a>
+            </div>
+            <p class="muted meta">
+              {num(day.slides, lang)} {t(L.slides, lang)}
+            </p>
+          </>
+        ) : (
+          <p class="muted how">{t(L.how, lang)}</p>
+        )
+      }
+
+      {
+        edition === "2026" && (
+          <div class="notes">
+            {slides2026.map((s) => (
+              <section class:list={["slide", s.kind, s.level && `lvl-${s.level.toLowerCase()}`]}>
+                {s.level && s.kind !== "cover" && <span class="lvl">{s.level}</span>}
+                <div class="slide-body" set:html={s.html} />
+              </section>
+            ))}
+          </div>
+        )
+      }
+
       <nav class="pager">
-        {prev ? <a href={href(`/challenge/${prev.slug}/`, lang)}><small>{t(L.prev, lang)}</small>{prev.title}</a> : <span />}
-        {next ? <a class="next" href={href(`/challenge/${next.slug}/`, lang)}><small>{t(L.next, lang)}</small>{next.title}</a> : <span />}
+        {prev ? (
+          <a href={href(`${base}${prev.slug}/`, lang)}>
+            <small>{t(L.prev, lang)}</small>
+            {prev.title}
+          </a>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <a class="next" href={href(`${base}${next.slug}/`, lang)}>
+            <small>{t(L.next, lang)}</small>
+            {next.title}
+          </a>
+        ) : (
+          <span />
+        )}
       </nav>
     </div>
+
     <aside class="side">
-      <a href={day.pdf} target="_blank" rel="noopener">
-        <img src={day.cover} alt={heading} width="480" height="600" />
-      </a>
+      {
+        edition === "2025" ? (
+          <a href={day.pdf} target="_blank" rel="noopener">
+            <img src={day.cover} alt={heading} width="480" height="600" />
+          </a>
+        ) : (
+          <img src={day.cover} alt={heading} width="480" height="600" />
+        )
+      }
       <div class="card mentor">
         <p>{t(L.mentor, lang)}</p>
         <a class="arrow" href={href("/#contact", lang)}>{t(L.mentorCta, lang)} </a>
@@ -79,9 +140,12 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
 <style>
   .layout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr 280px;
     gap: 3rem;
     align-items: start;
+  }
+  .layout.web {
+    grid-template-columns: minmax(0, 1fr) 240px;
   }
   .back {
     display: block;
@@ -103,6 +167,9 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
   .lead {
     font-size: 1.15rem;
   }
+  .how {
+    margin-top: 1rem;
+  }
   .fa-note {
     font-size: 0.95rem;
     border-inline-start: 3px solid var(--accent);
@@ -118,55 +185,163 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
   .side {
     position: sticky;
     top: 88px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
   }
   .side img {
     width: 100%;
-    height: auto;
-    border-radius: 14px;
+    border-radius: 16px;
     border: 1px solid var(--border);
-    box-shadow: var(--shadow);
   }
   .mentor {
-    padding: 1.25rem;
-    font-size: 0.95rem;
-  }
-  .mentor p {
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
   }
   .pager {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-top: 2.5rem;
-    border-top: 1px solid var(--border);
+    margin-top: 3rem;
     padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
   .pager a {
-    display: flex;
-    flex-direction: column;
-    color: var(--text);
-    font-weight: 600;
-    font-size: 0.95rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 650;
+    line-height: 1.35;
   }
   .pager small {
+    display: block;
     color: var(--muted);
-    font-weight: 400;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
   }
   .pager .next {
     text-align: end;
   }
-  @media (max-width: 860px) {
-    .layout {
+
+  .notes {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .slide {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem 1.35rem;
+    background: var(--card);
+  }
+  .slide.cover {
+    background: linear-gradient(160deg, #ecfdf5, #f8fafc);
+  }
+  .slide.section {
+    background: #0f766e;
+    color: #fff;
+    border-color: #0f766e;
+  }
+  .slide.section :global(h2),
+  .slide.section :global(p),
+  .slide.section :global(li) {
+    color: #fff;
+  }
+  .lvl {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .slide.section .lvl {
+    color: #ccfbf1;
+  }
+  .slide-body :global(h1),
+  .slide-body :global(h2),
+  .slide-body :global(h3) {
+    margin-top: 0;
+  }
+  .slide-body :global(pre) {
+    overflow-x: auto;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 0.85rem;
+  }
+  .slide-body :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .slide-body :global(:not(pre) > code) {
+    background: #ecfdf5;
+    color: #134e4a;
+    padding: 0.1rem 0.35rem;
+    border-radius: 5px;
+    font-size: 0.9em;
+  }
+  .slide-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 0.75rem 0;
+  }
+  .slide-body :global(th),
+  .slide-body :global(td) {
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.55rem;
+    text-align: start;
+  }
+  .slide-body :global(.callout) {
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin: 0.85rem 0;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+  }
+  .slide-body :global(.callout.trap) {
+    border-color: #fcd34d;
+    background: #fffbeb;
+  }
+  .slide-body :global(.callout.tip) {
+    border-color: #6ee7b7;
+    background: #ecfdf5;
+  }
+  .slide-body :global(.callout.followup),
+  .slide-body :global(.callout.new) {
+    border-color: #93c5fd;
+    background: #eff6ff;
+  }
+  .slide-body :global(.callout-title) {
+    font-weight: 750;
+    margin-bottom: 0.35rem;
+  }
+  .slide-body :global(.diagram) {
+    overflow-x: auto;
+  }
+  .slide-body :global(.edition) {
+    display: inline-block;
+    background: #ccfbf1;
+    color: #134e4a;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+  .slide-body :global(.day) {
+    color: var(--accent);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .layout,
+    .layout.web {
       grid-template-columns: 1fr;
     }
     .side {
       position: static;
-    }
-    .side > a:first-child {
-      display: none;
+      order: -1;
+      max-width: 280px;
     }
   }
 </style>

@@ -2,9 +2,9 @@
 import ChallengeDay from "../../../components/ChallengeDay.astro";
 import { getDays } from "../../../lib/challenge";
 export function getStaticPaths() {
-  return getDays("fa").map((d) => ({ params: { day: d.slug } }));
+  return getDays("fa", "2026").map((d) => ({ params: { day: d.slug } }));
 }
 const { day } = Astro.params;
 ---
 
-<ChallengeDay lang="fa" slug={day!} />
+<ChallengeDay lang="fa" slug={day!} edition="2026" />

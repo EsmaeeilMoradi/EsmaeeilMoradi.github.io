@@ -1,40 +1,58 @@
 ---
 import Base from "../layouts/Base.astro";
 import { links, t, href, type Lang } from "../data/site";
-import { getDays, groups, num } from "../lib/challenge";
+import { getDays, groups, num, type Edition } from "../lib/challenge";
 
 interface Props {
   lang: Lang;
+  edition?: Edition;
 }
-const { lang } = Astro.props;
-const days = getDays(lang);
+const { lang, edition = "2026" } = Astro.props;
+const days = getDays(lang, edition);
+const other: Edition = edition === "2026" ? "2025" : "2026";
+const base = edition === "2026" ? "/challenge/" : "/challenge/2025/";
 const L = {
   title: { en: "30-Day Android Interview Challenge", fa: "چالش ۳۰ روزهٔ مصاحبهٔ اندروید" },
-  edition: { en: "2025 Edition · English", fa: "نسخهٔ ۲۰۲۵، انگلیسی" },
-  lead: {
-    en: "Thirty in-depth carousels that take you from the Activity lifecycle to system design. Each day answers interview questions at four levels — Junior, Mid, Senior and Architect — with code and real-world examples.",
-    fa: "سی کاروسل مفصل که شما را از چرخهٔ عمر Activity تا طراحی سیستم می‌برد. هر روز به سؤال‌های مصاحبه در چهار سطح جواب می‌دهد — جونیور، مید، سینیور و آرکیتکت — همراه با کد و مثال واقعی.",
+  edition2026: { en: "2026 Edition · English & Persian", fa: "نسخهٔ ۲۰۲۶ · فارسی و انگلیسی" },
+  edition2025: { en: "2025 Edition · English (archive)", fa: "نسخهٔ ۲۰۲۵ · انگلیسی (آرشیو)" },
+  lead2026: {
+    en: "Thirty rebuilt days from Activity lifecycle to mobile system design. Each day answers interview questions at four levels — Junior, Mid, Senior and Architect — with code, traps and architect notes. Read fully on the web in English or Persian.",
+    fa: "سی روز بازسازی‌شده از چرخهٔ عمر Activity تا طراحی سیستم موبایل. هر روز به سؤال‌های مصاحبه در چهار سطح جواب می‌دهد — جونیور، مید، سینیور و آرکیتکت — همراه با کد، تله‌ها و نکته‌های آرکیتکت. کامل روی وب، به فارسی یا انگلیسی.",
   },
-  note: {
-    en: "The 2026 edition — rebuilt from your feedback, in English and Persian — is being published on LinkedIn right now.",
-    fa: "نسخهٔ ۲۰۲۶ — بازسازی‌شده بر اساس بازخوردهای شما، به فارسی و انگلیسی — همین حالا در لینکدین در حال انتشار است. این نسخه فقط به انگلیسی است.",
+  lead2025: {
+    en: "The original 2025 carousels (PDF). Kept as an archive while the 2026 edition is the default on this site.",
+    fa: "کاروسل‌های اصلی ۲۰۲۵ (PDF). به‌عنوان آرشیو نگه داشته شده؛ نسخهٔ پیش‌فرض سایت ۲۰۲۶ است.",
   },
+  switchTo2025: { en: "Browse the 2025 archive", fa: "مشاهدهٔ آرشیو ۲۰۲۵" },
+  switchTo2026: { en: "Back to 2026 edition", fa: "بازگشت به نسخهٔ ۲۰۲۶" },
   follow: { en: "Follow on LinkedIn", fa: "دنبال کردن در لینکدین" },
   day: { en: "Day", fa: "روز" },
   days: { en: "Days", fa: "روزهای" },
   slides: { en: "slides", fa: "اسلاید" },
+  web: { en: "full web notes", fa: "متن کامل وب" },
 };
+const editionLabel = edition === "2026" ? L.edition2026 : L.edition2025;
+const lead = edition === "2026" ? L.lead2026 : L.lead2025;
 ---
 
-<Base lang={lang} path="/challenge/" title={t(L.title, lang)} description={t(L.lead, lang)} image={days[0].cover}>
+<Base lang={lang} path={base} title={t(L.title, lang)} description={t(lead, lang)} image={days[0].cover}>
   <section class="section container">
     <div class="section-head wide">
-      <span class="eyebrow">{t(L.edition, lang)}</span>
+      <span class="eyebrow">{t(editionLabel, lang)}</span>
       <h1>{t(L.title, lang)}</h1>
-      <p>{t(L.lead, lang)}</p>
+      <p>{t(lead, lang)}</p>
       <p class="note">
-        {t(L.note, lang)}
-        <a href={links.linkedin} target="_blank" rel="noopener" class="arrow">{t(L.follow, lang)} </a>
+        {
+          edition === "2026" ? (
+            <>
+              <a href={href("/challenge/2025/", lang)} class="arrow">{t(L.switchTo2025, lang)} </a>
+              <span class="sep">·</span>
+              <a href={links.linkedin} target="_blank" rel="noopener" class="arrow">{t(L.follow, lang)} </a>
+            </>
+          ) : (
+            <a href={href("/challenge/", lang)} class="arrow">{t(L.switchTo2026, lang)} </a>
+          )
+        }
       </p>
     </div>
 
@@ -42,19 +60,24 @@ const L = {
       groups.map((g) => (
         <section class="group">
           <h2>
-            <span class="range">{t(L.days, lang)} {num(g.from, lang)}–{num(g.to, lang)}</span>
+            <span class="range">
+              {t(L.days, lang)} {num(g.from, lang)}–{num(g.to, lang)}
+            </span>
             {g[lang]}
           </h2>
           <div class="days">
             {days
               .filter((d) => d.n >= g.from && d.n <= g.to)
               .map((d) => (
-                <a class="day" href={href(`/challenge/${d.slug}/`, lang)}>
+                <a class="day" href={href(`${base}${d.slug}/`, lang)}>
                   <span class="thumb">
                     <img src={d.cover} alt="" loading="lazy" width="480" height="600" />
                   </span>
                   <span class="n">
-                    {t(L.day, lang)} {num(d.n, lang)}{lang === "fa" ? "، " : " · "}{num(d.slides, lang)} {t(L.slides, lang)}
+                    {t(L.day, lang)} {num(d.n, lang)}
+                    {edition === "2025"
+                      ? `${lang === "fa" ? "، " : " · "}${num(d.slides, lang)} ${t(L.slides, lang)}`
+                      : `${lang === "fa" ? "، " : " · "}${t(L.web, lang)}`}
                   </span>
                   <span class="title">{d.title}</span>
                 </a>
@@ -78,7 +101,10 @@ const L = {
   .note a {
     display: inline-block;
     font-weight: 600;
-    margin-inline-start: 0.25rem;
+  }
+  .sep {
+    margin-inline: 0.35rem;
+    color: var(--muted);
   }
   .group {
     margin-top: 3rem;
@@ -98,43 +124,44 @@ const L = {
   .days {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 1.25rem;
+    gap: 1rem;
+    margin-top: 1rem;
   }
   .day {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    color: var(--text);
+    gap: 0.45rem;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--card);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .day:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
   .thumb {
     display: block;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    margin-bottom: 0.4rem;
-    background: #a8c6e8;
+    aspect-ratio: 4 / 5;
+    background: #eef5f3;
   }
   .thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 38%;
-    transition: transform 0.2s ease;
-  }
-  .day:hover img {
-    transform: scale(1.04);
-  }
-  .day:hover .title {
-    color: var(--accent);
   }
   .n {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted);
+    padding: 0 0.85rem;
   }
   .title {
-    font-weight: 600;
     font-size: 0.95rem;
-    line-height: 1.4;
+    font-weight: 650;
+    line-height: 1.35;
+    padding: 0 0.85rem 0.95rem;
   }
 </style>
