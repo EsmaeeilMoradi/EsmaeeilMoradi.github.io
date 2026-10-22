@@ -229,10 +229,11 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.25rem 1.35rem;
-    background: var(--card);
+    background: var(--surface);
+    color: var(--text);
   }
   .slide.cover {
-    background: linear-gradient(160deg, #ecfdf5, #f8fafc);
+    background: linear-gradient(160deg, var(--cover-from), var(--cover-to));
   }
   .slide.section {
     background: #0f766e;
@@ -241,7 +242,9 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
   }
   .slide.section :global(h2),
   .slide.section :global(p),
-  .slide.section :global(li) {
+  .slide.section :global(li),
+  .slide.section :global(strong),
+  .slide.section :global(a) {
     color: #fff;
   }
   .lvl {
@@ -260,21 +263,31 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
   .slide-body :global(h2),
   .slide-body :global(h3) {
     margin-top: 0;
+    color: inherit;
   }
   .slide-body :global(pre) {
     overflow-x: auto;
     padding: 0.9rem 1rem;
     border-radius: 10px;
-    background: #0f172a;
-    color: #e2e8f0;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    border: 1px solid var(--border);
     font-size: 0.85rem;
+    line-height: 1.55;
+    -webkit-text-fill-color: var(--code-fg);
   }
-  .slide-body :global(code) {
+  .slide-body :global(pre code),
+  .slide-body :global(pre code *) {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--code-fg) !important;
+    -webkit-text-fill-color: var(--code-fg);
+    background: transparent !important;
   }
   .slide-body :global(:not(pre) > code) {
-    background: #ecfdf5;
-    color: #134e4a;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--inline-code-bg);
+    color: var(--inline-code-fg);
+    -webkit-text-fill-color: var(--inline-code-fg);
     padding: 0.1rem 0.35rem;
     border-radius: 5px;
     font-size: 0.9em;
@@ -296,32 +309,38 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
     padding: 0.85rem 1rem;
     margin: 0.85rem 0;
     border: 1px solid var(--border);
-    background: #f8fafc;
+    background: var(--callout-bg);
+    color: var(--text);
   }
   .slide-body :global(.callout.trap) {
     border-color: #fcd34d;
-    background: #fffbeb;
+    background: var(--callout-trap-bg);
   }
   .slide-body :global(.callout.tip) {
     border-color: #6ee7b7;
-    background: #ecfdf5;
+    background: var(--callout-tip-bg);
   }
   .slide-body :global(.callout.followup),
   .slide-body :global(.callout.new) {
     border-color: #93c5fd;
-    background: #eff6ff;
+    background: var(--callout-info-bg);
   }
   .slide-body :global(.callout-title) {
     font-weight: 750;
     margin-bottom: 0.35rem;
+    color: inherit;
   }
   .slide-body :global(.diagram) {
     overflow-x: auto;
   }
+  .slide-body :global(.diagram pre) {
+    background: var(--code-bg);
+    color: var(--code-fg);
+  }
   .slide-body :global(.edition) {
     display: inline-block;
-    background: #ccfbf1;
-    color: #134e4a;
+    background: var(--accent-soft);
+    color: var(--inline-code-fg);
     font-weight: 700;
     font-size: 0.85rem;
     padding: 0.2rem 0.6rem;
