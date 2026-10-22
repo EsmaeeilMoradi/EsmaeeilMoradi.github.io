@@ -24,6 +24,9 @@ const L = {
   edition2026: { en: "2026 Edition", fa: "نسخهٔ ۲۰۲۶" },
   edition2025: { en: "2025 Edition", fa: "نسخهٔ ۲۰۲۵" },
   open: { en: "Open the carousel (PDF)", fa: "باز کردن کاروسل (PDF)" },
+  download: { en: "Download PDF", fa: "دانلود PDF" },
+  downloadEn: { en: "English PDF", fa: "PDF انگلیسی" },
+  downloadFa: { en: "Persian PDF", fa: "PDF فارسی" },
   slides: { en: "slides · English", fa: "اسلاید، انگلیسی" },
   levelsT: { en: "Inside this day", fa: "در این روز" },
   levels: {
@@ -82,7 +85,25 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
             </p>
           </>
         ) : (
-          <p class="muted how">{t(L.how, lang)}</p>
+          <>
+            <p class="muted how">{t(L.how, lang)}</p>
+            <div class="btn-row cta pdf-row">
+              <a class="btn btn-primary" href={day.pdf} target="_blank" rel="noopener" download>
+                {t(L.download, lang)}
+              </a>
+              {
+                lang === "fa" ? (
+                  <a class="btn btn-ghost" href={day.pdfEn} target="_blank" rel="noopener" download>
+                    {t(L.downloadEn, lang)}
+                  </a>
+                ) : (
+                  <a class="btn btn-ghost" href={day.pdfFa} target="_blank" rel="noopener" download>
+                    {t(L.downloadFa, lang)}
+                  </a>
+                )
+              }
+            </div>
+          </>
         )
       }
 
@@ -120,13 +141,19 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
     </div>
 
     <aside class="side">
+      <a href={day.pdf} target="_blank" rel="noopener">
+        <img src={day.cover} alt={heading} width="480" height="600" />
+      </a>
       {
-        edition === "2025" ? (
-          <a href={day.pdf} target="_blank" rel="noopener">
-            <img src={day.cover} alt={heading} width="480" height="600" />
-          </a>
-        ) : (
-          <img src={day.cover} alt={heading} width="480" height="600" />
+        edition === "2026" && (
+          <div class="pdf-side">
+            <a class="btn btn-primary btn-sm" href={day.pdf} target="_blank" rel="noopener" download>
+              {t(L.download, lang)}
+            </a>
+            <a class="side-alt" href={lang === "fa" ? day.pdfEn : day.pdfFa} target="_blank" rel="noopener" download>
+              {lang === "fa" ? t(L.downloadEn, lang) : t(L.downloadFa, lang)}
+            </a>
+          </div>
         )
       }
       <div class="card mentor">
@@ -194,6 +221,26 @@ const heading = `${t(L.day, lang)} ${num(day.n, lang)} — ${day.title}`;
   .mentor {
     margin-top: 1rem;
     padding: 1rem 1.1rem;
+  }
+  .pdf-row {
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .pdf-side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
+  }
+  .pdf-side .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .side-alt {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
   }
   .pager {
     display: grid;

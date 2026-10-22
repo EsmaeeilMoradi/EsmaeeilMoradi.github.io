@@ -13,6 +13,8 @@ export interface Day {
   description: string;
   slides: number;
   pdf?: string;
+  pdfEn?: string;
+  pdfFa?: string;
   cover: string;
   edition: Edition;
 }
@@ -41,6 +43,8 @@ export function getDays(lang: Lang, edition: Edition = "2026"): Day[] {
 
   return days2026.map((d, i) => {
     const slug = String(i + 1).padStart(2, "0");
+    const pdfEn = `/challenge/2026/pdf/en/day-${slug}.pdf`;
+    const pdfFa = `/challenge/2026/pdf/fa/day-${slug}.pdf`;
     return {
       n: i + 1,
       slug,
@@ -48,6 +52,9 @@ export function getDays(lang: Lang, edition: Edition = "2026"): Day[] {
       titleEn: d.en,
       description: lang === "fa" ? d.dFa : d.dEn,
       slides: 0,
+      pdf: lang === "fa" ? pdfFa : pdfEn,
+      pdfEn,
+      pdfFa,
       cover: `/challenge/2026/covers/${slug}.jpg`,
       edition: "2026" as const,
     };
