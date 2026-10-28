@@ -14,9 +14,16 @@ const description = isFa
   ? "آزمون تعاملی خروجی کد کاتلین — تایمر ۶۰ ثانیه، چندگزینه‌ای، توضیح بعد از هر سؤال."
   : "Interactive Kotlin output quiz — 60s timer, multiple choice, explanation after each question.";
 
+const walkthrough = {
+  src: "/video/kotlin-quiz-walkthrough.mp4",
+  poster: "/video/kotlin-quiz-walkthrough.jpg",
+};
+
 const copy = isFa
   ? {
       lead: `${bank.count} سؤال از پازل‌های مصاحبهٔ اندروید. کد را بخوان، خروجی را انتخاب کن. بعد از پاسخ یا اتمام تایمر، توضیح می‌آید.`,
+      walkthrough: "ویدیوی معرفی",
+      walkthroughCap: "نسخهٔ انگلیسی و فارسی آزمون، با ردگیری خط‌به‌خط کد",
       startAll: "شروع همهٔ سؤال‌ها",
       startSection: "شروع این بخش",
       seconds: "ثانیه",
@@ -52,6 +59,8 @@ const copy = isFa
     }
   : {
       lead: `${bank.count} interview-style Kotlin output puzzles. Read the code, pick the output. After you answer — or time runs out — you get the explanation.`,
+      walkthrough: "Walkthrough",
+      walkthroughCap: "English and Persian quiz demo, with step-by-step code tracing",
       startAll: "Start all questions",
       startSection: "Start this section",
       seconds: "sec",
@@ -106,7 +115,7 @@ const payload = {
 };
 ---
 
-<Base lang={lang} path="/kotlin-quiz/" title={title} description={description}>
+<Base lang={lang} path="/kotlin-quiz/" title={title} description={description} image={walkthrough.poster}>
   <section class="quiz-page container">
     {copy.localNote ? <p class="local-banner">{copy.localNote}</p> : null}
     <header class="quiz-hero">
@@ -114,6 +123,21 @@ const payload = {
       <h1>{title}</h1>
       <p class="lead">{copy.lead}</p>
     </header>
+
+    <figure class="walkthrough">
+      <video
+        src={walkthrough.src}
+        poster={walkthrough.poster}
+        controls
+        playsinline
+        preload="none"
+        title={copy.walkthrough}
+      ></video>
+      <figcaption>
+        <strong>{copy.walkthrough}</strong>
+        <span class="muted"> — {copy.walkthroughCap}</span>
+      </figcaption>
+    </figure>
 
     <script type="application/json" id="kotlin-quiz-data" set:html={JSON.stringify(payload)} />
     <div id="kotlin-quiz"></div>
@@ -152,6 +176,32 @@ const payload = {
     color: var(--muted);
     margin: 0;
     line-height: 1.7;
+  }
+  .walkthrough {
+    margin: 0 0 1.75rem;
+    max-width: 420px;
+  }
+  .walkthrough video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .walkthrough figcaption {
+    margin-top: 0.7rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .walkthrough .muted {
+    color: var(--muted);
+  }
+  @media (max-width: 760px) {
+    .walkthrough {
+      max-width: 320px;
+      margin-inline: auto;
+    }
   }
   :global(#kotlin-quiz .panel) {
     background: var(--card);
