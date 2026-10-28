@@ -148,6 +148,94 @@ function printLineIndices(code) {
     .filter((i) => i >= 0);
 }
 
+const EN_TITLE_FALLBACK = {
+  p01: "property & init order in one class",
+  p02: "parent and child construction",
+  p03: "open function called from parent constructor",
+  p04: "open property overridden during construction",
+  p05: "companion object vs object init timing",
+  p06: "polymorphism, overloads, extensions",
+  p07: "member vs extension with the same name",
+  p08: "super with multiple parents",
+  p09: "getter vs initializer vs lazy",
+  p10: "lateinit",
+  p11: "data class equality, copy, body properties",
+  p12: "== vs === on numbers and strings",
+  p13: "template method and super chain",
+  p14: "combined construction trap",
+  p16: "scope functions return values",
+  p17: "List vs Sequence evaluation order",
+  p18: "return inside a lambda",
+  p19: "try / finally / return",
+  p20: "references, read-only views, arrays",
+  p21: "sealed + when + smart cast",
+  p22: "null-safe chains",
+  p23: "closures capturing a loop variable",
+  p24: "delegation (by) vs override",
+  p25: "reified generics and unsafe casts",
+  p26: "collection operators",
+  p27: "mutating an item inside a HashSet",
+  p28: "launch / async ordering warm-up",
+  p29: "yield",
+  p30: "coroutineScope waits",
+  p31: "sequential vs parallel",
+  p32: "try/catch around launch does not catch",
+  p33: "Job vs SupervisorJob",
+  p34: "exception in async",
+  p35: "cancellation is cooperative",
+  p36: "withContext and the main thread",
+  p37: "Flow is cold",
+  p38: "operator ordering",
+  p39: "StateFlow conflation & distinct",
+  p40: "SharedFlow and replay",
+  p41: "catch and onCompletion",
+  p42: "take cancels upstream",
+  p43: "debounce and flatMapLatest",
+  l01: "LRU Cache",
+  l02: "Retry with exponential backoff",
+  l03: "bounded parallel requests",
+  l04: "thread-safe counter",
+  l05: "short algorithms",
+  l06: "TTL cache with injectable clock",
+  l07: "ViewModel + UiState",
+  l08: "code review: what is wrong?",
+};
+
+/** Build an English title from Persian notes headings (keeps Latin tokens). */
+function toEnglishTitle(titleFa, id) {
+  const num = Number(id.slice(1));
+  const kind = id.startsWith("l") ? "Exercise" : "Puzzle";
+  if (EN_TITLE_FALLBACK[id]) return `${kind} ${num} — ${EN_TITLE_FALLBACK[id]}`;
+
+  let rest = titleFa
+    .replace(/^پازل\s*\d+\s*[—–-]\s*/u, "")
+    .replace(/^تمرین\s*\d+\s*[—–-]\s*/u, "")
+    .trim();
+
+  if (/[A-Za-z]{2,}/.test(rest)) {
+    const cleaned = rest
+      .split(/\s+/)
+      .map((w) => {
+        if (/^[A-Za-z0-9_<>().,:/+*`'-]+$/.test(w)) return w;
+        if (/[A-Za-z]/.test(w)) return w.replace(/[\u0600-\u06FF\u200c]/g, "");
+        return null;
+      })
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (cleaned) return `${kind} ${num} — ${cleaned}`;
+  }
+
+  return `${kind} ${num}`;
+}
+
+function mostlyPersian(text) {
+  const fa = (text.match(/[\u0600-\u06FF]/g) || []).length;
+  const en = (text.match(/[A-Za-z]/g) || []).length;
+  return fa > en;
+}
+
 const questions = raw.map((item, index) => {
   const cat = categoryFor(item.id);
   let titleFa = item.id;
@@ -179,6 +267,11 @@ const questions = raw.map((item, index) => {
   );
 
   const outputLines = item.output.split("\n");
+  const titleEn = toEnglishTitle(titleFa, item.id);
+  const explainEn = mostlyPersian(explainFa)
+    ? "Follow the step-by-step trace on the code to see what each line initializes and prints."
+    : explainFa;
+
   return {
     id: item.id,
     order: index + 1,
@@ -186,14 +279,15 @@ const questions = raw.map((item, index) => {
     categoryFa: categoryLabel[cat].fa,
     categoryEn: categoryLabel[cat].en,
     titleFa,
-    titleEn: titleFa,
+    titleEn,
     code: item.code,
     options,
     answerIndex: options.indexOf(item.output),
     explainFa,
-    explainEn: explainFa,
+    explainEn,
     stepsFa: steps,
-    stepsEn: steps,
+    // English UI uses generated line explanations; keep FA notes steps only for FA.
+    stepsEn: [],
     outputLines,
     printLines: printLineIndices(item.code),
     seconds: 60,
