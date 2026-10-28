@@ -1,0 +1,1976 @@
+{
+  "generatedAt": "2026-10-28T11:58:23.196Z",
+  "count": 50,
+  "questions": [
+    {
+      "id": "l01",
+      "order": 1,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 1 — LRU Cache (محبوب‌ترین سؤال)",
+      "titleEn": "تمرین 1 — LRU Cache (محبوب‌ترین سؤال)",
+      "code": "class LruCache<K, V>(private val capacity: Int) {\n    private val map = object : LinkedHashMap<K, V>(capacity, 0.75f, true) {\n        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, V>?) = size > capacity\n    }\n\n    fun get(key: K): V? = map[key]\n    fun put(key: K, value: V) { map[key] = value }\n    override fun toString() = map.keys.toString()\n}\n\nfun main() {\n    val cache = LruCache<Int, String>(2)\n    cache.put(1, \"one\")\n    cache.put(2, \"two\")\n    cache.get(1)\n    cache.put(3, \"three\")\n    println(cache)\n    println(cache.get(2))\n}",
+      "options": [
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "[icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9, icon10]\nmax concurrent=3\ntime ~400ms",
+        "[1, 3]\nnull",
+        "emit 1\nmap 1\nfilter 10\nemit 2\nmap 2\nfilter 20\ncollect 20\nemit 3\nmap 3\nfilter 30\ncollect 30"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "[1, 3]",
+        "null"
+      ],
+      "printLines": [
+        16,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l02",
+      "order": 2,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 2 — Retry با exponential backoff",
+      "titleEn": "تمرین 2 — Retry با exponential backoff",
+      "code": "class LruCache<K, V>(private val capacity: Int) {\n    private class Node<K, V>(val key: K, var value: V) {\n        var prev: Node<K, V>? = null\n        var next: Node<K, V>? = null\n    }\n\n    private val map = HashMap<K, Node<K, V>>()\n    private var head: Node<K, V>? = null\n    private var tail: Node<K, V>? = null\n\n    fun get(key: K): V? {\n        val node = map[key] ?: return null\n        moveToTail(node)\n        return node.value\n    }\n\n    fun put(key: K, value: V) {\n        map[key]?.let {\n            it.value = value\n            moveToTail(it)\n            return\n        }\n        if (map.size == capacity) {\n            head?.let { remove(it); map.remove(it.key) }\n        }\n        val node = Node(key, value)\n        append(node)\n        map[key] = node\n    }\n\n    private fun moveToTail(node: Node<K, V>) {\n        if (node === tail) return\n        remove(node)\n        append(node)\n    }\n\n    private fun remove(node: Node<K, V>) {\n        val p = node.prev\n        val n = node.next\n        if (p != null) p.next = n else head = n\n        if (n != null) n.prev = p else tail = p\n        node.prev = null\n        node.next = null\n    }\n\n    private fun append(node: Node<K, V>) {\n        node.prev = tail\n        tail?.next = node\n        tail = node\n        if (head == null) head = node\n    }\n\n    override fun toString(): String {\n        val keys = mutableListOf<K>()\n        var cur = head\n        while (cur != null) { keys += cur.key; cur = cur.next }\n        return keys.toString()\n    }\n}\n\nfun main() {\n    val cache = LruCache<Int, String>(2)\n    cache.put(1, \"one\")\n    cache.put(2, \"two\")\n    cache.get(1)\n    cache.put(3, \"three\")\n    println(cache)\n    println(cache.get(2))\n    cache.put(1, \"ONE\")\n    cache.put(4, \"four\")\n    println(cache)\n    println(cache.get(1))\n}",
+      "options": [
+        "true\nfalse\nUser(name=Ali, tags=[a])\n[a, b]\n0\n2",
+        "open Home\nBaseScreen.onCreate before\nScreen.onCreate\nBaseScreen.onCreate after\nScreen.onStart\nHomeScreen.onStart",
+        "[1, 3]\nnull\n[1, 4]\nONE",
+        "member\nextension x2"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "[1, 3]",
+        "null",
+        "[1, 4]",
+        "ONE"
+      ],
+      "printLines": [
+        66,
+        67,
+        70,
+        71
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l03",
+      "order": 3,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 3 — چند درخواست موازی با محدودیت هم‌زمانی",
+      "titleEn": "تمرین 3 — چند درخواست موازی با محدودیت هم‌زمانی",
+      "code": "import kotlinx.coroutines.*\nimport java.io.IOException\n\nsuspend fun <T> retry(\n    times: Int = 3,\n    initialDelayMs: Long = 100,\n    maxDelayMs: Long = 1_000,\n    factor: Double = 2.0,\n    shouldRetry: (Throwable) -> Boolean = { it is IOException },\n    block: suspend (attempt: Int) -> T,\n): T {\n    var delayMs = initialDelayMs\n    repeat(times - 1) { attempt ->\n        try {\n            return block(attempt + 1)\n        } catch (e: CancellationException) {\n            throw e\n        } catch (e: Throwable) {\n            if (!shouldRetry(e)) throw e\n            println(\"attempt ${attempt + 1} failed: ${e.message}, waiting ${delayMs}ms\")\n        }\n        delay(delayMs)\n        delayMs = (delayMs * factor).toLong().coerceAtMost(maxDelayMs)\n    }\n    return block(times)\n}\n\nfun main() = runBlocking {\n    var calls = 0\n    val result = retry(times = 4) { attempt ->\n        calls++\n        if (attempt < 3) throw IOException(\"timeout\")\n        \"data on attempt $attempt\"\n    }\n    println(result)\n    println(\"calls=$calls\")\n\n    try {\n        retry { throw IllegalArgumentException(\"bad request\") }\n    } catch (e: IllegalArgumentException) {\n        println(\"not retried: ${e.message}\")\n    }\n}",
+      "options": [
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "show ok\nnot found\nerror 500\nspinner\nLoading",
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b",
+        "attempt 1 failed: timeout, waiting 100ms\nattempt 2 failed: timeout, waiting 200ms\ndata on attempt 3\ncalls=3\nnot retried: bad request"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "attempt 1 failed: timeout, waiting 100ms",
+        "attempt 2 failed: timeout, waiting 200ms",
+        "data on attempt 3",
+        "calls=3",
+        "not retried: bad request"
+      ],
+      "printLines": [
+        19,
+        34,
+        35,
+        40
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l04",
+      "order": 4,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 4 — شمارندهٔ thread-safe (race condition)",
+      "titleEn": "تمرین 4 — شمارندهٔ thread-safe (race condition)",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.sync.Semaphore\nimport kotlinx.coroutines.sync.withPermit\nimport java.util.concurrent.atomic.AtomicInteger\nimport kotlin.system.measureTimeMillis\n\nval running = AtomicInteger(0)\nvar maxSeen = 0\n\nsuspend fun download(id: Int): String {\n    val now = running.incrementAndGet()\n    synchronized(running) { if (now > maxSeen) maxSeen = now }\n    delay(100)\n    running.decrementAndGet()\n    return \"icon$id\"\n}\n\nsuspend fun downloadAll(ids: List<Int>, concurrency: Int): List<String> = coroutineScope {\n    val semaphore = Semaphore(concurrency)\n    ids.map { id ->\n        async { semaphore.withPermit { download(id) } }\n    }.awaitAll()\n}\n\nfun main() = runBlocking {\n    val time = measureTimeMillis {\n        val icons = downloadAll((1..10).toList(), concurrency = 3)\n        println(icons)\n    }\n    println(\"max concurrent=$maxSeen\")\n    println(\"time ~${time / 100 * 100}ms\")\n}",
+      "options": [
+        "not yet\ncrash: UninitializedPropertyAccessException\nHome",
+        "[icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9, icon10]\nmax concurrent=3\ntime ~400ms",
+        "got hello\nlate subscriber got second",
+        "1\n5\n3\n4\n6\n2"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "[icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9, icon10]",
+        "max concurrent=3",
+        "time ~400ms"
+      ],
+      "printLines": [
+        27,
+        29,
+        30
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l05",
+      "order": 5,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 5 — الگوریتم‌های کوتاه (5 دقیقه‌ای)",
+      "titleEn": "تمرین 5 — الگوریتم‌های کوتاه (5 دقیقه‌ای)",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.sync.Mutex\nimport kotlinx.coroutines.sync.withLock\nimport java.util.concurrent.atomic.AtomicInteger\n\nsuspend fun massiveRun(action: suspend () -> Unit) = coroutineScope {\n    repeat(100) {\n        launch(Dispatchers.Default) { repeat(1000) { action() } }\n    }\n}\n\nfun main() = runBlocking {\n    var unsafe = 0\n    massiveRun { unsafe++ }\n    println(\"unsafe == 100000? ${unsafe == 100000}\")\n\n    val atomic = AtomicInteger()\n    massiveRun { atomic.incrementAndGet() }\n    println(\"atomic=${atomic.get()}\")\n\n    val mutex = Mutex()\n    var locked = 0\n    massiveRun { mutex.withLock { locked++ } }\n    println(\"mutex=$locked\")\n}",
+      "options": [
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "emit 1\nmap 1\nfilter 10\nemit 2\nmap 2\nfilter 20\ncollect 20\nemit 3\nmap 3\nfilter 30\ncollect 30",
+        "unsafe == 100000? false\natomic=100000\nmutex=100000",
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "unsafe == 100000? false",
+        "atomic=100000",
+        "mutex=100000"
+      ],
+      "printLines": [
+        14,
+        18,
+        23
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l06",
+      "order": 6,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 6 — کش با انقضا (TTL) و ساعت قابل‌تست",
+      "titleEn": "تمرین 6 — کش با انقضا (TTL) و ساعت قابل‌تست",
+      "code": "// 1) Valid parentheses: \"({[]})\" -> true, \"(]\" -> false\nfun isValid(s: String): Boolean {\n    val pairs = mapOf(')' to '(', ']' to '[', '}' to '{')\n    val stack = ArrayDeque<Char>()\n    for (c in s) {\n        when (c) {\n            '(', '[', '{' -> stack.addLast(c)\n            ')', ']', '}' -> if (stack.removeLastOrNull() != pairs[c]) return false\n        }\n    }\n    return stack.isEmpty()\n}\n\n// 2) Two Sum: indices of two numbers adding up to target, O(n)\nfun twoSum(nums: IntArray, target: Int): Pair<Int, Int>? {\n    val seen = HashMap<Int, Int>()\n    nums.forEachIndexed { i, n ->\n        seen[target - n]?.let { return it to i }\n        seen[n] = i\n    }\n    return null\n}\n\n// 3) First non-repeating character\nfun firstUnique(s: String): Char? {\n    val counts = s.groupingBy { it }.eachCount()\n    return s.firstOrNull { counts[it] == 1 }\n}\n\n// 4) Group anagrams\nfun groupAnagrams(words: List<String>): List<List<String>> =\n    words.groupBy { it.toCharArray().sorted().joinToString(\"\") }.values.toList()\n\n// 5) Reverse the words of a sentence\nfun reverseWords(s: String) = s.trim().split(Regex(\"\\\\s+\")).reversed().joinToString(\" \")\n\n// 6) Fibonacci, iterative\nfun fib(n: Int): Long {\n    var a = 0L\n    var b = 1L\n    repeat(n) { val t = a + b; a = b; b = t }\n    return a\n}\n\nfun main() {\n    println(listOf(\"({[]})\", \"(]\", \"((\", \"\").map(::isValid))\n    println(twoSum(intArrayOf(2, 7, 11, 15), 9))\n    println(firstUnique(\"bazaarb\"))\n    println(groupAnagrams(listOf(\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\")))\n    println(reverseWords(\"  hello   cafe bazaar \"))\n    println((0..10).map(::fib))\n    println(fib(90))\n}",
+      "options": [
+        "ABCD",
+        "[true, false, false, true]\n(0, 1)\nz\n[[eat, tea, ate], [tan, nat], [bat]]\nbazaar cafe hello\n[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]\n2880067194370816120",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "[1, 3]\nnull"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "[true, false, false, true]",
+        "(0, 1)",
+        "z",
+        "[[eat, tea, ate], [tan, nat], [bat]]",
+        "bazaar cafe hello",
+        "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]",
+        "2880067194370816120"
+      ],
+      "printLines": [
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l07",
+      "order": 7,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 7 — ViewModel با UiState (سبک اندرویدی)",
+      "titleEn": "تمرین 7 — ViewModel با UiState (سبک اندرویدی)",
+      "code": "fun interface Clock { fun now(): Long }\n\nclass TtlCache<K, V>(private val ttlMs: Long, private val clock: Clock = Clock { System.currentTimeMillis() }) {\n    private data class Entry<V>(val value: V, val expiresAt: Long)\n    private val map = HashMap<K, Entry<V>>()\n\n    @Synchronized\n    fun get(key: K): V? {\n        val e = map[key] ?: return null\n        if (clock.now() >= e.expiresAt) {\n            map.remove(key)\n            return null\n        }\n        return e.value\n    }\n\n    @Synchronized\n    fun put(key: K, value: V) {\n        map[key] = Entry(value, clock.now() + ttlMs)\n    }\n}\n\nclass FakeClock(var time: Long = 0) : Clock {\n    override fun now() = time\n}\n\nfun main() {\n    val clock = FakeClock()\n    val cache = TtlCache<String, String>(ttlMs = 5 * 60_000, clock = clock)\n    cache.put(\"home\", \"feed-v1\")\n    println(cache.get(\"home\"))\n    clock.time += 4 * 60_000\n    println(cache.get(\"home\"))\n    clock.time += 60_000\n    println(cache.get(\"home\"))\n}",
+      "options": [
+        "Hello Base\nWrapper",
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "true\nfalse\nUser(name=Ali, tags=[a])\n[a, b]\n0\n2",
+        "feed-v1\nfeed-v1\nnull"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "feed-v1",
+        "feed-v1",
+        "null"
+      ],
+      "printLines": [
+        30,
+        32,
+        34
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "l08",
+      "order": 8,
+      "category": "coding",
+      "categoryFa": "تمرین کدنویسی",
+      "categoryEn": "Coding drills",
+      "titleFa": "تمرین 8 — سؤال‌های «این کد چه مشکلی دارد؟» (Code Review)",
+      "titleEn": "تمرین 8 — سؤال‌های «این کد چه مشکلی دارد؟» (Code Review)",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\ndata class AppInfo(val name: String, val rating: Double)\n\nsealed interface DetailUi {\n    data object Loading : DetailUi\n    data class Success(val app: AppInfo) : DetailUi\n    data class Error(val message: String) : DetailUi\n}\n\ninterface AppRepository { suspend fun getApp(id: String): AppInfo }\n\nclass FakeRepo : AppRepository {\n    var failNext = true\n    override suspend fun getApp(id: String): AppInfo {\n        delay(50)\n        if (failNext) { failNext = false; throw java.io.IOException(\"no internet\") }\n        return AppInfo(\"Nabz\", 4.8)\n    }\n}\n\nclass AppDetailViewModel(\n    private val id: String,\n    private val repo: AppRepository,\n    private val scope: CoroutineScope,\n) {\n    private val _state = MutableStateFlow<DetailUi>(DetailUi.Loading)\n    val state: StateFlow<DetailUi> = _state.asStateFlow()\n\n    private var job: Job? = null\n\n    init { load() }\n\n    fun retry() = load()\n\n    private fun load() {\n        job?.cancel()\n        job = scope.launch {\n            _state.value = DetailUi.Loading\n            _state.value = try {\n                DetailUi.Success(repo.getApp(id))\n            } catch (e: CancellationException) {\n                throw e\n            } catch (e: Exception) {\n                DetailUi.Error(e.message ?: \"unknown\")\n            }\n        }\n    }\n}\n\nfun main() = runBlocking {\n    val vm = AppDetailViewModel(\"ir.azmaapp.nabz\", FakeRepo(), this)\n    val collector = launch { vm.state.collect { println(it) } }\n    delay(100)\n    vm.retry()\n    delay(100)\n    collector.cancel()\n    coroutineContext.cancelChildren()\n}",
+      "options": [
+        "task from coroutineScope\ntask from runBlocking\ntask from nested launch\ncoroutineScope is over",
+        "created\nflow started\nA got 1\nA got 2\nflow started\nB got 1\nB got 2",
+        "Loading\nError(message=no internet)\nLoading\nSuccess(app=AppInfo(name=Nabz, rating=4.8))",
+        "checked 1\nchecked 3\n4\nitem 1\nitem 2\nitem 4\ndone"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«قبل از طراحی، چند سؤال دارم: کاربران روی چه نسخه‌های اندرویدی‌اند؟ offline لازم است؟ چه حجمی؟ real-time لازم است یا polling کافی است؟ اولویت با سرعت توسعه است یا مقیاس؟»",
+      "explainEn": "«قبل از طراحی، چند سؤال دارم: کاربران روی چه نسخه‌های اندرویدی‌اند؟ offline لازم است؟ چه حجمی؟ real-time لازم است یا polling کافی است؟ اولویت با سرعت توسعه است یا مقیاس؟»",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "Loading",
+        "Error(message=no internet)",
+        "Loading",
+        "Success(app=AppInfo(name=Nabz, rating=4.8))"
+      ],
+      "printLines": [
+        53
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p01",
+      "order": 9,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 1 — ترتیب پراپرتی و init در یک کلاس",
+      "titleEn": "پازل 1 — ترتیب پراپرتی و init در یک کلاس",
+      "code": "class Box(name: String) {\n    val a = \"a=$name\".also { println(\"prop a\") }\n\n    init { println(\"init 1: $a\") }\n\n    val b = \"b\".also { println(\"prop b\") }\n\n    init { println(\"init 2: $b\") }\n\n    constructor() : this(\"default\") {\n        println(\"secondary\")\n    }\n}\n\nfun main() {\n    Box()\n}",
+      "options": [
+        "1\n5\n3\n4\n6\n2",
+        "got hello\nlate subscriber got second",
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "Loading\nError(message=no internet)\nLoading\nSuccess(app=AppInfo(name=Nabz, rating=4.8))"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«در کاتلین، مقداردهی پراپرتی‌ها و بلوک‌های init همه جزو سازندهٔ اصلی‌اند و به ترتیب نوشته‌شدن اجرا می‌شوند. سازندهٔ ثانویه اول باید به سازندهٔ اصلی delegate کند، پس بدنه‌اش همیشه آخر اجرا می‌شود.»",
+      "explainEn": "«در کاتلین، مقداردهی پراپرتی‌ها و بلوک‌های init همه جزو سازندهٔ اصلی‌اند و به ترتیب نوشته‌شدن اجرا می‌شوند. سازندهٔ ثانویه اول باید به سازندهٔ اصلی delegate کند، پس بدنه‌اش همیشه آخر اجرا می‌شود.»",
+      "stepsFa": [
+        "Box() بدون آرگومان است، پس سازندهٔ ثانویه انتخاب می‌شود. ولی سازندهٔ ثانویه اول باید this(\"default\") را صدا بزند، یعنی سازندهٔ اصلی.",
+        "سازندهٔ اصلی یعنی کل بدنهٔ کلاس، از بالا به پایین: a، بعد init 1، بعد b، بعد init 2.",
+        "بعد از تمام شدن سازندهٔ اصلی، بدنهٔ سازندهٔ ثانویه اجرا می‌شود: secondary."
+      ],
+      "stepsEn": [
+        "Box() بدون آرگومان است، پس سازندهٔ ثانویه انتخاب می‌شود. ولی سازندهٔ ثانویه اول باید this(\"default\") را صدا بزند، یعنی سازندهٔ اصلی.",
+        "سازندهٔ اصلی یعنی کل بدنهٔ کلاس، از بالا به پایین: a، بعد init 1، بعد b، بعد init 2.",
+        "بعد از تمام شدن سازندهٔ اصلی، بدنهٔ سازندهٔ ثانویه اجرا می‌شود: secondary."
+      ],
+      "outputLines": [
+        "prop a",
+        "init 1: a=default",
+        "prop b",
+        "init 2: b",
+        "secondary"
+      ],
+      "printLines": [
+        1,
+        3,
+        5,
+        7,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p02",
+      "order": 10,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 2 — والد و فرزند",
+      "titleEn": "پازل 2 — والد و فرزند",
+      "code": "open class Parent(val name: String) {\n    init { println(\"Parent init: $name\") }\n    val p = \"p\".also { println(\"Parent prop\") }\n}\n\nclass Child(name: String) : Parent(name.uppercase().also { println(\"arg evaluated\") }) {\n    val c = \"c\".also { println(\"Child prop\") }\n    init { println(\"Child init\") }\n}\n\nfun main() {\n    println(\"start\")\n    Child(\"ali\")\n    println(\"end\")\n}",
+      "options": [
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue",
+        "start\narg evaluated\nParent init: ALI\nParent prop\nChild prop\nChild init\nend",
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue"
+      ],
+      "answerIndex": 1,
+      "explainFa": "عبارت داخل : Parent(...) قبل از بدنهٔ والد اجرا می‌شود. معادل جاوایش این است که آرگومان‌های super(...) اول حساب می‌شوند.",
+      "explainEn": "عبارت داخل : Parent(...) قبل از بدنهٔ والد اجرا می‌شود. معادل جاوایش این است که آرگومان‌های super(...) اول حساب می‌شوند.",
+      "stepsFa": [
+        "start چاپ می‌شود.",
+        "Child(\"ali\"): قبل از هر چیز، آرگومانی که به Parent داده می‌شود ارزیابی می‌شود: \"ali\".uppercase()، پس arg evaluated.",
+        "حالا بدنهٔ Parent با name = \"ALI\": اول init، بعد پراپرتی p (چون اول نوشته شده‌اند).",
+        "بعد بدنهٔ Child: c، بعد init.",
+        "end."
+      ],
+      "stepsEn": [
+        "start چاپ می‌شود.",
+        "Child(\"ali\"): قبل از هر چیز، آرگومانی که به Parent داده می‌شود ارزیابی می‌شود: \"ali\".uppercase()، پس arg evaluated.",
+        "حالا بدنهٔ Parent با name = \"ALI\": اول init، بعد پراپرتی p (چون اول نوشته شده‌اند).",
+        "بعد بدنهٔ Child: c، بعد init.",
+        "end."
+      ],
+      "outputLines": [
+        "start",
+        "arg evaluated",
+        "Parent init: ALI",
+        "Parent prop",
+        "Child prop",
+        "Child init",
+        "end"
+      ],
+      "printLines": [
+        1,
+        2,
+        5,
+        6,
+        7,
+        11,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p03",
+      "order": 11,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 3 — کلاسیک‌ترین تلهٔ مرور: تابع open در سازندهٔ والد",
+      "titleEn": "پازل 3 — کلاسیک‌ترین تلهٔ مرور: تابع open در سازندهٔ والد",
+      "code": "open class Base {\n    init {\n        println(\"Base init\")\n        show()\n    }\n\n    open fun show() = println(\"Base.show\")\n}\n\nclass Derived : Base() {\n    val message = \"Hello\"\n    val count = 5\n\n    init { println(\"Derived init\") }\n\n    override fun show() = println(\"Derived.show message=$message count=$count\")\n}\n\nfun main() {\n    Derived().show()\n}",
+      "options": [
+        "1\n5\n3\n4\n6\n2",
+        "unsafe == 100000? false\natomic=100000\nmutex=100000",
+        "1 1\n2 3\n4 4\n4",
+        "Base init\nDerived.show message=null count=0\nDerived init\nDerived.show message=Hello count=5"
+      ],
+      "answerIndex": 3,
+      "explainFa": "«تابع open در سازندهٔ والد به نسخهٔ فرزند dispatch می‌شه، ولی چون بدنهٔ فرزند هنوز اجرا نشده، فیلدهاش مقدار پیش‌فرض JVM رو دارن؛ null و صفر. برای همین صدا زدن تابع open در سازنده anti-pattern هست و کامپایلر هشدار می‌ده. راه‌حل: تابع رو final کنیم یا مقداردهی رو lazy کنیم یا از factory استفاده کنیم.»",
+      "explainEn": "«تابع open در سازندهٔ والد به نسخهٔ فرزند dispatch می‌شه، ولی چون بدنهٔ فرزند هنوز اجرا نشده، فیلدهاش مقدار پیش‌فرض JVM رو دارن؛ null و صفر. برای همین صدا زدن تابع open در سازنده anti-pattern هست و کامپایلر هشدار می‌ده. راه‌حل: تابع رو final کنیم یا مقداردهی رو lazy کنیم یا از factory استفاده کنیم.»",
+      "stepsFa": [
+        "Derived() ساخته می‌شود؛ اول بدنهٔ Base. چاپ Base init.",
+        "Base تابع show() را صدا می‌زند. چون show در Base از نوع open است و شیء واقعاً از نوع Derived است، dispatch مجازی نسخهٔ Derived.show را اجرا می‌کند.",
+        "ولی بدنهٔ Derived هنوز اجرا نشده! پس message هنوز null است (با اینکه نوعش String غیرنال است) و count هنوز 0 است.",
+        "بعد بدنهٔ Derived: message = \"Hello\" و count = 5 و Derived init.",
+        "حالا main روی شیء کامل show() را صدا می‌زند: مقادیر درست چاپ می‌شوند."
+      ],
+      "stepsEn": [
+        "Derived() ساخته می‌شود؛ اول بدنهٔ Base. چاپ Base init.",
+        "Base تابع show() را صدا می‌زند. چون show در Base از نوع open است و شیء واقعاً از نوع Derived است، dispatch مجازی نسخهٔ Derived.show را اجرا می‌کند.",
+        "ولی بدنهٔ Derived هنوز اجرا نشده! پس message هنوز null است (با اینکه نوعش String غیرنال است) و count هنوز 0 است.",
+        "بعد بدنهٔ Derived: message = \"Hello\" و count = 5 و Derived init.",
+        "حالا main روی شیء کامل show() را صدا می‌زند: مقادیر درست چاپ می‌شوند."
+      ],
+      "outputLines": [
+        "Base init",
+        "Derived.show message=null count=0",
+        "Derived init",
+        "Derived.show message=Hello count=5"
+      ],
+      "printLines": [
+        2,
+        6,
+        13,
+        15
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p04",
+      "order": 12,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 4 — پراپرتی open که override شده",
+      "titleEn": "پازل 4 — پراپرتی open که override شده",
+      "code": "open class Animal {\n    open val sound: String = \"...\"\n    init { println(\"Animal: $sound\") }\n}\n\nclass Dog : Animal() {\n    override val sound = \"Woof\"\n}\n\nclass Cat : Animal() {\n    override val sound get() = \"Meow\"\n}\n\nfun main() {\n    Dog()\n    Cat()\n    println(Dog().sound)\n}",
+      "options": [
+        "Hello Base\nWrapper",
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "attempt 1 failed: timeout, waiting 100ms\nattempt 2 failed: timeout, waiting 200ms\ndata on attempt 3\ncalls=3\nnot retried: bad request"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«پراپرتی override شده» یعنی getter override شده. فرق override val x = ... (فیلد دارد و وابسته به ترتیب ساخت است) با override val x get() = ... (فیلد ندارد) دقیقاً همین‌جا معلوم می‌شود.",
+      "explainEn": "«پراپرتی override شده» یعنی getter override شده. فرق override val x = ... (فیلد دارد و وابسته به ترتیب ساخت است) با override val x get() = ... (فیلد ندارد) دقیقاً همین‌جا معلوم می‌شود.",
+      "stepsFa": [
+        "وقتی یک پراپرتی را override می‌کنی، در واقع getter آن را override کرده‌ای. پس sound داخل init والد، getter فرزند را صدا می‌زند.",
+        "Dog: getter فرزند فیلدِ خودِ Dog را برمی‌گرداند که هنوز مقداردهی نشده، پس null. نکته: فیلد \"...\" والد مقداردهی شده، ولی کسی آن را نمی‌خواند.",
+        "Cat: getter فرزند فیلد ندارد و هر بار \"Meow\" را محاسبه می‌کند، پس به ترتیب ساخت وابسته نیست و درست کار می‌کند.",
+        "خط آخر روی شیء کامل است: Woof."
+      ],
+      "stepsEn": [
+        "وقتی یک پراپرتی را override می‌کنی، در واقع getter آن را override کرده‌ای. پس sound داخل init والد، getter فرزند را صدا می‌زند.",
+        "Dog: getter فرزند فیلدِ خودِ Dog را برمی‌گرداند که هنوز مقداردهی نشده، پس null. نکته: فیلد \"...\" والد مقداردهی شده، ولی کسی آن را نمی‌خواند.",
+        "Cat: getter فرزند فیلد ندارد و هر بار \"Meow\" را محاسبه می‌کند، پس به ترتیب ساخت وابسته نیست و درست کار می‌کند.",
+        "خط آخر روی شیء کامل است: Woof."
+      ],
+      "outputLines": [
+        "Animal: null",
+        "Animal: Meow",
+        "Animal: null",
+        "Woof"
+      ],
+      "printLines": [
+        2,
+        16
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p05",
+      "order": 13,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 5 — companion object و object کی مقداردهی می‌شوند؟",
+      "titleEn": "پازل 5 — companion object و object کی مقداردهی می‌شوند؟",
+      "code": "class Config {\n    companion object {\n        init { println(\"companion init\") }\n        val version = \"1.0\".also { println(\"version set\") }\n        fun hello() = println(\"hello\")\n    }\n\n    init { println(\"instance init\") }\n}\n\nobject Logger {\n    init { println(\"Logger init\") }\n    fun log(m: String) = println(\"log: $m\")\n}\n\nfun main() {\n    println(\"main start\")\n    Config()\n    Config()\n    Config.hello()\n    Logger.log(\"a\")\n    Logger.log(\"b\")\n}",
+      "options": [
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b",
+        "Hello Base\nWrapper"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«object و companion در اولین دسترسی، فقط یک بار و به‌صورت thread-safe مقداردهی می‌شن، چون روی class initialization خود JVM سوارن. برای همین object ساده‌ترین singleton امن در کاتلینه.»",
+      "explainEn": "«object و companion در اولین دسترسی، فقط یک بار و به‌صورت thread-safe مقداردهی می‌شن، چون روی class initialization خود JVM سوارن. برای همین object ساده‌ترین singleton امن در کاتلینه.»",
+      "stepsFa": [
+        "هیچ‌چیز قبل از main start چاپ نمی‌شود. companion و object تنبل مقداردهی می‌شوند، یعنی در اولین استفاده، نه موقع شروع برنامه.",
+        "اولین Config() کلاس Config را در JVM بارگذاری و مقداردهی می‌کند (static initializer). companion جزو بخش static کلاس است، پس companion init و version set همین الان و فقط یک بار اجرا می‌شوند، قبل از instance init.",
+        "Config() دوم فقط instance init دارد.",
+        "Logger در اولین دسترسی (Logger.log(\"a\")) مقداردهی می‌شود و بعد دیگر نه."
+      ],
+      "stepsEn": [
+        "هیچ‌چیز قبل از main start چاپ نمی‌شود. companion و object تنبل مقداردهی می‌شوند، یعنی در اولین استفاده، نه موقع شروع برنامه.",
+        "اولین Config() کلاس Config را در JVM بارگذاری و مقداردهی می‌کند (static initializer). companion جزو بخش static کلاس است، پس companion init و version set همین الان و فقط یک بار اجرا می‌شوند، قبل از instance init.",
+        "Config() دوم فقط instance init دارد.",
+        "Logger در اولین دسترسی (Logger.log(\"a\")) مقداردهی می‌شود و بعد دیگر نه."
+      ],
+      "outputLines": [
+        "main start",
+        "companion init",
+        "version set",
+        "instance init",
+        "instance init",
+        "hello",
+        "Logger init",
+        "log: a",
+        "log: b"
+      ],
+      "printLines": [
+        2,
+        3,
+        4,
+        7,
+        11,
+        12,
+        16
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p06",
+      "order": 14,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 6 — چندریختی، overload و اکستنشن",
+      "titleEn": "پازل 6 — چندریختی، overload و اکستنشن",
+      "code": "open class Shape { open fun name() = \"Shape\" }\nclass Circle : Shape() { override fun name() = \"Circle\" }\n\nfun describe(s: Shape) = \"describe(Shape) -> ${s.name()}\"\nfun describe(c: Circle) = \"describe(Circle) -> ${c.name()}\"\n\nfun Shape.tag() = \"Shape.tag\"\nfun Circle.tag() = \"Circle.tag\"\n\nfun main() {\n    val s: Shape = Circle()\n    println(s.name())\n    println(describe(s))\n    println(s.tag())\n    println(Circle().tag())\n}",
+      "options": [
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "Circle\ndescribe(Shape) -> Circle\nShape.tag\nCircle.tag",
+        "Hello Base\nWrapper",
+        "got hello\nlate subscriber got second"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "s.name(): تابع عضو open است و در زمان اجرا بر اساس نوع واقعی شیء انتخاب می‌شود: Circle.",
+        "describe(s): انتخاب overload در زمان کامپایل و بر اساس نوع اعلام‌شدهٔ آرگومان است. نوع s از دید کامپایلر Shape است، پس describe(Shape) انتخاب می‌شود. ولی داخلش s.name() باز مجازی است، پس Circle چاپ می‌شود.",
+        "s.tag(): اکستنشن در واقع یک تابع static است که گیرنده را به‌عنوان پارامتر اول می‌گیرد، پس مثل overload در زمان کامپایل انتخاب می‌شود: Shape.tag.",
+        "Circle().tag(): نوع اعلام‌شده Circle است: Circle.tag."
+      ],
+      "stepsEn": [
+        "s.name(): تابع عضو open است و در زمان اجرا بر اساس نوع واقعی شیء انتخاب می‌شود: Circle.",
+        "describe(s): انتخاب overload در زمان کامپایل و بر اساس نوع اعلام‌شدهٔ آرگومان است. نوع s از دید کامپایلر Shape است، پس describe(Shape) انتخاب می‌شود. ولی داخلش s.name() باز مجازی است، پس Circle چاپ می‌شود.",
+        "s.tag(): اکستنشن در واقع یک تابع static است که گیرنده را به‌عنوان پارامتر اول می‌گیرد، پس مثل overload در زمان کامپایل انتخاب می‌شود: Shape.tag.",
+        "Circle().tag(): نوع اعلام‌شده Circle است: Circle.tag."
+      ],
+      "outputLines": [
+        "Circle",
+        "describe(Shape) -> Circle",
+        "Shape.tag",
+        "Circle.tag"
+      ],
+      "printLines": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p07",
+      "order": 15,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 7 — وقتی عضو و اکستنشن هم‌نام‌اند",
+      "titleEn": "پازل 7 — وقتی عضو و اکستنشن هم‌نام‌اند",
+      "code": "class Printer {\n    fun print() = println(\"member\")\n}\n\nfun Printer.print() = println(\"extension\")\nfun Printer.print(times: Int) = println(\"extension x$times\")\n\nfun main() {\n    val p = Printer()\n    p.print()\n    p.print(2)\n}",
+      "options": [
+        "unsafe == 100000? false\natomic=100000\nmutex=100000",
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "[1, 3]\nnull\n[1, 4]\nONE",
+        "member\nextension x2"
+      ],
+      "answerIndex": 3,
+      "explainFa": "نمی‌توانی با اکستنشن رفتار یک تابع عضو را «override» کنی. اکستنشن فقط چیزی اضافه می‌کند و هیچ‌چیز را جایگزین نمی‌کند.",
+      "explainEn": "نمی‌توانی با اکستنشن رفتار یک تابع عضو را «override» کنی. اکستنشن فقط چیزی اضافه می‌کند و هیچ‌چیز را جایگزین نمی‌کند.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "member",
+        "extension x2"
+      ],
+      "printLines": [
+        1,
+        4,
+        5,
+        9,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p08",
+      "order": 16,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 8 — super با چند والد",
+      "titleEn": "پازل 8 — super با چند والد",
+      "code": "interface A { fun hi() = \"A\" }\ninterface B { fun hi() = \"B\" }\nopen class C { open fun hi() = \"C\" }\n\nclass D : C(), A, B {\n    override fun hi() = super<A>.hi() + super<B>.hi() + super<C>.hi() + \"D\"\n}\n\nfun main() {\n    println(D().hi())\n}",
+      "options": [
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "ABCD",
+        "created\nflow started\nA got 1\nA got 2\nflow started\nB got 1\nB got 2",
+        "[1, 3]\nnull"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "ABCD"
+      ],
+      "printLines": [
+        9
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p09",
+      "order": 17,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 9 — getter در برابر مقداردهی اولیه در برابر lazy",
+      "titleEn": "پازل 9 — getter در برابر مقداردهی اولیه در برابر lazy",
+      "code": "var counter = 0\n\nclass Demo {\n    val a = ++counter\n    val b get() = ++counter\n    val c by lazy { ++counter }\n}\n\nfun main() {\n    val d = Demo()\n    println(\"${d.a} ${d.a}\")\n    println(\"${d.b} ${d.b}\")\n    println(\"${d.c} ${d.c}\")\n    println(counter)\n}",
+      "options": [
+        "true\nfalse\nUser(name=Ali, tags=[a])\n[a, b]\n0\n2",
+        "--\nA companion\nA init x=10\nB.log label=null\nB init label=null\nC init label=C-label\nx=10\nB.log label=C-label",
+        "1 1\n2 3\n4 4\n4",
+        "feed-v1\nfeed-v1\nnull"
+      ],
+      "answerIndex": 2,
+      "explainFa": "val یعنی «فقط خواندنی از بیرون»، نه «مقدار ثابت». یک val با getter سفارشی می‌تواند هر بار مقدار متفاوتی برگرداند.",
+      "explainEn": "val یعنی «فقط خواندنی از بیرون»، نه «مقدار ثابت». یک val با getter سفارشی می‌تواند هر بار مقدار متفاوتی برگرداند.",
+      "stepsFa": [
+        "ساختن Demo(): فقط a مقداردهی می‌شود (counter = 1). b فیلد ندارد و c تنبل است.",
+        "d.a دو بار: فیلد است، پس 1 1.",
+        "d.b دو بار: getter هر بار اجرا می‌شود: 2 3.",
+        "d.c دو بار: بار اول lambda اجرا می‌شود (4) و نتیجه کش می‌شود؛ بار دوم همان 4.",
+        "counter = 4."
+      ],
+      "stepsEn": [
+        "ساختن Demo(): فقط a مقداردهی می‌شود (counter = 1). b فیلد ندارد و c تنبل است.",
+        "d.a دو بار: فیلد است، پس 1 1.",
+        "d.b دو بار: getter هر بار اجرا می‌شود: 2 3.",
+        "d.c دو بار: بار اول lambda اجرا می‌شود (4) و نتیجه کش می‌شود؛ بار دوم همان 4.",
+        "counter = 4."
+      ],
+      "outputLines": [
+        "1 1",
+        "2 3",
+        "4 4",
+        "4"
+      ],
+      "printLines": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p10",
+      "order": 18,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 10 — lateinit",
+      "titleEn": "پازل 10 — lateinit",
+      "code": "class Screen {\n    lateinit var title: String\n\n    fun show() {\n        if (::title.isInitialized) println(title) else println(\"not yet\")\n    }\n}\n\nfun main() {\n    val s = Screen()\n    s.show()\n    try {\n        println(s.title.length)\n    } catch (e: UninitializedPropertyAccessException) {\n        println(\"crash: ${e::class.simpleName}\")\n    }\n    s.title = \"Home\"\n    s.show()\n}",
+      "options": [
+        "false\nfalse\n1\n[Item(id=2)]",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "not yet\ncrash: UninitializedPropertyAccessException\nHome",
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "not yet",
+        "crash: UninitializedPropertyAccessException",
+        "Home"
+      ],
+      "printLines": [
+        4,
+        12,
+        14
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p11",
+      "order": 19,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 11 — data class: تساوی، copy و پراپرتی داخل بدنه",
+      "titleEn": "پازل 11 — data class: تساوی، copy و پراپرتی داخل بدنه",
+      "code": "data class User(val name: String, val tags: MutableList<String>) {\n    var age: Int = 0\n}\n\nfun main() {\n    val u1 = User(\"Ali\", mutableListOf(\"a\")).apply { age = 20 }\n    val u2 = User(\"Ali\", mutableListOf(\"a\")).apply { age = 30 }\n\n    println(u1 == u2)\n    println(u1 === u2)\n    println(u1)\n\n    val u3 = u1.copy()\n    u3.tags.add(\"b\")\n    println(u1.tags)\n    println(u3.age)\n\n    println(setOf(u1, u2).size)\n}",
+      "options": [
+        "task from coroutineScope\ntask from runBlocking\ntask from nested launch\ncoroutineScope is over",
+        "true\nfalse\nUser(name=Ali, tags=[a])\n[a, b]\n0\n2",
+        "open Home\nBaseScreen.onCreate before\nScreen.onCreate\nBaseScreen.onCreate after\nScreen.onStart\nHomeScreen.onStart",
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b"
+      ],
+      "answerIndex": 1,
+      "explainFa": "در data class از نوع‌های mutable استفاده نکن (MutableList یا var). اگر شیء کلید HashMap باشد و بعد عوض شود، دیگر پیدا نمی‌شود (پازل 27 در بخش 2 را ببین).",
+      "explainEn": "در data class از نوع‌های mutable استفاده نکن (MutableList یا var). اگر شیء کلید HashMap باشد و بعد عوض شود، دیگر پیدا نمی‌شود (پازل 27 در بخش 2 را ببین).",
+      "stepsFa": [
+        "u1 == u2: متدهای equals و hashCode و toString و copy و componentN فقط از پراپرتی‌های سازندهٔ اصلی ساخته می‌شوند. age در بدنه است و حساب نمی‌شود. name برابر است و لیست‌ها هم از نظر محتوا برابرند، پس true.",
+        "=== یعنی همان شیء در حافظه، پس false.",
+        "toString هم age را نشان نمی‌دهد.",
+        "copy() سطحی (shallow) است: u3.tags همان لیست u1 است. اضافه کردن به آن روی u1 هم اثر می‌گذارد: [a, b].",
+        "copy() فقط پراپرتی‌های سازنده را کپی می‌کند؛ age در شیء جدید مقدار پیش‌فرض 0 را دارد.",
+        "تلهٔ اصلی این پازل: خیلی‌ها (حتی نویسندهٔ این سند در پیش‌بینی اول!) می‌گویند 1، چون خط اول true بود. ولی بین خط اول و آخر، u3.tags.add(\"b\") لیستِ مشترک را عوض کرد. حالا u1.tags = [a, b] و u2.tags = [a]، پس u1 != u2 و set هر دو را نگه می‌دارد: 2."
+      ],
+      "stepsEn": [
+        "u1 == u2: متدهای equals و hashCode و toString و copy و componentN فقط از پراپرتی‌های سازندهٔ اصلی ساخته می‌شوند. age در بدنه است و حساب نمی‌شود. name برابر است و لیست‌ها هم از نظر محتوا برابرند، پس true.",
+        "=== یعنی همان شیء در حافظه، پس false.",
+        "toString هم age را نشان نمی‌دهد.",
+        "copy() سطحی (shallow) است: u3.tags همان لیست u1 است. اضافه کردن به آن روی u1 هم اثر می‌گذارد: [a, b].",
+        "copy() فقط پراپرتی‌های سازنده را کپی می‌کند؛ age در شیء جدید مقدار پیش‌فرض 0 را دارد.",
+        "تلهٔ اصلی این پازل: خیلی‌ها (حتی نویسندهٔ این سند در پیش‌بینی اول!) می‌گویند 1، چون خط اول true بود. ولی بین خط اول و آخر، u3.tags.add(\"b\") لیستِ مشترک را عوض کرد. حالا u1.tags = [a, b] و u2.tags = [a]، پس u1 != u2 و set هر دو را نگه می‌دارد: 2."
+      ],
+      "outputLines": [
+        "true",
+        "false",
+        "User(name=Ali, tags=[a])",
+        "[a, b]",
+        "0",
+        "2"
+      ],
+      "printLines": [
+        8,
+        9,
+        10,
+        14,
+        15,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p12",
+      "order": 20,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 12 — == در برابر === روی عدد و رشته",
+      "titleEn": "پازل 12 — == در برابر === روی عدد و رشته",
+      "code": "fun main() {\n    val a: Int = 127\n    val b: Int? = a\n    val c: Int? = a\n    println(b === c)\n\n    val x: Int = 1000\n    val y: Int? = x\n    val z: Int? = x\n    println(y === z)\n    println(y == z)\n\n    val s1 = \"nabz\"\n    val s2 = \"nab\" + \"z\"\n    val s3 = StringBuilder(\"nab\").append(\"z\").toString()\n    println(s1 === s2)\n    println(s1 === s3)\n    println(s1 == s3)\n}",
+      "options": [
+        "collected 0\ncollected 2\ncollected 3",
+        "try\nfinally\n1\ncatch boom\nfinally2\n2\n10",
+        "debounced: and\ndebounced: andr\n---\nresults for an\nresults for and",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "Int? یعنی box شده (java.lang.Integer). JVM اعداد ‎-128 تا 127 را کش می‌کند، پس 127 هر دو بار همان شیء است: true.",
+        "1000 خارج از کش است؛ دو box جدا: === می‌شود false، ولی == (که equals را صدا می‌زند) true است.",
+        "\"nab\" + \"z\" در زمان کامپایل به \"nabz\" تبدیل می‌شود و رشته‌های ثابت در string pool یکی‌اند: true.",
+        "StringBuilder در زمان اجرا یک شیء جدید می‌سازد: === می‌شود false و == می‌شود true."
+      ],
+      "stepsEn": [
+        "Int? یعنی box شده (java.lang.Integer). JVM اعداد ‎-128 تا 127 را کش می‌کند، پس 127 هر دو بار همان شیء است: true.",
+        "1000 خارج از کش است؛ دو box جدا: === می‌شود false، ولی == (که equals را صدا می‌زند) true است.",
+        "\"nab\" + \"z\" در زمان کامپایل به \"nabz\" تبدیل می‌شود و رشته‌های ثابت در string pool یکی‌اند: true.",
+        "StringBuilder در زمان اجرا یک شیء جدید می‌سازد: === می‌شود false و == می‌شود true."
+      ],
+      "outputLines": [
+        "true",
+        "false",
+        "true",
+        "true",
+        "false",
+        "true"
+      ],
+      "printLines": [
+        4,
+        9,
+        10,
+        15,
+        16,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p13",
+      "order": 21,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 13 — template method و زنجیرهٔ super",
+      "titleEn": "پازل 13 — template method و زنجیرهٔ super",
+      "code": "abstract class Screen {\n    fun open() {\n        println(\"open ${name()}\")\n        onCreate()\n        onStart()\n    }\n    abstract fun name(): String\n    open fun onCreate() = println(\"Screen.onCreate\")\n    open fun onStart() = println(\"Screen.onStart\")\n}\n\nopen class BaseScreen : Screen() {\n    override fun name() = \"Base\"\n    override fun onCreate() {\n        println(\"BaseScreen.onCreate before\")\n        super.onCreate()\n        println(\"BaseScreen.onCreate after\")\n    }\n}\n\nclass HomeScreen : BaseScreen() {\n    override fun name() = \"Home\"\n    override fun onStart() {\n        super.onStart()\n        println(\"HomeScreen.onStart\")\n    }\n}\n\nfun main() {\n    HomeScreen().open()\n}",
+      "options": [
+        "4 nabz xy 2 3\nno name",
+        "start\narg evaluated\nParent init: ALI\nParent prop\nChild prop\nChild init\nend",
+        "open Home\nBaseScreen.onCreate before\nScreen.onCreate\nBaseScreen.onCreate after\nScreen.onStart\nHomeScreen.onStart",
+        "B cancelled\nhandler: A failed\nhandler: C failed\nD done"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "open() در Screen است و final است (چون open ندارد). ولی هر چیزی که داخلش صدا زده می‌شود مجازی است.",
+        "name(): نزدیک‌ترین override به نوع واقعی (HomeScreen)، پس Home.",
+        "onCreate(): HomeScreen آن را override نکرده، پس نسخهٔ BaseScreen اجرا می‌شود که وسطش super.onCreate() نسخهٔ Screen را صدا می‌زند.",
+        "onStart(): نسخهٔ HomeScreen اجرا می‌شود که اول super و بعد خودش را چاپ می‌کند."
+      ],
+      "stepsEn": [
+        "open() در Screen است و final است (چون open ندارد). ولی هر چیزی که داخلش صدا زده می‌شود مجازی است.",
+        "name(): نزدیک‌ترین override به نوع واقعی (HomeScreen)، پس Home.",
+        "onCreate(): HomeScreen آن را override نکرده، پس نسخهٔ BaseScreen اجرا می‌شود که وسطش super.onCreate() نسخهٔ Screen را صدا می‌زند.",
+        "onStart(): نسخهٔ HomeScreen اجرا می‌شود که اول super و بعد خودش را چاپ می‌کند."
+      ],
+      "outputLines": [
+        "open Home",
+        "BaseScreen.onCreate before",
+        "Screen.onCreate",
+        "BaseScreen.onCreate after",
+        "Screen.onStart",
+        "HomeScreen.onStart"
+      ],
+      "printLines": [
+        2,
+        7,
+        8,
+        14,
+        16,
+        24
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p14",
+      "order": 22,
+      "category": "construction",
+      "categoryFa": "ساخت شیء و ارث‌بری",
+      "categoryEn": "Construction & inheritance",
+      "titleFa": "پازل 14 — ترکیب همه (سطح مرور)",
+      "titleEn": "پازل 14 — ترکیب همه (سطح مرور)",
+      "code": "open class A(val x: Int) {\n    init {\n        println(\"A init x=$x\")\n        log()\n    }\n    open fun log() = println(\"A.log\")\n\n    companion object {\n        init { println(\"A companion\") }\n    }\n}\n\nopen class B(x: Int) : A(x * 2) {\n    open val label = \"B-label\"\n    init { println(\"B init label=$label\") }\n    override fun log() = println(\"B.log label=$label\")\n}\n\nclass C : B(5) {\n    override val label = \"C-label\"\n    init { println(\"C init label=$label\") }\n}\n\nfun main() {\n    println(\"--\")\n    val c = C()\n    println(\"x=${c.x}\")\n    c.log()\n}",
+      "options": [
+        "start\narg evaluated\nParent init: ALI\nParent prop\nChild prop\nChild init\nend",
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield",
+        "--\nA companion\nA init x=10\nB.log label=null\nB init label=null\nC init label=C-label\nx=10\nB.log label=C-label",
+        "Base init\nDerived.show message=null count=0\nDerived init\nDerived.show message=Hello count=5"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "--",
+        "A companion",
+        "A init x=10",
+        "B.log label=null",
+        "B init label=null",
+        "C init label=C-label",
+        "x=10",
+        "B.log label=C-label"
+      ],
+      "printLines": [
+        2,
+        5,
+        8,
+        14,
+        15,
+        20,
+        24,
+        26
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p16",
+      "order": 23,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 16 — توابع scope: هر کدام چه برمی‌گرداند؟",
+      "titleEn": "پازل 16 — توابع scope: هر کدام چه برمی‌گرداند؟",
+      "code": "fun main() {\n    val a = \"nabz\".let { it.length }\n    val b = \"nabz\".also { it.length }\n    val c = StringBuilder(\"x\").apply { append(\"y\") }.toString()\n    val d = StringBuilder(\"x\").run { append(\"y\"); length }\n    val e = with(mutableListOf(1, 2)) { add(3); size }\n    println(\"$a $b $c $d $e\")\n\n    val name: String? = null\n    println(name?.let { \"Hi $it\" } ?: \"no name\")\n}",
+      "options": [
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield",
+        "false\nfalse\n1\n[Item(id=2)]",
+        "loaded a\nloaded b\nab\nsequential ~500ms\nloaded b\nloaded a\nab\nparallel ~300ms",
+        "4 nabz xy 2 3\nno name"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "4 nabz xy 2 3",
+        "no name"
+      ],
+      "printLines": [
+        6,
+        9
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p17",
+      "order": 24,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 17 — List در برابر Sequence: ترتیب اجرا",
+      "titleEn": "پازل 17 — List در برابر Sequence: ترتیب اجرا",
+      "code": "fun main() {\n    listOf(1, 2, 3)\n        .map { println(\"map $it\"); it * 2 }\n        .filter { println(\"filter $it\"); it > 2 }\n        .first()\n        .also { println(\"result $it\") }\n\n    println(\"---\")\n\n    sequenceOf(1, 2, 3)\n        .map { println(\"map $it\"); it * 2 }\n        .filter { println(\"filter $it\"); it > 2 }\n        .first()\n        .also { println(\"result $it\") }\n\n    println(\"---\")\n    val lazySeq = sequenceOf(1, 2, 3).map { println(\"never $it\"); it }\n    println(\"created, no terminal op\")\n}",
+      "options": [
+        "B cancelled\nhandler: A failed\nhandler: C failed\nD done",
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "false\nfalse\n1\n[Item(id=2)]",
+        "show ok\nnot found\nerror 500\nspinner\nLoading"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "List حریص (eager) و افقی است: هر عملگر کل لیست را پردازش می‌کند و یک لیست میانی جدید می‌سازد. اول همهٔ mapها، بعد همهٔ filterها. شش عملیات و دو لیست میانی.",
+        "Sequence تنبل (lazy) و عمودی است: هر عنصر کل زنجیره را طی می‌کند و بعد عنصر بعدی می‌آید. عنصر 1: map و filter (رد شد). عنصر 2: map و filter (قبول شد) و first() تمام می‌کند. عنصر 3 هرگز پردازش نمی‌شود.",
+        "بدون عملگر پایانی (first، toList، forEach، ...) Sequence هیچ کاری نمی‌کند."
+      ],
+      "stepsEn": [
+        "List حریص (eager) و افقی است: هر عملگر کل لیست را پردازش می‌کند و یک لیست میانی جدید می‌سازد. اول همهٔ mapها، بعد همهٔ filterها. شش عملیات و دو لیست میانی.",
+        "Sequence تنبل (lazy) و عمودی است: هر عنصر کل زنجیره را طی می‌کند و بعد عنصر بعدی می‌آید. عنصر 1: map و filter (رد شد). عنصر 2: map و filter (قبول شد) و first() تمام می‌کند. عنصر 3 هرگز پردازش نمی‌شود.",
+        "بدون عملگر پایانی (first، toList، forEach، ...) Sequence هیچ کاری نمی‌کند."
+      ],
+      "outputLines": [
+        "map 1",
+        "map 2",
+        "map 3",
+        "filter 2",
+        "filter 4",
+        "filter 6",
+        "result 4",
+        "---",
+        "map 1",
+        "filter 2",
+        "map 2",
+        "filter 4",
+        "result 4",
+        "---",
+        "created, no terminal op"
+      ],
+      "printLines": [
+        2,
+        3,
+        5,
+        7,
+        10,
+        11,
+        13,
+        15,
+        16,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p18",
+      "order": 25,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 18 — return داخل lambda",
+      "titleEn": "پازل 18 — return داخل lambda",
+      "code": "fun findFirstEven(list: List<Int>): Int {\n    list.forEach {\n        if (it % 2 == 0) return it\n        println(\"checked $it\")\n    }\n    return -1\n}\n\nfun printSkippingThree() {\n    listOf(1, 2, 3, 4).forEach {\n        if (it == 3) return@forEach\n        println(\"item $it\")\n    }\n    println(\"done\")\n}\n\nfun main() {\n    println(findFirstEven(listOf(1, 3, 4, 5)))\n    printSkippingThree()\n}",
+      "options": [
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield",
+        "1 1\n2 3\n4 4\n4",
+        "checked 1\nchecked 3\n4\nitem 1\nitem 2\nitem 4\ndone",
+        "emit 0\ngot 0\nemit 1\ngot 1\nupstream finally"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«break داخل forEach چطور؟» مستقیم ممکن نیست. یا از for معمولی استفاده کن، یا از run با label: run loop@{ list.forEach { if (...) return@loop } }.",
+      "explainEn": "«break داخل forEach چطور؟» مستقیم ممکن نیست. یا از for معمولی استفاده کن، یا از run با label: run loop@{ list.forEach { if (...) return@loop } }.",
+      "stepsFa": [
+        "forEach یک تابع inline است. return ساده داخل lambdaی inline از تابع بیرونی (findFirstEven) خارج می‌شود (non-local return)، نه فقط از lambda.",
+        "return@forEach فقط از همین دور lambda خارج می‌شود، یعنی معادل continue. حلقه ادامه پیدا می‌کند و done هم چاپ می‌شود."
+      ],
+      "stepsEn": [
+        "forEach یک تابع inline است. return ساده داخل lambdaی inline از تابع بیرونی (findFirstEven) خارج می‌شود (non-local return)، نه فقط از lambda.",
+        "return@forEach فقط از همین دور lambda خارج می‌شود، یعنی معادل continue. حلقه ادامه پیدا می‌کند و done هم چاپ می‌شود."
+      ],
+      "outputLines": [
+        "checked 1",
+        "checked 3",
+        "4",
+        "item 1",
+        "item 2",
+        "item 4",
+        "done"
+      ],
+      "printLines": [
+        3,
+        11,
+        13,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p19",
+      "order": 26,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 19 — try و finally و return",
+      "titleEn": "پازل 19 — try و finally و return",
+      "code": "fun test1(): Int {\n    try {\n        println(\"try\")\n        return 1\n    } finally {\n        println(\"finally\")\n    }\n}\n\nfun test2(): Int {\n    try {\n        throw IllegalStateException(\"boom\")\n    } catch (e: Exception) {\n        println(\"catch ${e.message}\")\n        return 2\n    } finally {\n        println(\"finally2\")\n    }\n}\n\nfun test3(): Int = try { 10 } finally { 20 }\n\nfun main() {\n    println(test1())\n    println(test2())\n    println(test3())\n}",
+      "options": [
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "created\nflow started\nA got 1\nA got 2\nflow started\nB got 1\nB got 2",
+        "try\nfinally\n1\ncatch boom\nfinally2\n2\n10",
+        "not yet\ncrash: UninitializedPropertyAccessException\nHome"
+      ],
+      "answerIndex": 2,
+      "explainFa": "اگر داخل finally یک return صریح بنویسی، مقدار قبلی و حتی exception در حال پرتاب را می‌بلعد. این کار را هیچ‌وقت نکن.",
+      "explainEn": "اگر داخل finally یک return صریح بنویسی، مقدار قبلی و حتی exception در حال پرتاب را می‌بلعد. این کار را هیچ‌وقت نکن.",
+      "stepsFa": [
+        "finally همیشه اجرا می‌شود، حتی بعد از return. مقدار برگشتی (1) قبل از finally حساب و نگه داشته می‌شود.",
+        "در catch هم همین‌طور.",
+        "try در کاتلین یک عبارت (expression) است. مقدارش آخرین عبارت try یا catch است و مقدار finally نادیده گرفته می‌شود."
+      ],
+      "stepsEn": [
+        "finally همیشه اجرا می‌شود، حتی بعد از return. مقدار برگشتی (1) قبل از finally حساب و نگه داشته می‌شود.",
+        "در catch هم همین‌طور.",
+        "try در کاتلین یک عبارت (expression) است. مقدارش آخرین عبارت try یا catch است و مقدار finally نادیده گرفته می‌شود."
+      ],
+      "outputLines": [
+        "try",
+        "finally",
+        "1",
+        "catch boom",
+        "finally2",
+        "2",
+        "10"
+      ],
+      "printLines": [
+        2,
+        5,
+        13,
+        16,
+        23,
+        24,
+        25
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p20",
+      "order": 27,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 20 — مرجع‌ها، read-only و آرایه‌ها",
+      "titleEn": "پازل 20 — مرجع‌ها، read-only و آرایه‌ها",
+      "code": "fun main() {\n    val list = mutableListOf(1, 2)\n    val ref = list\n    ref.add(3)\n    println(list)\n\n    val readOnly: List<Int> = list\n    list.add(4)\n    println(readOnly)\n\n    var s = \"a\"\n    val t = s\n    s += \"b\"\n    println(\"$s $t\")\n\n    val arr1 = arrayOf(1, 2)\n    val arr2 = arrayOf(1, 2)\n    println(arr1 == arr2)\n    println(arr1.contentEquals(arr2))\n    println(listOf(1, 2) == listOf(1, 2))\n}",
+      "options": [
+        "start\narg evaluated\nParent init: ALI\nParent prop\nChild prop\nChild init\nend",
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue",
+        "6\n-1\n-1\nnull!\ntrue\ntrue",
+        "4 nabz xy 2 3\nno name"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "val ref = list کپی نمی‌سازد؛ هر دو به یک شیء اشاره می‌کنند.",
+        "List در کاتلین read-only است، نه immutable. فقط از طریق این مرجع نمی‌توانی عوضش کنی، ولی اگر کس دیگری مرجع mutable داشته باشد، محتوا عوض می‌شود.",
+        "String immutable است: s += \"b\" یک رشتهٔ جدید می‌سازد و t همان \"a\" می‌ماند.",
+        "آرایه equals را override نکرده، پس == روی آرایه مقایسهٔ مرجع است. برای محتوا contentEquals لازم است. لیست‌ها مقایسهٔ محتوایی دارند."
+      ],
+      "stepsEn": [
+        "val ref = list کپی نمی‌سازد؛ هر دو به یک شیء اشاره می‌کنند.",
+        "List در کاتلین read-only است، نه immutable. فقط از طریق این مرجع نمی‌توانی عوضش کنی، ولی اگر کس دیگری مرجع mutable داشته باشد، محتوا عوض می‌شود.",
+        "String immutable است: s += \"b\" یک رشتهٔ جدید می‌سازد و t همان \"a\" می‌ماند.",
+        "آرایه equals را override نکرده، پس == روی آرایه مقایسهٔ مرجع است. برای محتوا contentEquals لازم است. لیست‌ها مقایسهٔ محتوایی دارند."
+      ],
+      "outputLines": [
+        "[1, 2, 3]",
+        "[1, 2, 3, 4]",
+        "ab a",
+        "false",
+        "true",
+        "true"
+      ],
+      "printLines": [
+        4,
+        8,
+        13,
+        17,
+        18,
+        19
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p21",
+      "order": 28,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 21 — sealed و when و smart cast",
+      "titleEn": "پازل 21 — sealed و when و smart cast",
+      "code": "sealed interface UiResult\ndata class Success(val data: String) : UiResult\ndata class Failure(val code: Int) : UiResult\ndata object Loading : UiResult\n\nfun render(r: UiResult): String = when (r) {\n    is Success -> \"show ${r.data}\"\n    is Failure -> if (r.code == 404) \"not found\" else \"error ${r.code}\"\n    Loading -> \"spinner\"\n}\n\nfun main() {\n    listOf(Success(\"ok\"), Failure(404), Failure(500), Loading).forEach { println(render(it)) }\n    println(Loading)\n}",
+      "options": [
+        "Hello Base\nWrapper",
+        "got 10\ngot 20\ncompleted, cause=network\ncatch: network\ngot -1",
+        "[1, 3]\nnull",
+        "show ok\nnot found\nerror 500\nspinner\nLoading"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "show ok",
+        "not found",
+        "error 500",
+        "spinner",
+        "Loading"
+      ],
+      "printLines": [
+        12,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p22",
+      "order": 29,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 22 — زنجیرهٔ null-safe",
+      "titleEn": "پازل 22 — زنجیرهٔ null-safe",
+      "code": "data class Address(val city: String?)\ndata class Person(val address: Address?)\n\nfun main() {\n    val people = listOf(Person(Address(\"Tehran\")), Person(Address(null)), Person(null))\n    people.forEach { println(it.address?.city?.length ?: -1) }\n\n    val x: String? = null\n    println(x + \"!\")\n    println(x.isNullOrEmpty())\n    println(x?.length == null)\n}",
+      "options": [
+        "got 10\ngot 20\ncompleted, cause=network\ncatch: network\ngot -1",
+        "not yet\ncrash: UninitializedPropertyAccessException\nHome",
+        "6\n-1\n-1\nnull!\ntrue\ntrue",
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "6",
+        "-1",
+        "-1",
+        "null!",
+        "true",
+        "true"
+      ],
+      "printLines": [
+        5,
+        8,
+        9,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p23",
+      "order": 30,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 23 — closure و capture",
+      "titleEn": "پازل 23 — closure و capture",
+      "code": "fun main() {\n    var count = 0\n    val inc = { count++ }\n    inc()\n    inc()\n    println(count)\n\n    val actions = mutableListOf<() -> Unit>()\n    for (i in 1..3) actions.add { print(\"$i \") }\n    actions.forEach { it() }\n    println()\n}",
+      "options": [
+        "1 on main\n2 on DefaultDispatcher\n3 on main result=42",
+        "loaded a\nloaded b\nab\nsequential ~500ms\nloaded b\nloaded a\nab\nparallel ~300ms",
+        "2\n1 2 3",
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "2",
+        "1 2 3"
+      ],
+      "printLines": [
+        5,
+        8,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p24",
+      "order": 31,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 24 — delegation با by (تلهٔ بزرگ)",
+      "titleEn": "پازل 24 — delegation با by (تلهٔ بزرگ)",
+      "code": "interface Greeter {\n    fun greet()\n    fun name(): String\n}\n\nclass BaseGreeter : Greeter {\n    override fun greet() = println(\"Hello ${name()}\")\n    override fun name() = \"Base\"\n}\n\nclass Wrapper(g: Greeter) : Greeter by g {\n    override fun name() = \"Wrapper\"\n}\n\nfun main() {\n    val w = Wrapper(BaseGreeter())\n    w.greet()\n    println(w.name())\n}",
+      "options": [
+        "4 nabz xy 2 3\nno name",
+        "Hello Base\nWrapper",
+        "[true, false, false, true]\n(0, 1)\nz\n[[eat, tea, ate], [tan, nat], [bat]]\nbazaar cafe hello\n[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]\n2880067194370816120",
+        "[1, 3]\nnull\n[1, 4]\nONE"
+      ],
+      "answerIndex": 1,
+      "explainFa": "«Composition over inheritance رو با by پیاده می‌کنم، ولی باید یادم باشه که delegate از override‌های من خبر نداره؛ چون فقط فوروارد می‌شه، dispatch مجازی بین دو شیء نداریم.»",
+      "explainEn": "«Composition over inheritance رو با by پیاده می‌کنم، ولی باید یادم باشه که delegate از override‌های من خبر نداره؛ چون فقط فوروارد می‌شه، dispatch مجازی بین دو شیء نداریم.»",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "Hello Base",
+        "Wrapper"
+      ],
+      "printLines": [
+        6,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p25",
+      "order": 32,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 25 — generics، erasure و reified",
+      "titleEn": "پازل 25 — generics، erasure و reified",
+      "code": "inline fun <reified T> check(x: Any) =\n    if (x is T) \"is ${T::class.simpleName}\" else \"not ${T::class.simpleName}\"\n\n@Suppress(\"UNCHECKED_CAST\")\nfun <T> unsafeCast(x: Any): T = x as T\n\nfun main() {\n    println(check<String>(\"a\"))\n    println(check<Int>(\"a\"))\n\n    val list: List<String> = unsafeCast(listOf(1, 2))\n    println(\"size=${list.size}\")\n    try {\n        println(list[0].length)\n    } catch (e: ClassCastException) {\n        println(\"ClassCastException at use site\")\n    }\n}",
+      "options": [
+        "debounced: and\ndebounced: andr\n---\nresults for an\nresults for and",
+        "Circle\ndescribe(Shape) -> Circle\nShape.tag\nCircle.tag",
+        "ABCD",
+        "is String\nnot Int\nsize=2\nClassCastException at use site"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "در JVM، نوع generic در زمان اجرا پاک می‌شود (type erasure). x is T در یک تابع معمولی کامپایل نمی‌شود. با inline و reified، کامپایلر بدنه را در محل صدا زدن کپی می‌کند و T را با نوع واقعی جایگزین می‌کند.",
+        "x as T در تابع غیر reified در عمل هیچ چکی انجام نمی‌دهد، پس لیست اعداد بدون خطا به‌عنوان List<String> برگردانده می‌شود. خطا دیرتر و جایی رخ می‌دهد که از عنصر به‌عنوان String استفاده می‌شود."
+      ],
+      "stepsEn": [
+        "در JVM، نوع generic در زمان اجرا پاک می‌شود (type erasure). x is T در یک تابع معمولی کامپایل نمی‌شود. با inline و reified، کامپایلر بدنه را در محل صدا زدن کپی می‌کند و T را با نوع واقعی جایگزین می‌کند.",
+        "x as T در تابع غیر reified در عمل هیچ چکی انجام نمی‌دهد، پس لیست اعداد بدون خطا به‌عنوان List<String> برگردانده می‌شود. خطا دیرتر و جایی رخ می‌دهد که از عنصر به‌عنوان String استفاده می‌شود."
+      ],
+      "outputLines": [
+        "is String",
+        "not Int",
+        "size=2",
+        "ClassCastException at use site"
+      ],
+      "printLines": [
+        7,
+        8,
+        11,
+        13,
+        15
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p26",
+      "order": 33,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 26 — عملگرهای کالکشن (سریع)",
+      "titleEn": "پازل 26 — عملگرهای کالکشن (سریع)",
+      "code": "fun main() {\n    val words = listOf(\"nabz\", \"azma\", \"lab\", \"app\", \"android\")\n\n    println(words.groupBy { it.length })\n    println(words.associateWith { it.first() })\n    println(words.filter { it.startsWith(\"a\") }.map { it.uppercase() })\n    println(words.fold(0) { acc, w -> acc + w.length })\n    println(listOf(1, 2, 3, 4, 5).windowed(2).map { it.sum() })\n    println(listOf(\"a\", \"b\", \"c\").zip(listOf(1, 2)))\n    println(listOf(\"1\", \"x\", \"3\").mapNotNull { it.toIntOrNull() })\n    println(words.sortedWith(compareBy({ it.length }, { it })))\n}",
+      "options": [
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "{4=[nabz, azma], 3=[lab, app], 7=[android]}\n{nabz=n, azma=a, lab=l, app=a, android=a}\n[AZMA, APP, ANDROID]\n21\n[3, 5, 7, 9]\n[(a, 1), (b, 2)]\n[1, 3]\n[app, lab, azma, nabz, android]",
+        "handler: boom\nend",
+        "member\nextension x2"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "{4=[nabz, azma], 3=[lab, app], 7=[android]}",
+        "{nabz=n, azma=a, lab=l, app=a, android=a}",
+        "[AZMA, APP, ANDROID]",
+        "21",
+        "[3, 5, 7, 9]",
+        "[(a, 1), (b, 2)]",
+        "[1, 3]",
+        "[app, lab, azma, nabz, android]"
+      ],
+      "printLines": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p27",
+      "order": 34,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 27 — کلید mutable در HashSet",
+      "titleEn": "پازل 27 — کلید mutable در HashSet",
+      "code": "data class Item(var id: Int)\n\nfun main() {\n    val set = hashSetOf(Item(1))\n    val item = set.first()\n    item.id = 2\n\n    println(set.contains(Item(2)))\n    println(set.contains(item))\n    println(set.size)\n    println(set)\n}",
+      "options": [
+        "Loading\nError(message=no internet)\nLoading\nSuccess(app=AppInfo(name=Nabz, rating=4.8))",
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "false\nfalse\n1\n[Item(id=2)]",
+        "--\nA companion\nA init x=10\nB.log label=null\nB init label=null\nC init label=C-label\nx=10\nB.log label=C-label"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "false",
+        "false",
+        "1",
+        "[Item(id=2)]"
+      ],
+      "printLines": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p28",
+      "order": 35,
+      "category": "language",
+      "categoryFa": "زبان کاتلین",
+      "categoryEn": "Kotlin language",
+      "titleFa": "پازل 28 — همان تمرینی که قبلاً دادم",
+      "titleEn": "پازل 28 — همان تمرینی که قبلاً دادم",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    println(\"1\")\n    launch {\n        delay(100)\n        println(\"2\")\n    }\n    val d = async {\n        println(\"3\")\n        \"4\"\n    }\n    println(\"5\")\n    println(d.await())\n    println(\"6\")\n}",
+      "options": [
+        "main start\ncompanion init\nversion set\ninstance init\ninstance init\nhello\nLogger init\nlog: a\nlog: b",
+        "member\nextension x2",
+        "1\n5\n3\n4\n6\n2",
+        "[1, 3]\nnull"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خیلی‌ها 3 را قبل از 5 می‌گذارند. async هم مثل launch فوراً اجرا نمی‌شود؛ فقط در صف قرار می‌گیرد. اگر می‌خواستی بلافاصله اجرا شود، start = CoroutineStart.UNDISPATCHED لازم بود.",
+      "explainEn": "خیلی‌ها 3 را قبل از 5 می‌گذارند. async هم مثل launch فوراً اجرا نمی‌شود؛ فقط در صف قرار می‌گیرد. اگر می‌خواستی بلافاصله اجرا شود، start = CoroutineStart.UNDISPATCHED لازم بود.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "1",
+        "5",
+        "3",
+        "4",
+        "6",
+        "2"
+      ],
+      "printLines": [
+        3,
+        6,
+        9,
+        12,
+        13,
+        14
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p29",
+      "order": 36,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 29 — yield",
+      "titleEn": "پازل 29 — yield",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    println(\"start\")\n    launch { println(\"launch 1\") }\n    launch { println(\"launch 2\") }\n    println(\"before yield\")\n    yield()\n    println(\"after yield\")\n}",
+      "options": [
+        "working\nbefore await\ncaught at await: bad",
+        "is String\nnot Int\nsize=2\nClassCastException at use site",
+        "Animal: null\nAnimal: Meow\nAnimal: null\nWoof",
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "start",
+        "before yield",
+        "launch 1",
+        "launch 2",
+        "after yield"
+      ],
+      "printLines": [
+        3,
+        4,
+        5,
+        6,
+        8
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p30",
+      "order": 37,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 30 — coroutineScope منتظر می‌ماند",
+      "titleEn": "پازل 30 — coroutineScope منتظر می‌ماند",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    launch {\n        delay(200)\n        println(\"task from runBlocking\")\n    }\n\n    coroutineScope {\n        launch {\n            delay(500)\n            println(\"task from nested launch\")\n        }\n        delay(100)\n        println(\"task from coroutineScope\")\n    }\n\n    println(\"coroutineScope is over\")\n}",
+      "options": [
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "[1, 3]\nnull\n[1, 4]\nONE",
+        "1 1\n2 3\n4 4\n4",
+        "task from coroutineScope\ntask from runBlocking\ntask from nested launch\ncoroutineScope is over"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "task from coroutineScope",
+        "task from runBlocking",
+        "task from nested launch",
+        "coroutineScope is over"
+      ],
+      "printLines": [
+        5,
+        11,
+        14,
+        17
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p31",
+      "order": 38,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 31 — ترتیبی در برابر موازی",
+      "titleEn": "پازل 31 — ترتیبی در برابر موازی",
+      "code": "import kotlinx.coroutines.*\nimport kotlin.system.measureTimeMillis\n\nsuspend fun load(name: String, ms: Long): String {\n    delay(ms)\n    println(\"loaded $name\")\n    return name\n}\n\nfun main() = runBlocking {\n    val t1 = measureTimeMillis {\n        val a = load(\"a\", 300)\n        val b = load(\"b\", 200)\n        println(a + b)\n    }\n    println(\"sequential ~${t1 / 100 * 100}ms\")\n\n    val t2 = measureTimeMillis {\n        val a = async { load(\"a\", 300) }\n        val b = async { load(\"b\", 200) }\n        println(a.await() + b.await())\n    }\n    println(\"parallel ~${t2 / 100 * 100}ms\")\n}",
+      "options": [
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "attempt 1 failed: timeout, waiting 100ms\nattempt 2 failed: timeout, waiting 200ms\ndata on attempt 3\ncalls=3\nnot retried: bad request",
+        "loaded a\nloaded b\nab\nsequential ~500ms\nloaded b\nloaded a\nab\nparallel ~300ms",
+        "unsafe == 100000? false\natomic=100000\nmutex=100000"
+      ],
+      "answerIndex": 2,
+      "explainFa": "async { load(\"a\") }.await() پشت سر هم، یعنی async و فوراً await، موازی نیست. اول همه را async کن، بعد await کن (یا awaitAll).",
+      "explainEn": "async { load(\"a\") }.await() پشت سر هم، یعنی async و فوراً await، موازی نیست. اول همه را async کن، بعد await کن (یا awaitAll).",
+      "stepsFa": [
+        "suspend به‌طور پیش‌فرض ترتیبی است. load(\"b\") تا تمام شدن load(\"a\") شروع نمی‌شود: 300 + 200 = 500ms.",
+        "با async هر دو هم‌زمان شروع می‌شوند. b زودتر تمام می‌شود (loaded b قبل از loaded a)، ولی نتیجه به ترتیب await ترکیب می‌شود: ab. زمان کل = بیشینه = 300ms."
+      ],
+      "stepsEn": [
+        "suspend به‌طور پیش‌فرض ترتیبی است. load(\"b\") تا تمام شدن load(\"a\") شروع نمی‌شود: 300 + 200 = 500ms.",
+        "با async هر دو هم‌زمان شروع می‌شوند. b زودتر تمام می‌شود (loaded b قبل از loaded a)، ولی نتیجه به ترتیب await ترکیب می‌شود: ab. زمان کل = بیشینه = 300ms."
+      ],
+      "outputLines": [
+        "loaded a",
+        "loaded b",
+        "ab",
+        "sequential ~500ms",
+        "loaded b",
+        "loaded a",
+        "ab",
+        "parallel ~300ms"
+      ],
+      "printLines": [
+        5,
+        13,
+        15,
+        20,
+        22
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p32",
+      "order": 39,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 32 — try/catch دور launch کار نمی‌کند",
+      "titleEn": "پازل 32 — try/catch دور launch کار نمی‌کند",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    val handler = CoroutineExceptionHandler { _, e -> println(\"handler: ${e.message}\") }\n    val scope = CoroutineScope(Job() + handler)\n\n    try {\n        scope.launch { throw RuntimeException(\"boom\") }.join()\n    } catch (e: Exception) {\n        println(\"caught: ${e.message}\")\n    }\n    println(\"end\")\n}",
+      "options": [
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue",
+        "Base init\nDerived.show message=null count=0\nDerived init\nDerived.show message=Hello count=5",
+        "handler: boom\nend",
+        "1 on main\n2 on DefaultDispatcher\n3 on main result=42"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "launch فوراً برمی‌گرداند. exception بعداً داخل کوروتین رخ می‌دهد، نه در خط try. پس try/catch بیرونی آن را نمی‌بیند.",
+        "exception از launch به Job والد منتقل می‌شود. scope ریشه است و CoroutineExceptionHandler دارد، پس handler اجرا می‌شود.",
+        "join() روی یک Job شکست‌خورده exception پرتاب نمی‌کند؛ فقط صبر می‌کند تا تمام شود."
+      ],
+      "stepsEn": [
+        "launch فوراً برمی‌گرداند. exception بعداً داخل کوروتین رخ می‌دهد، نه در خط try. پس try/catch بیرونی آن را نمی‌بیند.",
+        "exception از launch به Job والد منتقل می‌شود. scope ریشه است و CoroutineExceptionHandler دارد، پس handler اجرا می‌شود.",
+        "join() روی یک Job شکست‌خورده exception پرتاب نمی‌کند؛ فقط صبر می‌کند تا تمام شود."
+      ],
+      "outputLines": [
+        "handler: boom",
+        "end"
+      ],
+      "printLines": [
+        3,
+        9,
+        11
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p33",
+      "order": 40,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 33 — Job در برابر SupervisorJob",
+      "titleEn": "پازل 33 — Job در برابر SupervisorJob",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    val handler = CoroutineExceptionHandler { _, e -> println(\"handler: ${e.message}\") }\n\n    val normal = CoroutineScope(Job() + handler)\n    val a1 = normal.launch { delay(100); throw RuntimeException(\"A failed\") }\n    val a2 = normal.launch {\n        try {\n            delay(500)\n            println(\"B done\")\n        } catch (e: CancellationException) {\n            println(\"B cancelled\")\n        }\n    }\n    joinAll(a1, a2)\n\n    val supervisor = CoroutineScope(SupervisorJob() + handler)\n    val s1 = supervisor.launch { delay(100); throw RuntimeException(\"C failed\") }\n    val s2 = supervisor.launch { delay(500); println(\"D done\") }\n    joinAll(s1, s2)\n}",
+      "options": [
+        "handler: boom\nend",
+        "B cancelled\nhandler: A failed\nhandler: C failed\nD done",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "ABCD"
+      ],
+      "answerIndex": 1,
+      "explainFa": "«در Job معمولی شکست یک فرزند به بالا propagate می‌شه و همهٔ خواهر‌برادرها کنسل می‌شن، که برای کارهای وابسته (مثلاً دو بخش یک نتیجه) درسته. برای کارهای مستقل مثل چند ویجت یک صفحه، از SupervisorJob یا supervisorScope استفاده می‌کنم. viewModelScope خودش Supervisor هست.»",
+      "explainEn": "«در Job معمولی شکست یک فرزند به بالا propagate می‌شه و همهٔ خواهر‌برادرها کنسل می‌شن، که برای کارهای وابسته (مثلاً دو بخش یک نتیجه) درسته. برای کارهای مستقل مثل چند ویجت یک صفحه، از SupervisorJob یا supervisorScope استفاده می‌کنم. viewModelScope خودش Supervisor هست.»",
+      "stepsFa": [
+        "Job معمولی: شکست یک فرزند ← والد کنسل می‌شود ← همهٔ فرزندان دیگر کنسل می‌شوند. B به‌جای done، cancelled می‌گیرد. handler بعد از آنکه همهٔ فرزندان تمام شدند صدا زده می‌شود.",
+        "SupervisorJob: شکست یک فرزند فقط خودش را از بین می‌برد. D سالم تمام می‌شود.",
+        "و یک چیز مهم دیگر: scope معمولی بعد از این شکست مرده است؛ هر launch جدید روی normal اصلاً اجرا نمی‌شود."
+      ],
+      "stepsEn": [
+        "Job معمولی: شکست یک فرزند ← والد کنسل می‌شود ← همهٔ فرزندان دیگر کنسل می‌شوند. B به‌جای done، cancelled می‌گیرد. handler بعد از آنکه همهٔ فرزندان تمام شدند صدا زده می‌شود.",
+        "SupervisorJob: شکست یک فرزند فقط خودش را از بین می‌برد. D سالم تمام می‌شود.",
+        "و یک چیز مهم دیگر: scope معمولی بعد از این شکست مرده است؛ هر launch جدید روی normal اصلاً اجرا نمی‌شود."
+      ],
+      "outputLines": [
+        "B cancelled",
+        "handler: A failed",
+        "handler: C failed",
+        "D done"
+      ],
+      "printLines": [
+        3,
+        10,
+        12,
+        19
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p34",
+      "order": 41,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 34 — exception در async",
+      "titleEn": "پازل 34 — exception در async",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    val scope = CoroutineScope(SupervisorJob())\n    val d = scope.async {\n        println(\"working\")\n        throw IllegalStateException(\"bad\")\n    }\n    delay(100)\n    println(\"before await\")\n    try {\n        d.await()\n    } catch (e: IllegalStateException) {\n        println(\"caught at await: ${e.message}\")\n    }\n}",
+      "options": [
+        "checked 1\nchecked 3\n4\nitem 1\nitem 2\nitem 4\ndone",
+        "1 1\n2 3\n4 4\n4",
+        "true\nfalse\ntrue\ntrue\nfalse\ntrue",
+        "working\nbefore await\ncaught at await: bad"
+      ],
+      "answerIndex": 3,
+      "explainFa": "اگر همین async را مستقیم داخل runBlocking (فرزند Job معمولی) می‌نوشتی، exception همان لحظه والد را هم کنسل می‌کرد، حتی اگر await را در try گذاشته بودی. برای کنترل کامل، از supervisorScope { } استفاده کن.",
+      "explainEn": "اگر همین async را مستقیم داخل runBlocking (فرزند Job معمولی) می‌نوشتی، exception همان لحظه والد را هم کنسل می‌کرد، حتی اگر await را در try گذاشته بودی. برای کنترل کامل، از supervisorScope { } استفاده کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "working",
+        "before await",
+        "caught at await: bad"
+      ],
+      "printLines": [
+        5,
+        9,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p35",
+      "order": 42,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 35 — کنسل شدن «همکارانه» است",
+      "titleEn": "پازل 35 — کنسل شدن «همکارانه» است",
+      "code": "import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n    val busy = launch(Dispatchers.Default) {\n        var i = 0\n        var next = System.currentTimeMillis()\n        while (i < 5) {\n            if (System.currentTimeMillis() >= next) {\n                println(\"busy ${i++}\")\n                next += 100\n            }\n        }\n    }\n    delay(250)\n    println(\"cancel busy\")\n    busy.cancelAndJoin()\n    println(\"busy joined\")\n\n    val polite = launch {\n        try {\n            repeat(5) {\n                println(\"tick $it\")\n                delay(100)\n            }\n        } finally {\n            println(\"cleanup\")\n        }\n    }\n    delay(250)\n    polite.cancelAndJoin()\n    println(\"polite joined\")\n}",
+      "options": [
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "busy 0\nbusy 1\nbusy 2\ncancel busy\nbusy 3\nbusy 4\nbusy joined\ntick 0\ntick 1\ntick 2\ncleanup\npolite joined",
+        "Loading\nError(message=no internet)\nLoading\nSuccess(app=AppInfo(name=Nabz, rating=4.8))",
+        "Hello Base\nWrapper"
+      ],
+      "answerIndex": 1,
+      "explainFa": "catch (e: Exception) داخل کوروتین CancellationException را هم می‌گیرد و جلوی کنسل شدن را می‌گیرد. یا آن را دوباره پرتاب کن، یا فقط exceptionهای مشخص را بگیر.",
+      "explainEn": "catch (e: Exception) داخل کوروتین CancellationException را هم می‌گیرد و جلوی کنسل شدن را می‌گیرد. یا آن را دوباره پرتاب کن، یا فقط exceptionهای مشخص را بگیر.",
+      "stepsFa": [
+        "cancel() فقط یک پرچم می‌گذارد. کوروتین فقط در نقاط تعلیق (delay، yield، ...) یا با چک صریح isActive و ensureActive() آن را می‌بیند. حلقهٔ busy هیچ نقطهٔ تعلیقی ندارد، پس تا آخر (busy 4) ادامه می‌دهد و cancelAndJoin منتظر می‌ماند.",
+        "polite در delay یک CancellationException می‌گیرد و finally اجرا می‌شود؛ جای درست آزادسازی منابع همین‌جاست."
+      ],
+      "stepsEn": [
+        "cancel() فقط یک پرچم می‌گذارد. کوروتین فقط در نقاط تعلیق (delay، yield، ...) یا با چک صریح isActive و ensureActive() آن را می‌بیند. حلقهٔ busy هیچ نقطهٔ تعلیقی ندارد، پس تا آخر (busy 4) ادامه می‌دهد و cancelAndJoin منتظر می‌ماند.",
+        "polite در delay یک CancellationException می‌گیرد و finally اجرا می‌شود؛ جای درست آزادسازی منابع همین‌جاست."
+      ],
+      "outputLines": [
+        "busy 0",
+        "busy 1",
+        "busy 2",
+        "cancel busy",
+        "busy 3",
+        "busy 4",
+        "busy joined",
+        "tick 0",
+        "tick 1",
+        "tick 2",
+        "cleanup",
+        "polite joined"
+      ],
+      "printLines": [
+        8,
+        14,
+        16,
+        21,
+        25,
+        30
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p36",
+      "order": 43,
+      "category": "coroutines",
+      "categoryFa": "کوروتین",
+      "categoryEn": "Coroutines",
+      "titleFa": "پازل 36 — withContext و thread اصلی",
+      "titleEn": "پازل 36 — withContext و thread اصلی",
+      "code": "import kotlinx.coroutines.*\n\nfun threadName() = Thread.currentThread().name.substringBefore(\"-worker\").substringBefore(\" @\")\n\nfun main() = runBlocking {\n    println(\"1 on ${threadName()}\")\n    val result = withContext(Dispatchers.Default) {\n        println(\"2 on ${threadName()}\")\n        42\n    }\n    println(\"3 on ${threadName()} result=$result\")\n}",
+      "options": [
+        "collected 0\ncollected 2\ncollected 3",
+        "debounced: and\ndebounced: andr\n---\nresults for an\nresults for and",
+        "1 on main\n2 on DefaultDispatcher\n3 on main result=42",
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "1 on main",
+        "2 on DefaultDispatcher",
+        "3 on main result=42"
+      ],
+      "printLines": [
+        5,
+        7,
+        10
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p37",
+      "order": 44,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 37 — Flow سرد است",
+      "titleEn": "پازل 37 — Flow سرد است",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun numbers() = flow {\n    println(\"flow started\")\n    emit(1)\n    emit(2)\n}\n\nfun main() = runBlocking {\n    val f = numbers()\n    println(\"created\")\n    f.collect { println(\"A got $it\") }\n    f.collect { println(\"B got $it\") }\n}",
+      "options": [
+        "Base init\nDerived.show message=null count=0\nDerived init\nDerived.show message=Hello count=5",
+        "--\nA companion\nA init x=10\nB.log label=null\nB init label=null\nC init label=C-label\nx=10\nB.log label=C-label",
+        "created\nflow started\nA got 1\nA got 2\nflow started\nB got 1\nB got 2",
+        "{4=[nabz, azma], 3=[lab, app], 7=[android]}\n{nabz=n, azma=a, lab=l, app=a, android=a}\n[AZMA, APP, ANDROID]\n21\n[3, 5, 7, 9]\n[(a, 1), (b, 2)]\n[1, 3]\n[app, lab, azma, nabz, android]"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "created",
+        "flow started",
+        "A got 1",
+        "A got 2",
+        "flow started",
+        "B got 1",
+        "B got 2"
+      ],
+      "printLines": [
+        4,
+        11,
+        12,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p38",
+      "order": 45,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 38 — ترتیب عملگرها",
+      "titleEn": "پازل 38 — ترتیب عملگرها",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun main() = runBlocking {\n    flowOf(1, 2, 3)\n        .onEach { println(\"emit $it\") }\n        .map { println(\"map $it\"); it * 10 }\n        .filter { println(\"filter $it\"); it > 10 }\n        .collect { println(\"collect $it\") }\n}",
+      "options": [
+        "map 1\nmap 2\nmap 3\nfilter 2\nfilter 4\nfilter 6\nresult 4\n---\nmap 1\nfilter 2\nmap 2\nfilter 4\nresult 4\n---\ncreated, no terminal op",
+        "busy 0\nbusy 1\nbusy 2\ncancel busy\nbusy 3\nbusy 4\nbusy joined\ntick 0\ntick 1\ntick 2\ncleanup\npolite joined",
+        "got hello\nlate subscriber got second",
+        "emit 1\nmap 1\nfilter 10\nemit 2\nmap 2\nfilter 20\ncollect 20\nemit 3\nmap 3\nfilter 30\ncollect 30"
+      ],
+      "answerIndex": 3,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "emit 1",
+        "map 1",
+        "filter 10",
+        "emit 2",
+        "map 2",
+        "filter 20",
+        "collect 20",
+        "emit 3",
+        "map 3",
+        "filter 30",
+        "collect 30"
+      ],
+      "printLines": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p39",
+      "order": 46,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 39 — StateFlow: conflation و distinct",
+      "titleEn": "پازل 39 — StateFlow: conflation و distinct",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun main() = runBlocking {\n    val state = MutableStateFlow(0)\n    val job = launch { state.collect { println(\"collected $it\") } }\n    yield()\n\n    state.value = 1\n    state.value = 2\n    state.value = 2\n    yield()\n\n    state.value = 3\n    yield()\n    job.cancel()\n}",
+      "options": [
+        "created\nflow started\nA got 1\nA got 2\nflow started\nB got 1\nB got 2",
+        "Hello Base\nWrapper",
+        "collected 0\ncollected 2\ncollected 3",
+        "try\nfinally\n1\ncatch boom\nfinally2\n2\n10"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "collector شروع می‌شود و مقدار فعلی (0) را فوراً می‌گیرد. StateFlow همیشه مقدار دارد.",
+        "1 و 2 و 2 پشت سر هم و بدون تعلیق set می‌شوند. collector فرصت اجرا ندارد. وقتی نوبتش می‌شود، فقط آخرین مقدار (2) را می‌بیند. به این conflation می‌گویند: StateFlow «وضعیت» است، نه «صف رویداد».",
+        "2 تکراری اصلاً emit نمی‌شود، چون StateFlow با == مقایسه می‌کند (distinctUntilChanged داخلی دارد).",
+        "3 جدید است و چاپ می‌شود."
+      ],
+      "stepsEn": [
+        "collector شروع می‌شود و مقدار فعلی (0) را فوراً می‌گیرد. StateFlow همیشه مقدار دارد.",
+        "1 و 2 و 2 پشت سر هم و بدون تعلیق set می‌شوند. collector فرصت اجرا ندارد. وقتی نوبتش می‌شود، فقط آخرین مقدار (2) را می‌بیند. به این conflation می‌گویند: StateFlow «وضعیت» است، نه «صف رویداد».",
+        "2 تکراری اصلاً emit نمی‌شود، چون StateFlow با == مقایسه می‌کند (distinctUntilChanged داخلی دارد).",
+        "3 جدید است و چاپ می‌شود."
+      ],
+      "outputLines": [
+        "collected 0",
+        "collected 2",
+        "collected 3"
+      ],
+      "printLines": [
+        5
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p40",
+      "order": 47,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 40 — SharedFlow و replay",
+      "titleEn": "پازل 40 — SharedFlow و replay",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun main() = runBlocking {\n    val events = MutableSharedFlow<String>()\n    events.emit(\"lost\")\n    val job = launch { events.collect { println(\"got $it\") } }\n    yield()\n    events.emit(\"hello\")\n\n    val replay = MutableSharedFlow<String>(replay = 1)\n    replay.emit(\"first\")\n    replay.emit(\"second\")\n    val job2 = launch { replay.collect { println(\"late subscriber got $it\") } }\n    yield()\n\n    job.cancel()\n    job2.cancel()\n}",
+      "options": [
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "show ok\nnot found\nerror 500\nspinner\nLoading",
+        "got hello\nlate subscriber got second",
+        "2\n1 2 3"
+      ],
+      "answerIndex": 2,
+      "explainFa": "«StateFlow معادل LiveData برای state هست: همیشه مقدار داره، conflate می‌کنه و تکراری‌ها رو حذف می‌کنه. برای event یک‌باره مثل navigation از Channel با receiveAsFlow استفاده می‌کنم، چون event تا وقتی کسی مصرفش نکنه نگه داشته می‌شه و دقیقاً یک بار تحویل داده می‌شه.»",
+      "explainEn": "«StateFlow معادل LiveData برای state هست: همیشه مقدار داره، conflate می‌کنه و تکراری‌ها رو حذف می‌کنه. برای event یک‌باره مثل navigation از Channel با receiveAsFlow استفاده می‌کنم، چون event تا وقتی کسی مصرفش نکنه نگه داشته می‌شه و دقیقاً یک بار تحویل داده می‌شه.»",
+      "stepsFa": [
+        "\"lost\" وقتی emit شد که هیچ subscriberی نبود. SharedFlow پیش‌فرض (replay=0) آن را دور می‌اندازد.",
+        "\"hello\" به collector رسید.",
+        "با replay = 1، subscriber دیر رسیده آخرین مقدار (second) را می‌گیرد، ولی first را نه."
+      ],
+      "stepsEn": [
+        "\"lost\" وقتی emit شد که هیچ subscriberی نبود. SharedFlow پیش‌فرض (replay=0) آن را دور می‌اندازد.",
+        "\"hello\" به collector رسید.",
+        "با replay = 1، subscriber دیر رسیده آخرین مقدار (second) را می‌گیرد، ولی first را نه."
+      ],
+      "outputLines": [
+        "got hello",
+        "late subscriber got second"
+      ],
+      "printLines": [
+        6,
+        13
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p41",
+      "order": 48,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 41 — catch و onCompletion",
+      "titleEn": "پازل 41 — catch و onCompletion",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun main() = runBlocking {\n    flow {\n        emit(1)\n        emit(2)\n        throw RuntimeException(\"network\")\n    }\n        .map { it * 10 }\n        .onCompletion { cause -> println(\"completed, cause=${cause?.message}\") }\n        .catch { e ->\n            println(\"catch: ${e.message}\")\n            emit(-1)\n        }\n        .collect { println(\"got $it\") }\n}",
+      "options": [
+        "[1, 2, 3]\n[1, 2, 3, 4]\nab a\nfalse\ntrue\ntrue",
+        "prop a\ninit 1: a=default\nprop b\ninit 2: b\nsecondary",
+        "got 10\ngot 20\ncompleted, cause=network\ncatch: network\ngot -1",
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield"
+      ],
+      "answerIndex": 2,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [
+        "catch فقط exceptionهای بالادست خودش را می‌گیرد (exception transparency). اگر خطا داخل collect رخ دهد، catch آن را نمی‌بیند.",
+        "onCompletion قبل از catch است، پس exception را به‌عنوان cause می‌بیند. اگر بعد از catch بود، cause = null می‌شد، چون catch خطا را بلعیده.",
+        "داخل catch می‌توانی مقدار جایگزین emit کنی (مثلاً دادهٔ کش یا حالت Error)."
+      ],
+      "stepsEn": [
+        "catch فقط exceptionهای بالادست خودش را می‌گیرد (exception transparency). اگر خطا داخل collect رخ دهد، catch آن را نمی‌بیند.",
+        "onCompletion قبل از catch است، پس exception را به‌عنوان cause می‌بیند. اگر بعد از catch بود، cause = null می‌شد، چون catch خطا را بلعیده.",
+        "داخل catch می‌توانی مقدار جایگزین emit کنی (مثلاً دادهٔ کش یا حالت Error)."
+      ],
+      "outputLines": [
+        "got 10",
+        "got 20",
+        "completed, cause=network",
+        "catch: network",
+        "got -1"
+      ],
+      "printLines": [
+        10,
+        12,
+        15
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p42",
+      "order": 49,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 42 — take بالادست را کنسل می‌کند",
+      "titleEn": "پازل 42 — take بالادست را کنسل می‌کند",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\nfun main() = runBlocking {\n    flow {\n        try {\n            repeat(5) {\n                println(\"emit $it\")\n                emit(it)\n            }\n        } finally {\n            println(\"upstream finally\")\n        }\n    }\n        .take(2)\n        .collect { println(\"got $it\") }\n}",
+      "options": [
+        "open Home\nBaseScreen.onCreate before\nScreen.onCreate\nBaseScreen.onCreate after\nScreen.onStart\nHomeScreen.onStart",
+        "emit 0\ngot 0\nemit 1\ngot 1\nupstream finally",
+        "6\n-1\n-1\nnull!\ntrue\ntrue",
+        "Hello Base\nWrapper"
+      ],
+      "answerIndex": 1,
+      "explainFa": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "explainEn": "خروجی واقعی برنامه همین است. ترتیب چاپ را خط‌به‌خط از روی کد ردگیری کن.",
+      "stepsFa": [],
+      "stepsEn": [],
+      "outputLines": [
+        "emit 0",
+        "got 0",
+        "emit 1",
+        "got 1",
+        "upstream finally"
+      ],
+      "printLines": [
+        7,
+        11,
+        15
+      ],
+      "seconds": 60
+    },
+    {
+      "id": "p43",
+      "order": 50,
+      "category": "flow",
+      "categoryFa": "Flow",
+      "categoryEn": "Flow",
+      "titleFa": "پازل 43 — جستجو: debounce و flatMapLatest",
+      "titleEn": "پازل 43 — جستجو: debounce و flatMapLatest",
+      "code": "import kotlinx.coroutines.*\nimport kotlinx.coroutines.flow.*\n\n@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)\nfun main() = runBlocking {\n    val typing = flow {\n        emit(\"a\"); delay(100)\n        emit(\"an\"); delay(100)\n        emit(\"and\"); delay(600)\n        emit(\"andr\"); delay(600)\n    }\n    typing.debounce(300).collect { println(\"debounced: $it\") }\n\n    println(\"---\")\n\n    val queries = flow {\n        emit(\"a\"); delay(100)\n        emit(\"an\"); delay(300)\n        emit(\"and\")\n    }\n    queries\n        .flatMapLatest { q ->\n            flow {\n                delay(200)\n                emit(\"results for $q\")\n            }\n        }\n        .collect { println(it) }\n}",
+      "options": [
+        "start\nbefore yield\nlaunch 1\nlaunch 2\nafter yield",
+        "ABCD",
+        "true\nfalse\nUser(name=Ali, tags=[a])\n[a, b]\n0\n2",
+        "debounced: and\ndebounced: andr\n---\nresults for an\nresults for and"
+      ],
+      "answerIndex": 3,
+      "explainFa": "«debounce درخواست‌های اضافه رو کم می‌کنه، distinctUntilChanged جلوی جستجوی تکراری رو می‌گیره و flatMapLatest تضمین می‌کنه که جواب قدیمی هیچ‌وقت روی جواب جدید ننشینه، چون جستجوی قبلی واقعاً کنسل می‌شه، که درخواست HTTP رو هم در Retrofit یا Ktor کنسل می‌کنه. WhileSubscribed(5000) باعث می‌شه بعد از چرخش صفحه دوباره درخواست نزنیم.»",
+      "explainEn": "«debounce درخواست‌های اضافه رو کم می‌کنه، distinctUntilChanged جلوی جستجوی تکراری رو می‌گیره و flatMapLatest تضمین می‌کنه که جواب قدیمی هیچ‌وقت روی جواب جدید ننشینه، چون جستجوی قبلی واقعاً کنسل می‌شه، که درخواست HTTP رو هم در Retrofit یا Ktor کنسل می‌کنه. WhileSubscribed(5000) باعث می‌شه بعد از چرخش صفحه دوباره درخواست نزنیم.»",
+      "stepsFa": [
+        "debounce(300): فقط مقداری عبور می‌کند که 300ms بعد از آن مقدار جدیدی نیامده باشد. a و an با فاصلهٔ 100ms جایگزین شدند. and با 600ms سکوت عبور کرد. andr هم همین‌طور.",
+        "flatMapLatest: با رسیدن مقدار جدید، جستجوی قبلی را کنسل می‌کند. a (200ms لازم داشت) در t=100 با آمدن an کنسل شد. an در t=300 نتیجه داد (and هنوز نیامده بود). and در t=400 آمد و در t=600 نتیجه داد."
+      ],
+      "stepsEn": [
+        "debounce(300): فقط مقداری عبور می‌کند که 300ms بعد از آن مقدار جدیدی نیامده باشد. a و an با فاصلهٔ 100ms جایگزین شدند. and با 600ms سکوت عبور کرد. andr هم همین‌طور.",
+        "flatMapLatest: با رسیدن مقدار جدید، جستجوی قبلی را کنسل می‌کند. a (200ms لازم داشت) در t=100 با آمدن an کنسل شد. an در t=300 نتیجه داد (and هنوز نیامده بود). and در t=400 آمد و در t=600 نتیجه داد."
+      ],
+      "outputLines": [
+        "debounced: and",
+        "debounced: andr",
+        "---",
+        "results for an",
+        "results for and"
+      ],
+      "printLines": [
+        11,
+        13,
+        27
+      ],
+      "seconds": 60
+    }
+  ]
+}

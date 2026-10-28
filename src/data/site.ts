@@ -19,6 +19,7 @@ export const ui = {
   nav: {
     work: { en: "Work", fa: "نمونه‌کارها" },
     challenge: { en: "30-Day Challenge", fa: "چالش ۳۰ روزه" },
+    quiz: { en: "Kotlin Quiz", fa: "آزمون کاتلین" },
     articles: { en: "Articles", fa: "مقاله‌ها" },
     about: { en: "About", fa: "درباره" },
     contact: { en: "Contact", fa: "تماس" },

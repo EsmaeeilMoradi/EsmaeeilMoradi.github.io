@@ -1,0 +1,1078 @@
+---
+import Base from "../layouts/Base.astro";
+import type { Lang } from "../data/site";
+import bank from "../data/kotlin-quiz-questions.json";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const isFa = lang === "fa";
+const title = isFa ? "آزمون کاتلین" : "Kotlin Quiz";
+const description = isFa
+  ? "آزمون تعاملی خروجی کد کاتلین — تایمر ۶۰ ثانیه، چندگزینه‌ای، توضیح بعد از هر سؤال."
+  : "Interactive Kotlin output quiz — 60s timer, multiple choice, explanation after each question.";
+
+const copy = isFa
+  ? {
+      lead: `${bank.count} سؤال از پازل‌های مصاحبهٔ اندروید. کد را بخوان، خروجی را انتخاب کن. بعد از پاسخ یا اتمام تایمر، توضیح می‌آید.`,
+      startAll: "شروع همهٔ سؤال‌ها",
+      startSection: "شروع این بخش",
+      seconds: "ثانیه",
+      question: "سؤال",
+      of: "از",
+      score: "امتیاز",
+      correct: "درست",
+      wrong: "غلط",
+      timeout: "زمان تمام شد",
+      next: "سؤال بعدی",
+      finish: "دیدن نتیجه",
+      again: "از نو",
+      home: "برگشت به انتخاب بخش",
+      explanation: "توضیح",
+      pick: "یک گزینه را انتخاب کن",
+      resultTitle: "نتیجهٔ آزمون",
+      resultLine: "درست از",
+      localNote: "",
+      categories: "بخش‌ها",
+      all: "همه",
+      trace: "پخش ردگیری کد",
+      replayTrace: "پخش دوباره",
+      consoleLabel: "خروجی زنده",
+      stepLabel: "قدم",
+      onLine: "روی این خط",
+      valueNow: "الان این مقدار است",
+      printed: "چاپ شد",
+      noPrint: "چیزی چاپ نشد",
+      nextStep: "قدم بعد",
+      autoPlay: "پخش خودکار",
+      copyCode: "کپی کد",
+      copied: "کپی شد",
+    }
+  : {
+      lead: `${bank.count} interview-style Kotlin output puzzles. Read the code, pick the output. After you answer — or time runs out — you get the explanation.`,
+      startAll: "Start all questions",
+      startSection: "Start this section",
+      seconds: "sec",
+      question: "Question",
+      of: "of",
+      score: "Score",
+      correct: "Correct",
+      wrong: "Wrong",
+      timeout: "Time’s up",
+      next: "Next",
+      finish: "See results",
+      again: "Try again",
+      home: "Back to sections",
+      explanation: "Explanation",
+      pick: "Pick an option",
+      resultTitle: "Quiz result",
+      resultLine: "correct out of",
+      localNote: "",
+      categories: "Sections",
+      all: "All",
+      trace: "Play code trace",
+      replayTrace: "Replay trace",
+      consoleLabel: "Live output",
+      stepLabel: "Step",
+      onLine: "On this line",
+      valueNow: "Current value",
+      printed: "Printed",
+      noPrint: "Nothing printed",
+      nextStep: "Next step",
+      autoPlay: "Auto-play",
+      copyCode: "Copy code",
+      copied: "Copied",
+    };
+
+const payload = {
+  lang,
+  copy,
+  questions: bank.questions.map((q) => ({
+    id: q.id,
+    category: q.category,
+    categoryLabel: isFa ? q.categoryFa : q.categoryEn,
+    title: isFa ? q.titleFa : q.titleEn,
+    code: q.code,
+    options: q.options,
+    answerIndex: q.answerIndex,
+    explain: isFa ? q.explainFa : q.explainEn,
+    steps: (isFa ? q.stepsFa : q.stepsEn) || [],
+    outputLines: q.outputLines || String(q.options[q.answerIndex] || "").split("\n"),
+    printLines: q.printLines || [],
+    seconds: q.seconds ?? 60,
+  })),
+};
+---
+
+<Base lang={lang} path="/kotlin-quiz/" title={title} description={description}>
+  <section class="quiz-page container">
+    {copy.localNote ? <p class="local-banner">{copy.localNote}</p> : null}
+    <header class="quiz-hero">
+      <p class="eyebrow">{isFa ? "آمادگی مصاحبه" : "Interview prep"}</p>
+      <h1>{title}</h1>
+      <p class="lead">{copy.lead}</p>
+    </header>
+
+    <script type="application/json" id="kotlin-quiz-data" set:html={JSON.stringify(payload)} />
+    <div id="kotlin-quiz"></div>
+  </section>
+</Base>
+
+<style>
+  .quiz-page {
+    padding: 2rem 0 4rem;
+    max-width: 1120px;
+  }
+  .local-banner {
+    display: inline-block;
+    margin: 0 0 1rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: var(--callout-trap-bg);
+    color: var(--text);
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+  }
+  .quiz-hero {
+    margin-bottom: 1.5rem;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0 0 0.35rem;
+  }
+  .quiz-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+  }
+  .lead {
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+  :global(#kotlin-quiz .panel) {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow);
+  }
+  :global(#kotlin-quiz .cats) {
+    display: grid;
+    gap: 0.75rem;
+  }
+  :global(#kotlin-quiz .cat) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  :global(#kotlin-quiz .cat h3) {
+    margin: 0;
+    font-size: 1rem;
+  }
+  :global(#kotlin-quiz .cat p) {
+    margin: 0.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  :global(#kotlin-quiz .btn) {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    font: inherit;
+    cursor: pointer;
+  }
+  :global(#kotlin-quiz .btn-primary) {
+    background: var(--accent);
+    border-color: transparent;
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  :global(#kotlin-quiz .btn:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  :global(#kotlin-quiz .topbar) {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.9rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  :global(#kotlin-quiz .timer) {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--text);
+  }
+  :global(#kotlin-quiz .timer.warn) {
+    color: #c2410c;
+  }
+  :global(#kotlin-quiz .title) {
+    margin: 0 0 0.75rem;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+  :global(#kotlin-quiz .workspace) {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0 0 1rem;
+  }
+  @media (min-width: 900px) {
+    :global(#kotlin-quiz .workspace) {
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      align-items: start;
+    }
+    :global(#kotlin-quiz .workspace-side) {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+  :global(#kotlin-quiz .workspace-side) {
+    display: none;
+    gap: 0.65rem;
+  }
+  :global(#kotlin-quiz .panel.tracing .workspace-side) {
+    display: grid;
+  }
+  :global(#kotlin-quiz .panel.tracing .options) {
+    display: none;
+  }
+  :global(#kotlin-quiz .verdict) {
+    display: none;
+    margin: 0 0 0.75rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 12px;
+    background: var(--callout-info-bg);
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  :global(#kotlin-quiz .panel.tracing .verdict) {
+    display: block;
+  }
+  :global(#kotlin-quiz .verdict.ok) {
+    background: var(--callout-tip-bg);
+  }
+  :global(#kotlin-quiz .verdict.bad) {
+    background: color-mix(in srgb, #dc2626 10%, var(--surface));
+  }
+  :global(#kotlin-quiz .session-note) {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-height: 4.8em;
+    overflow: auto;
+  }
+  :global(#kotlin-quiz .code-shell) {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--code-bg);
+  }
+  :global(#kotlin-quiz .copy-code) {
+    position: absolute;
+    top: 0.45rem;
+    inset-inline-end: 0.45rem;
+    z-index: 2;
+    appearance: none;
+    border: 1px solid color-mix(in srgb, #94a3b8 45%, transparent);
+    background: color-mix(in srgb, #0f172a 82%, #334155);
+    color: #e2e8f0;
+    border-radius: 999px;
+    padding: 0.28rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  :global(#kotlin-quiz .copy-code:hover) {
+    background: #1e293b;
+  }
+  :global(#kotlin-quiz .copy-code.ok) {
+    background: #065f46;
+    border-color: #059669;
+    color: #ecfdf5;
+  }
+  :global(#kotlin-quiz .code-wrap) {
+    direction: ltr;
+    text-align: left;
+    background: transparent;
+    color: var(--code-fg);
+    border-radius: 12px;
+    padding: 2rem 0.4rem 0.55rem;
+    overflow: auto;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    margin: 0;
+    max-height: min(62vh, 520px);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  :global(#kotlin-quiz .code-line) {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.4rem;
+    padding: 0.05rem 0.45rem;
+    border-radius: 6px;
+    white-space: pre-wrap;
+  }
+  :global(#kotlin-quiz .code-line .ln) {
+    opacity: 0.35;
+    user-select: none;
+    text-align: right;
+  }
+  :global(#kotlin-quiz .code-line.active) {
+    background: color-mix(in srgb, #fbbf24 38%, transparent);
+    box-shadow: inset 4px 0 0 #f59e0b, 0 0 0 1px color-mix(in srgb, #f59e0b 35%, transparent);
+    animation: kq-pulse 0.65s ease;
+    transform: translateX(-2px);
+  }
+  :global(#kotlin-quiz .code-line.done) {
+    background: color-mix(in srgb, #2dd4bf 12%, transparent);
+  }
+  :global(#kotlin-quiz .code-line.done.active) {
+    background: color-mix(in srgb, #fbbf24 38%, transparent);
+  }
+  @keyframes kq-pulse {
+    0% { filter: brightness(1.35); }
+    100% { filter: brightness(1); }
+  }
+  :global(#kotlin-quiz .trace-box) {
+    display: grid;
+    gap: 0.65rem;
+  }
+  :global(#kotlin-quiz .live-console) {
+    direction: ltr;
+    text-align: left;
+    background: #020617;
+    color: #86efac;
+    border-radius: 12px;
+    padding: 0.7rem 0.85rem;
+    min-height: 3.2rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    border: 1px solid #1e293b;
+  }
+  :global(#kotlin-quiz .live-console .cursor) {
+    display: inline-block;
+    width: 0.45em;
+    background: #86efac;
+    animation: kq-blink 1s step-end infinite;
+  }
+  @keyframes kq-blink {
+    50% { opacity: 0; }
+  }
+  :global(#kotlin-quiz .step-card) {
+    background: linear-gradient(180deg, var(--callout-tip-bg), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    min-height: 4.5rem;
+  }
+  :global(#kotlin-quiz .step-card .meta) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.45rem;
+    align-items: center;
+  }
+  :global(#kotlin-quiz .pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  :global(#kotlin-quiz .pill.value) {
+    direction: ltr;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: #0f172a;
+    color: #fde68a;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(#kotlin-quiz .pill.print) {
+    background: #ecfdf5;
+    color: #047857;
+  }
+  :global(#kotlin-quiz .step-card .body) {
+    margin: 0;
+  }
+  :global(#kotlin-quiz .step-progress) {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-top: 0.55rem;
+  }
+  :global(#kotlin-quiz .step-progress i) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    display: inline-block;
+  }
+  :global(#kotlin-quiz .step-progress i.on) {
+    background: var(--accent);
+    transform: scale(1.25);
+  }
+  :global(#kotlin-quiz .step-progress i.done) {
+    background: color-mix(in srgb, var(--accent) 55%, var(--border));
+  }
+  :global(#kotlin-quiz .trace-controls) {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.55rem;
+  }
+  :global(#kotlin-quiz .options) {
+    display: grid;
+    gap: 0.55rem;
+  }
+  :global(#kotlin-quiz .opt) {
+    display: block;
+    width: 100%;
+    text-align: start;
+    direction: ltr;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.7rem 0.85rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    color: var(--text);
+    cursor: pointer;
+  }
+  :global(#kotlin-quiz .opt:hover:not(:disabled)) {
+    border-color: var(--accent);
+  }
+  :global(#kotlin-quiz .opt.correct) {
+    border-color: #059669;
+    background: var(--callout-tip-bg);
+  }
+  :global(#kotlin-quiz .opt.wrong) {
+    border-color: #dc2626;
+    background: color-mix(in srgb, #dc2626 12%, var(--surface));
+  }
+  :global(#kotlin-quiz .actions) {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  :global(#kotlin-quiz .result) {
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+  }
+  :global(#kotlin-quiz .result .big) {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin: 0.4rem 0;
+  }
+</style>
+
+<script>
+  const root = document.getElementById("kotlin-quiz");
+  const dataEl = document.getElementById("kotlin-quiz-data");
+  if (root && dataEl) {
+    const data = JSON.parse(dataEl.textContent || "{}");
+    const { copy, questions } = data;
+    /** @type {any[]} */
+    let deck = [];
+    let index = 0;
+    let score = 0;
+    let remaining = 60;
+    /** @type {number | null} */
+    let timerId = null;
+    /** @type {number | null} */
+    let traceTimer = null;
+    let locked = false;
+
+    const cats = [...new Set(questions.map((q) => q.category))].map((c) => ({
+      id: c,
+      label: questions.find((q) => q.category === c)?.categoryLabel || c,
+      count: questions.filter((q) => q.category === c).length,
+    }));
+
+    function clearTimer() {
+      if (timerId != null) {
+        window.clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function clearTrace() {
+      if (traceTimer != null) {
+        window.clearTimeout(traceTimer);
+        traceTimer = null;
+      }
+    }
+
+    function renderCodeLines(code) {
+      const shell = document.createElement("div");
+      shell.className = "code-shell";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "copy-code";
+      copyBtn.textContent = copy.copyCode;
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement("textarea");
+          ta.value = code;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+        }
+        copyBtn.classList.add("ok");
+        copyBtn.textContent = copy.copied;
+        window.setTimeout(() => {
+          copyBtn.classList.remove("ok");
+          copyBtn.textContent = copy.copyCode;
+        }, 1400);
+      });
+
+      const wrap = document.createElement("div");
+      wrap.className = "code-wrap";
+      wrap.setAttribute("data-code", "");
+      code.split("\n").forEach((line, i) => {
+        const row = document.createElement("div");
+        row.className = "code-line";
+        row.dataset.line = String(i);
+        row.innerHTML = `<span class="ln">${i + 1}</span><span class="tx"></span>`;
+        row.querySelector(".tx").textContent = line.length ? line : " ";
+        wrap.appendChild(row);
+      });
+
+      shell.append(copyBtn, wrap);
+      return shell;
+    }
+
+    function highlightLine(lineIndex, markDone = true) {
+      const rows = [...root.querySelectorAll(".code-line")];
+      rows.forEach((r) => r.classList.remove("active"));
+      const row = rows[lineIndex];
+      if (!row) return;
+      if (markDone) row.classList.add("done");
+      row.classList.add("active");
+      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => {
+        traceTimer = window.setTimeout(resolve, ms);
+      });
+    }
+
+    const isFa = data.lang === "fa";
+
+    /** Build ordered execution-ish steps from source lines + known stdout. */
+    function buildTraceSteps(q) {
+      const lines = q.code.split("\n");
+      const outQueue = [...(q.outputLines || [])];
+      const noteQueue = [...(q.steps || [])];
+      /** @type {{ line: number, title: string, detail: string, value: string, print?: string }[]} */
+      const steps = [];
+
+      function takeOut() {
+        return outQueue.length ? outQueue.shift() : undefined;
+      }
+
+      function describe(raw, lineNo) {
+        const t = raw.trim();
+        if (!t || t === "{" || t === "}" || t === ")" || t.startsWith("//") || t.startsWith("import ")) {
+          return null;
+        }
+
+        let m;
+        if ((m = t.match(/^(?:open\s+|abstract\s+|data\s+)?class\s+(\w+)/))) {
+          return {
+            title: isFa ? `ورود به کلاس ${m[1]}` : `Enter class ${m[1]}`,
+            detail: isFa
+              ? `سازنده‌ی ${m[1]} شروع می‌شود؛ بدنه‌ی کلاس از بالا به پایین اجرا می‌شود.`
+              : `Constructor of ${m[1]} starts; class body runs top to bottom.`,
+            value: m[1],
+            prints: false,
+          };
+        }
+        if ((m = t.match(/^(?:override\s+)?(?:val|var)\s+(\w+)\s*(?:get\(\)\s*=|by\s+\w+\s*\{|=)/))) {
+          const name = m[1];
+          const hasPrint = /println\s*\(|print\s*\(/.test(t);
+          return {
+            title: isFa ? `مقداردهی ${name}` : `Assign ${name}`,
+            detail: isFa
+              ? `پراپرتی «${name}» روی این خط مقدار می‌گیرد` + (hasPrint ? " و ممکن است چیزی چاپ کند." : ".")
+              : `Property “${name}” is initialized on this line` + (hasPrint ? " and may print." : "."),
+            value: name,
+            prints: hasPrint,
+          };
+        }
+        if (/^init\s*\{/.test(t) || t === "init {") {
+          return {
+            title: isFa ? "ورود به بلوک init" : "Enter init block",
+            detail: isFa
+              ? "بلوک init بخشی از سازنده‌ی اصلی است و همین‌جا اجرا می‌شود."
+              : "init is part of the primary constructor and runs here.",
+            value: "init",
+            prints: false,
+          };
+        }
+        if ((m = t.match(/constructor\s*\(([^)]*)\)\s*:\s*this\(([^)]*)\)/))) {
+          return {
+            title: isFa ? "سازندهٔ ثانویه" : "Secondary constructor",
+            detail: isFa
+              ? `اول this(${m[2]}) صدا زده می‌شود (سازندهٔ اصلی)، بعد بدنه‌ی همین سازنده.`
+              : `Delegates to this(${m[2]}) first, then runs this constructor body.`,
+            value: `this(${m[2]})`,
+            prints: false,
+          };
+        }
+        if ((m = t.match(/:\s*(\w+)\((.*)\)\s*\{?\s*$/)) && /class\s+\w+/.test(lines[Math.max(0, lineNo - 1)] + lines[lineNo])) {
+          // handled with class line usually
+        }
+        if (/^super</.test(t) || /\bsuper[.<]/.test(t)) {
+          return {
+            title: isFa ? "فراخوانی super" : "Call super",
+            detail: isFa ? "نسخه‌ی والد اجرا می‌شود." : "Parent implementation runs.",
+            value: "super",
+            prints: /println|print\s*\(/.test(t),
+          };
+        }
+        if ((m = t.match(/^\s*(?:override\s+)?fun\s+(\w+)/))) {
+          if (m[1] === "main") {
+            return {
+              title: isFa ? "شروع main" : "Start main",
+              detail: isFa ? "اجرای برنامه از اینجا شروع می‌شود." : "Program entry point.",
+              value: "main()",
+              prints: false,
+            };
+          }
+          return {
+            title: isFa ? `ورود به تابع ${m[1]}` : `Enter ${m[1]}()`,
+            detail: isFa ? `بدنه‌ی ${m[1]} اجرا می‌شود.` : `Body of ${m[1]} runs.`,
+            value: `${m[1]}()`,
+            prints: false,
+          };
+        }
+        if (/println\s*\(|\bprint\s*\(/.test(t)) {
+          return {
+            title: isFa ? "چاپ روی کنسول" : "Print to console",
+            detail: isFa ? "این خط یک خروجی چاپ می‌کند." : "This line prints output.",
+            value: "println",
+            prints: true,
+          };
+        }
+        if (/\.also\s*\{/.test(t) || /\.let\s*\{/.test(t) || /\.apply\s*\{/.test(t) || /\.run\s*\{/.test(t)) {
+          const scope = (t.match(/\.(also|let|apply|run)\s*\{/) || [])[1] || "scope";
+          return {
+            title: isFa ? `اجرای ${scope}` : `Run ${scope}`,
+            detail: isFa
+              ? `بلاک ${scope} روی مقدار فعلی اجرا می‌شود.`
+              : `${scope} block runs on the current value.`,
+            value: scope,
+            prints: /println|print\s*\(/.test(t),
+          };
+        }
+        if (/\bemit\s*\(/.test(t)) {
+          return {
+            title: isFa ? "emit در Flow" : "Flow emit",
+            detail: isFa ? "یک مقدار به پایین‌دست فرستاده می‌شود." : "A value is emitted downstream.",
+            value: "emit",
+            prints: true,
+          };
+        }
+        if (/\bcollect\b/.test(t)) {
+          return {
+            title: isFa ? "collect" : "collect",
+            detail: isFa ? "مصرف‌کننده‌ی Flow شروع به دریافت می‌کند." : "Collector starts receiving.",
+            value: "collect",
+            prints: /println|print\s*\(/.test(t),
+          };
+        }
+        if (/\blaunch\s*\{|\basync\s*\{|\brunBlocking\b|\bcoroutineScope\b|\bwithContext\b/.test(t)) {
+          return {
+            title: isFa ? "شروع کوروتین" : "Start coroutine",
+            detail: isFa ? "یک کار هم‌روند زمان‌بندی می‌شود." : "A concurrent job is scheduled.",
+            value: "coroutine",
+            prints: false,
+          };
+        }
+        if (/^return\b/.test(t) || /\breturn@/.test(t)) {
+          return {
+            title: isFa ? "return" : "return",
+            detail: isFa ? "از این تابع/لامبدا خارج می‌شویم." : "Leave this function/lambda.",
+            value: "return",
+            prints: false,
+          };
+        }
+        // generic interesting assignment / call
+        if (/=/.test(t) && !/^import\b/.test(t) && t.length < 120) {
+          const left = t.split("=")[0].trim().replace(/^(val|var)\s+/, "");
+          return {
+            title: isFa ? "اجرا / مقداردهی" : "Run / assign",
+            detail: isFa ? `این خط ارزیابی می‌شود: ${left}` : `This line is evaluated: ${left}`,
+            value: left.slice(0, 40),
+            prints: /println|print\s*\(/.test(t),
+          };
+        }
+        if (/Child\(|Box\(|Derived\(|Dog\(|Cat\(|Config\(|HomeScreen\(/.test(t) || /\w+\(\)/.test(t) && /println|val |var /.test(lines.join("\n"))) {
+          if (/\b\w+\s*=\s*\w+\(/.test(t) || /^\s*\w+\(/.test(t)) {
+            const call = (t.match(/(\w+)\s*\(/) || [])[1];
+            if (call && !["if", "when", "for", "while"].includes(call)) {
+              return {
+                title: isFa ? `ساخت / فراخوانی ${call}` : `Construct / call ${call}`,
+                detail: isFa
+                  ? `اینجا ${call}(...) صدا زده می‌شود و زنجیره‌ی سازنده جلو می‌رود.`
+                  : `${call}(...) is invoked and construction proceeds.`,
+                value: `${call}(...)`,
+                prints: false,
+              };
+            }
+          }
+        }
+        return null;
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        const info = describe(lines[i], i);
+        if (!info) continue;
+        let print;
+        if (info.prints) print = takeOut();
+        const extra = noteQueue.length ? noteQueue.shift() : "";
+        steps.push({
+          line: i,
+          title: info.title,
+          detail: extra || info.detail,
+          value: info.value,
+          print,
+        });
+      }
+
+      // leftover stdout: attach to last step or create synthetic end steps
+      while (outQueue.length) {
+        const print = outQueue.shift();
+        const lastPrintable = [...steps].reverse().find((s) => s.print == null) || steps[steps.length - 1];
+        if (lastPrintable && lastPrintable.print == null) {
+          lastPrintable.print = print;
+        } else {
+          steps.push({
+            line: Math.max(0, lines.length - 1),
+            title: isFa ? "خروجی باقی‌مانده" : "Remaining output",
+            detail: isFa ? "این خط خروجی هنوز در صف چاپ بود." : "Remaining queued output.",
+            value: "stdout",
+            print,
+          });
+        }
+      }
+
+      if (!steps.length) {
+        steps.push({
+          line: 0,
+          title: isFa ? "ردگیری" : "Trace",
+          detail: q.explain || "",
+          value: "—",
+        });
+      }
+      return steps;
+    }
+
+    function renderStepCard(stepEl, step, idx, total) {
+      stepEl.textContent = "";
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const pillStep = document.createElement("span");
+      pillStep.className = "pill";
+      pillStep.textContent = `${copy.stepLabel} ${idx + 1}/${total}`;
+      const pillLine = document.createElement("span");
+      pillLine.className = "pill";
+      pillLine.textContent = `${copy.onLine} ${step.line + 1}`;
+      const pillVal = document.createElement("span");
+      pillVal.className = "pill value";
+      pillVal.textContent = `${copy.valueNow}: ${step.value}`;
+      meta.append(pillStep, pillLine, pillVal);
+      if (step.print != null) {
+        const pillPrint = document.createElement("span");
+        pillPrint.className = "pill print";
+        pillPrint.textContent = `${copy.printed}: ${step.print}`;
+        meta.appendChild(pillPrint);
+      } else {
+        const pillNo = document.createElement("span");
+        pillNo.className = "pill";
+        pillNo.textContent = copy.noPrint;
+        meta.appendChild(pillNo);
+      }
+      const body = document.createElement("p");
+      body.className = "body";
+      body.textContent = `${step.title} — ${step.detail}`;
+      const prog = document.createElement("div");
+      prog.className = "step-progress";
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement("i");
+        if (i < idx) dot.classList.add("done");
+        if (i === idx) dot.classList.add("on");
+        prog.appendChild(dot);
+      }
+      stepEl.append(meta, body, prog);
+    }
+
+    async function playTrace(q, mode = "auto") {
+      clearTrace();
+      const btn = root.querySelector("[data-trace]");
+      const nextBtn = root.querySelector("[data-step-next]");
+      if (btn) btn.disabled = true;
+      if (nextBtn) nextBtn.disabled = mode === "auto";
+
+      const consoleEl = root.querySelector(".live-console");
+      const stepEl = root.querySelector(".step-card");
+      const rows = [...root.querySelectorAll(".code-line")];
+      rows.forEach((r) => r.classList.remove("active", "done"));
+      if (consoleEl) consoleEl.innerHTML = '<span class="cursor"></span>';
+
+      const steps = buildTraceSteps(q);
+      let printed = "";
+      let i = 0;
+
+      async function showOne(idx) {
+        const step = steps[idx];
+        highlightLine(step.line);
+        if (stepEl) renderStepCard(stepEl, step, idx, steps.length);
+        if (step.print != null && consoleEl) {
+          printed += (printed ? "\n" : "") + step.print;
+          consoleEl.textContent = "";
+          consoleEl.appendChild(document.createTextNode(printed));
+          const cur = document.createElement("span");
+          cur.className = "cursor";
+          consoleEl.appendChild(cur);
+        }
+      }
+
+      if (mode === "manual") {
+        await showOne(0);
+        const onNext = async () => {
+          i += 1;
+          if (i >= steps.length) {
+            rows.forEach((r) => r.classList.remove("active"));
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = copy.replayTrace;
+            }
+            if (nextBtn) {
+              nextBtn.disabled = true;
+              nextBtn.onclick = null;
+            }
+            return;
+          }
+          await showOne(i);
+        };
+        if (nextBtn) {
+          nextBtn.disabled = false;
+          nextBtn.onclick = onNext;
+        }
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      for (; i < steps.length; i++) {
+        await showOne(i);
+        await sleep(steps[i].print != null ? 1200 : 950);
+      }
+
+      rows.forEach((r) => r.classList.remove("active"));
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = copy.replayTrace;
+      }
+      if (nextBtn) nextBtn.disabled = true;
+    }
+
+    function startTimer(seconds, onDone) {
+      clearTimer();
+      remaining = seconds;
+      const el = root.querySelector(".timer");
+      const tick = () => {
+        if (el) {
+          el.textContent = `${remaining} ${copy.seconds}`;
+          el.classList.toggle("warn", remaining <= 10);
+        }
+        if (remaining <= 0) {
+          clearTimer();
+          onDone();
+          return;
+        }
+        remaining -= 1;
+      };
+      tick();
+      timerId = window.setInterval(tick, 1000);
+    }
+
+    function renderHome() {
+      clearTimer();
+      clearTrace();
+      root.innerHTML = `
+        <div class="panel cats">
+          <div class="cat">
+            <div>
+              <h3>${copy.all}</h3>
+              <p>${questions.length} ${copy.of} ${questions.length}</p>
+            </div>
+            <button class="btn btn-primary" data-start="all">${copy.startAll}</button>
+          </div>
+          ${cats
+            .map(
+              (c) => `
+            <div class="cat">
+              <div>
+                <h3>${c.label}</h3>
+                <p>${c.count} ${copy.question}</p>
+              </div>
+              <button class="btn" data-start="${c.id}">${copy.startSection}</button>
+            </div>`
+            )
+            .join("")}
+        </div>`;
+      root.querySelectorAll("[data-start]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.getAttribute("data-start");
+          deck = key === "all" ? [...questions] : questions.filter((q) => q.category === key);
+          index = 0;
+          score = 0;
+          renderQuestion();
+        });
+      });
+    }
+
+    function renderQuestion() {
+      locked = false;
+      clearTrace();
+      const q = deck[index];
+      if (!q) return renderResult();
+      root.innerHTML = `
+        <div class="panel" data-panel>
+          <div class="topbar">
+            <span>${copy.question} ${index + 1} ${copy.of} ${deck.length} · ${q.categoryLabel}</span>
+            <span class="timer">—</span>
+            <span>${copy.score}: ${score}</span>
+          </div>
+          <h2 class="title">${q.title}</h2>
+          <div class="verdict" data-verdict></div>
+          <div class="workspace">
+            <div class="workspace-code" data-code-host></div>
+            <aside class="workspace-side">
+              <div class="trace-box">
+                <div class="step-card"></div>
+                <div class="trace-controls">
+                  <button class="btn btn-primary" type="button" data-step-next>${copy.nextStep}</button>
+                  <button class="btn" type="button" data-trace>${copy.autoPlay}</button>
+                </div>
+                <div>
+                  <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem">${copy.consoleLabel}</div>
+                  <div class="live-console"></div>
+                </div>
+                <p class="session-note" data-note></p>
+              </div>
+            </aside>
+          </div>
+          <div class="options"></div>
+          <div class="actions" hidden>
+            <button class="btn btn-primary" data-next>${index + 1 >= deck.length ? copy.finish : copy.next}</button>
+            <button class="btn" data-home>${copy.home}</button>
+          </div>
+        </div>`;
+      root.querySelector("[data-code-host]").appendChild(renderCodeLines(q.code));
+      const opts = root.querySelector(".options");
+      q.options.forEach((opt, i) => {
+        const b = document.createElement("button");
+        b.className = "opt";
+        b.type = "button";
+        b.textContent = opt.length ? opt : "(empty)";
+        b.addEventListener("click", () => settle(i));
+        opts.appendChild(b);
+      });
+      root.querySelector("[data-next]")?.addEventListener("click", () => {
+        clearTrace();
+        index += 1;
+        renderQuestion();
+      });
+      root.querySelector("[data-home]")?.addEventListener("click", renderHome);
+      root.querySelector("[data-trace]")?.addEventListener("click", () => playTrace(q, "auto"));
+      startTimer(q.seconds || 60, () => settle(-1));
+    }
+
+    function settle(choice) {
+      if (locked) return;
+      locked = true;
+      clearTimer();
+      const q = deck[index];
+      const buttons = [...root.querySelectorAll(".opt")];
+      buttons.forEach((b) => (b.disabled = true));
+      const ok = choice === q.answerIndex;
+      if (ok) score += 1;
+      buttons.forEach((b, i) => {
+        if (i === q.answerIndex) b.classList.add("correct");
+        else if (i === choice) b.classList.add("wrong");
+      });
+
+      const panel = root.querySelector("[data-panel]");
+      panel?.classList.add("tracing");
+      const verdict = root.querySelector("[data-verdict]");
+      if (verdict) {
+        if (choice < 0) verdict.textContent = `${copy.timeout} · ${copy.explanation}`;
+        else verdict.textContent = `${ok ? copy.correct : copy.wrong} · ${copy.explanation}`;
+        verdict.classList.toggle("ok", ok);
+        verdict.classList.toggle("bad", !ok && choice >= 0);
+      }
+      const note = root.querySelector("[data-note]");
+      if (note) note.textContent = q.explain || "";
+
+      root.querySelector(".actions").hidden = false;
+      window.setTimeout(() => playTrace(q, "manual"), 200);
+    }
+
+    function renderResult() {
+      clearTimer();
+      clearTrace();
+      root.innerHTML = `
+        <div class="panel result">
+          <h2>${copy.resultTitle}</h2>
+          <p class="big">${score} / ${deck.length}</p>
+          <p>${score} ${copy.resultLine} ${deck.length}</p>
+          <div class="actions" style="justify-content:center">
+            <button class="btn btn-primary" data-again>${copy.again}</button>
+            <button class="btn" data-home>${copy.home}</button>
+          </div>
+        </div>`;
+      root.querySelector("[data-again]")?.addEventListener("click", () => {
+        index = 0;
+        score = 0;
+        renderQuestion();
+      });
+      root.querySelector("[data-home]")?.addEventListener("click", renderHome);
+    }
+
+    renderHome();
+  }
+</script>
