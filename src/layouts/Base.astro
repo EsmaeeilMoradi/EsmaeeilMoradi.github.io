@@ -1,7 +1,7 @@
 ---
 import "@fontsource-variable/inter";
 import "../styles/global.css";
-import { ui, links, t, href, type Lang } from "../data/site";
+import { ui, links, analytics, t, href, type Lang } from "../data/site";
 
 interface Props {
   lang: Lang;
@@ -83,6 +83,25 @@ const year = new Date().getFullYear();
       </div>
       <div class="container copy muted">© {year} {t(ui.name, lang)}</div>
     </footer>
+
+    {
+      analytics.goatcounter ? (
+        <script
+          is:inline
+          data-goatcounter={`https://${analytics.goatcounter}.goatcounter.com/count`}
+          async
+          src="https://gc.zgo.at/count.js"
+        />
+      ) : null
+    }
+    {
+      analytics.ga4 ? (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analytics.ga4}`} />
+          <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${analytics.ga4}');`} />
+        </>
+      ) : null
+    }
   </body>
 </html>
 

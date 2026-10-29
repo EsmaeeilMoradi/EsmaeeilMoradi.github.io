@@ -10,6 +10,22 @@ export const links = {
   bazaar: "https://cafebazaar.ir/app/ir.azmaapp.nabz",
 };
 
+/**
+ * Site traffic (GitHub Pages has no built-in visitor stats).
+ * Fill one after signup — leave empty until then (nothing is injected).
+ *
+ * GoatCounter (recommended): free, cookieless, privacy-friendly
+ *   1) https://www.goatcounter.com → create site code e.g. "esmaeeilmoradi"
+ *   2) set goatcounter: "esmaeeilmoradi"
+ *   Dashboard: https://esmaeeilmoradi.goatcounter.com
+ *
+ * Or GA4: create a property and set ga4: "G-XXXXXXXXXX"
+ */
+export const analytics = {
+  goatcounter: "esm",
+  ga4: "",
+};
+
 export const ui = {
   name: { en: "Esmaeeil Moradi", fa: "اسماعیل مرادی" },
   role: {
