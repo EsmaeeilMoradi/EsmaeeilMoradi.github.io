@@ -117,8 +117,11 @@ export const roadmapMeta = {
     en: "This page is the living reference. The video walks the main path stop by stop.",
     fa: "این صفحه مرجع زنده است. ویدیو مسیر اصلی را ایستگاه‌به‌ایستگاه می‌رود.",
   },
-  ctaBtn: { en: "Open channel", fa: "رفتن به کانال" },
-  youtube: "https://www.youtube.com/@esmaeeilmoradi-code",
+  ctaBtn: { en: "Watch on YouTube", fa: "تماشا در یوتیوب" },
+  /** First deep-dive: Android Roadmap 2026 Compose-first */
+  youtube: "https://youtu.be/zzy0Uoc39i4",
+  youtubeEmbed: "https://www.youtube.com/embed/zzy0Uoc39i4",
+  channel: "https://www.youtube.com/@esmaeeilmoradi-code",
   finalProjectTitle: {
     en: "Capstone: notes & tasks app",
     fa: "پروژهٔ نهایی: یادداشت و کارها",

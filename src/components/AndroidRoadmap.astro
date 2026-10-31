@@ -136,6 +136,25 @@ const ui = {
     <h1>{t(meta.title, lang)}</h1>
     <p class="lead">{t(meta.lead, lang)}</p>
     <p class="note muted">{t(meta.note, lang)}</p>
+    <div class="walkthrough">
+      <div class="video-frame">
+        <iframe
+          src={meta.youtubeEmbed}
+          title={t(meta.ctaTitle, lang)}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p class="muted tiny">
+        <a href={meta.youtube} target="_blank" rel="noopener">{t(meta.ctaBtn, lang)}</a>
+        {" · "}
+        <a href={meta.channel} target="_blank" rel="noopener"
+          >{lang === "fa" ? "کانال یوتیوب" : "YouTube channel"}</a
+        >
+      </p>
+    </div>
   </section>
 
   <section class="container map-app" data-roadmap data-lang={lang}>
@@ -317,7 +336,12 @@ const ui = {
     <aside class="cta card">
       <h2>{t(meta.ctaTitle, lang)}</h2>
       <p class="muted">{t(meta.ctaBody, lang)}</p>
-      <a class="btn btn-primary" href={meta.youtube} target="_blank" rel="noopener">{t(meta.ctaBtn, lang)}</a>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href={meta.youtube} target="_blank" rel="noopener">{t(meta.ctaBtn, lang)}</a>
+        <a class="btn btn-ghost" href={meta.channel} target="_blank" rel="noopener"
+          >{lang === "fa" ? "کانال" : "Channel"}</a
+        >
+      </div>
       <p class="muted tiny">
         <a href={href("/challenge/", lang)}>{lang === "fa" ? "چالش ۳۰ روزه" : "30-Day Challenge"}</a>
         {" · "}
