@@ -1,0 +1,1463 @@
+---
+import Base from "../layouts/Base.astro";
+import { t, href, type Lang } from "../data/site";
+import {
+  roadmapMeta,
+  mainStages,
+  deepStages,
+  legacyStages,
+  specialStages,
+  type RoadmapStage,
+} from "../data/android-roadmap-2026";
+import { stageOfficialDocs } from "../data/android-roadmap-docs";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const meta = roadmapMeta;
+
+type Packed = {
+  id: string;
+  number: number;
+  track: string;
+  essential: boolean;
+  title: string;
+  titleEn: string;
+  titleFa: string;
+  subtitle: string;
+  prerequisite: string;
+  goal: string;
+  concepts: { id: string; label: string; labelEn: string; labelFa: string }[];
+  tools: { recommended: string[]; alternatives: string[] };
+  exercise: string;
+  passCriteria: string;
+  docs: { label: string; url: string }[];
+};
+
+function pack(list: RoadmapStage[], essential: boolean): Packed[] {
+  return list.map((s) => ({
+    id: s.id,
+    number: s.number,
+    track: s.track,
+    essential,
+    title: t(s.title, lang),
+    titleEn: s.title.en,
+    titleFa: s.title.fa,
+    subtitle: t(s.subtitle, lang),
+    prerequisite: t(s.prerequisite, lang),
+    goal: t(s.goal, lang),
+    concepts: s.concepts.map((c, i) => ({
+      id: `${s.id}__c${i}`,
+      label: t(c, lang),
+      labelEn: c.en,
+      labelFa: c.fa,
+    })),
+    tools: {
+      recommended: s.tools.recommended.map((x) => t(x, lang)),
+      alternatives: s.tools.alternatives.map((x) => t(x, lang)),
+    },
+    exercise: t(s.exercise, lang),
+    passCriteria: t(s.passCriteria, lang),
+    docs: (stageOfficialDocs[s.id] || s.docs || []).map((d) => ({
+      label: t(d.label, lang),
+      url: d.url,
+    })),
+  }));
+}
+
+const stagesPayload = {
+  main: pack(mainStages, true),
+  deep: pack(deepStages, false),
+  legacy: pack(legacyStages, false),
+  special: pack(specialStages, false),
+};
+
+const trackSections = [
+  { key: "main", stages: stagesPayload.main, title: t(meta.trackMain, lang), desc: t(meta.trackMainDesc, lang), kind: "main" as const },
+  { key: "deep", stages: stagesPayload.deep, title: t(meta.trackDeep, lang), desc: t(meta.trackDeepDesc, lang), kind: "optional" as const },
+  { key: "legacy", stages: stagesPayload.legacy, title: t(meta.trackLegacy, lang), desc: t(meta.trackLegacyDesc, lang), kind: "legacy" as const },
+  { key: "special", stages: stagesPayload.special, title: t(meta.trackSpecial, lang), desc: t(meta.trackSpecialDesc, lang), kind: "optional" as const },
+];
+
+const stagesJson = JSON.stringify(stagesPayload);
+const ui = {
+  prerequisite: t(meta.prerequisite, lang),
+  goal: t(meta.goal, lang),
+  concepts: t(meta.concepts, lang),
+  tools: t(meta.tools, lang),
+  recommended: t(meta.recommended, lang),
+  alternatives: t(meta.alternatives, lang),
+  exercise: t(meta.exercise, lang),
+  passCriteria: t(meta.passCriteria, lang),
+  docs: t(meta.docs, lang),
+  why: t(meta.why, lang),
+  viewMap: t(meta.viewMap, lang),
+  viewList: t(meta.viewList, lang),
+  searchPlaceholder: t(meta.searchPlaceholder, lang),
+  expandAll: t(meta.expandAll, lang),
+  collapseAll: t(meta.collapseAll, lang),
+  continuePath: t(meta.continuePath, lang),
+  markLearning: t(meta.markLearning, lang),
+  markDone: t(meta.markDone, lang),
+  markDoneTopic: t(meta.markDoneTopic, lang),
+  markReview: t(meta.markReview, lang),
+  markReset: t(meta.markReset, lang),
+  stageStatus: t(meta.stageStatus, lang),
+  topicStatus: t(meta.topicStatus, lang),
+  closePanel: t(meta.closePanel, lang),
+  progressLabel: t(meta.progressLabel, lang),
+  remainingLabel: t(meta.remainingLabel, lang),
+  statusNone: t(meta.statusNone, lang),
+  statusLearning: t(meta.statusLearning, lang),
+  statusDone: t(meta.statusDone, lang),
+  statusReview: t(meta.statusReview, lang),
+  emptyDetail: t(meta.emptyDetail, lang),
+  filterAll: t(meta.filterAll, lang),
+  filterOpen: t(meta.filterOpen, lang),
+  filterDone: t(meta.filterDone, lang),
+  levelEssential: t(meta.levelEssential, lang),
+  levelOptional: t(meta.levelOptional, lang),
+  topicFocus: t(meta.topicFocus, lang),
+  checklistHint: t(meta.checklistHint, lang),
+  topicsProgress: t(meta.topicsProgress, lang),
+  startStage: t(meta.startStage, lang),
+  nextAction: t(meta.nextAction, lang),
+  trackMain: t(meta.trackMain, lang),
+  trackDeep: t(meta.trackDeep, lang),
+  trackLegacy: t(meta.trackLegacy, lang),
+  trackSpecial: t(meta.trackSpecial, lang),
+};
+---
+
+<Base lang={lang} path="/android-roadmap-2026/" title={t(meta.title, lang)} description={t(meta.lead, lang)}>
+  <section class="container hero">
+    <p class="eyebrow">Compose-first · 2026</p>
+    <h1>{t(meta.title, lang)}</h1>
+    <p class="lead">{t(meta.lead, lang)}</p>
+    <p class="note muted">{t(meta.note, lang)}</p>
+  </section>
+
+  <section class="container map-app" data-roadmap data-lang={lang}>
+    <div class="toolbar">
+      <div class="view-toggle" role="group" aria-label={ui.viewMap}>
+        <button type="button" class="seg active" data-view="map" aria-pressed="true">{ui.viewMap}</button>
+        <button type="button" class="seg" data-view="list" aria-pressed="false">{ui.viewList}</button>
+      </div>
+      <label class="search">
+        <span class="sr-only">{ui.searchPlaceholder}</span>
+        <input type="search" data-search placeholder={ui.searchPlaceholder} autocomplete="off" />
+      </label>
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-ghost" data-expand-all>{ui.expandAll}</button>
+        <button type="button" class="btn btn-ghost" data-collapse-all>{ui.collapseAll}</button>
+        <button type="button" class="btn btn-primary" data-continue>{ui.continuePath}</button>
+      </div>
+      <div class="progress-box" aria-live="polite">
+        <div class="progress-meta">
+          <span>{ui.progressLabel}</span>
+          <strong data-progress-text>0%</strong>
+        </div>
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar>
+          <span data-progress-fill></span>
+        </div>
+        <p class="muted tiny"><span data-remaining>0</span> {ui.remainingLabel}</p>
+      </div>
+    </div>
+
+    <div class="filters" role="group">
+      <button type="button" class="chip active" data-filter="all">{ui.filterAll}</button>
+      <button type="button" class="chip" data-filter="open">{ui.filterOpen}</button>
+      <button type="button" class="chip" data-filter="done">{ui.filterDone}</button>
+    </div>
+
+    <aside class="legend" aria-label={t(meta.legendTitle, lang)}>
+      <strong>{t(meta.legendTitle, lang)}</strong>
+      <span class="leg main">{t(meta.legendMain, lang)}</span>
+      <span class="leg alt">{t(meta.legendAlt, lang)}</span>
+      <span class="leg legacy">{t(meta.legendLegacy, lang)}</span>
+    </aside>
+
+    <div class="workspace">
+      <div class="map-pane" data-pane="map">
+        {trackSections.map((section) => (
+          <section class={`track-block kind-${section.kind}`} data-track-section={section.key}>
+            <header class="track-head">
+              <h2>{section.title}</h2>
+              <p class="muted">{section.desc}</p>
+            </header>
+            <ol class={`path kind-${section.kind}`}>
+              {section.stages.map((stage) => (
+                <li class="station" data-station={stage.id} data-essential={stage.essential ? "1" : "0"}>
+                  <div class="station-row">
+                    <button
+                      type="button"
+                      class="station-main"
+                      data-select-stage={stage.id}
+                      aria-expanded="false"
+                      aria-controls={`branches-${stage.id}`}
+                    >
+                      <span class="dot" aria-hidden="true"></span>
+                      <span class="station-text">
+                        <span class="station-title">{stage.title}</span>
+                        <span class="station-sub muted">{stage.subtitle}</span>
+                      </span>
+                      <span class="status-pill" data-status-for={stage.id}>{ui.statusNone}</span>
+                      <span class="chev" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                  <ul class="branches" id={`branches-${stage.id}`} hidden>
+                    {stage.concepts.map((c) => (
+                      <li class="branch-row">
+                        <button type="button" class="branch" data-select-topic={c.id} data-stage={stage.id}>
+                          <span class="branch-dot" aria-hidden="true"></span>
+                          <span class="branch-label">{c.label}</span>
+                          <span class="status-pill tiny-pill" data-status-for={c.id}>{ui.statusNone}</span>
+                        </button>
+                        <div class="branch-actions" role="group" aria-label={ui.topicStatus}>
+                          <button type="button" class="mini-status" data-topic-status={c.id} data-status="learning" title={ui.markLearning}>{ui.markLearning}</button>
+                          <button type="button" class="mini-status primary" data-topic-status={c.id} data-status="done" title={ui.markDoneTopic}>{ui.markDoneTopic}</button>
+                          <button type="button" class="mini-status" data-topic-status={c.id} data-status="review" title={ui.markReview}>{ui.markReview}</button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+
+      <div class="list-pane" data-pane="list" hidden>
+        <ul class="flat-list" data-flat-list></ul>
+      </div>
+
+      <aside class="detail" data-detail aria-live="polite">
+        <button type="button" class="detail-close btn btn-ghost" data-close-detail hidden>{ui.closePanel}</button>
+        <div data-detail-empty class="detail-empty muted">{ui.emptyDetail}</div>
+        <div data-detail-body hidden>
+          <header class="detail-head">
+            <div class="badges">
+              <span class="badge" data-d-track></span>
+              <span class="badge soft" data-d-level></span>
+              <span class="badge status" data-d-status>{ui.statusNone}</span>
+            </div>
+            <h2 data-d-title></h2>
+            <p class="subtitle" data-d-sub></p>
+          </header>
+
+          <div class="status-block">
+            <p class="status-label">{ui.stageStatus}</p>
+            <div class="status-bar" role="group" aria-label={ui.stageStatus}>
+              <button type="button" class="status-seg" data-set-status="learning">{ui.markLearning}</button>
+              <button type="button" class="status-seg primary" data-set-status="done">{ui.markDone}</button>
+              <button type="button" class="status-seg" data-set-status="review">{ui.markReview}</button>
+              <button type="button" class="status-seg quiet" data-set-status="none">{ui.markReset}</button>
+            </div>
+          </div>
+
+          <div class="status-block topic-status-block" data-topic-status-block hidden>
+            <p class="status-label"><span data-d-topic-name></span> — {ui.topicStatus}</p>
+            <div class="status-bar" role="group" aria-label={ui.topicStatus}>
+              <button type="button" class="status-seg" data-set-topic-status="learning">{ui.markLearning}</button>
+              <button type="button" class="status-seg primary" data-set-topic-status="done">{ui.markDoneTopic}</button>
+              <button type="button" class="status-seg" data-set-topic-status="review">{ui.markReview}</button>
+              <button type="button" class="status-seg quiet" data-set-topic-status="none">{ui.markReset}</button>
+            </div>
+          </div>
+
+          <div class="field hero-goal">
+            <h3>{ui.goal}</h3>
+            <p data-d-goal></p>
+          </div>
+
+          <div class="field">
+            <h3>{ui.prerequisite}</h3>
+            <p data-d-prereq></p>
+          </div>
+
+          <div class="field checklist-field">
+            <div class="checklist-head">
+              <h3>{ui.concepts}</h3>
+              <span class="muted tiny" data-d-topic-count></span>
+            </div>
+            <p class="muted tiny hint">{ui.checklistHint}</p>
+            <ul class="checklist" data-d-concepts></ul>
+          </div>
+
+          <div class="field docs-field">
+            <h3>{ui.docs}</h3>
+            <ul class="doc-links" data-d-docs></ul>
+          </div>
+
+          <div class="field exercise">
+            <h3>{ui.exercise}</h3>
+            <p data-d-exercise></p>
+          </div>
+          <div class="field pass">
+            <h3>{ui.passCriteria}</h3>
+            <p data-d-pass></p>
+          </div>
+
+          <details class="tools-fold">
+            <summary>{ui.tools}</summary>
+            <p><span class="label">{ui.recommended}:</span> <span data-d-rec></span></p>
+            <p><span class="label">{ui.alternatives}:</span> <span data-d-alt></span></p>
+          </details>
+        </div>
+      </aside>
+    </div>
+
+    <aside class="cta card final">
+      <h2>{t(meta.finalProjectTitle, lang)}</h2>
+      <p class="muted">{t(meta.finalProjectBody, lang)}</p>
+    </aside>
+
+    <aside class="cta card">
+      <h2>{t(meta.ctaTitle, lang)}</h2>
+      <p class="muted">{t(meta.ctaBody, lang)}</p>
+      <a class="btn btn-primary" href={meta.youtube} target="_blank" rel="noopener">{t(meta.ctaBtn, lang)}</a>
+      <p class="muted tiny">
+        <a href={href("/challenge/", lang)}>{lang === "fa" ? "چالش ۳۰ روزه" : "30-Day Challenge"}</a>
+        {" · "}
+        <a href={href("/kotlin-quiz/", lang)}>{lang === "fa" ? "آزمون کاتلین" : "Kotlin Quiz"}</a>
+      </p>
+    </aside>
+  </section>
+</Base>
+
+<script define:vars={{ stagesJson, ui }}>
+  const STORAGE_KEY = "android-roadmap-2026-progress-v1";
+  const tracks = JSON.parse(stagesJson);
+  const allStages = [...tracks.main, ...tracks.deep, ...tracks.legacy, ...tracks.special];
+  const stageById = Object.fromEntries(allStages.map((s) => [s.id, s]));
+  const topicById = {};
+  for (const s of allStages) {
+    for (const c of s.concepts) topicById[c.id] = { topic: c, stage: s };
+  }
+
+  const root = document.querySelector("[data-roadmap]");
+  const progressText = root.querySelector("[data-progress-text]");
+  const progressBar = root.querySelector("[data-progress-bar]");
+  const progressFill = root.querySelector("[data-progress-fill]");
+  const remainingEl = root.querySelector("[data-remaining]");
+  const detailEmpty = root.querySelector("[data-detail-empty]");
+  const detailBody = root.querySelector("[data-detail-body]");
+  const closeDetailBtn = root.querySelector("[data-close-detail]");
+  const flatList = root.querySelector("[data-flat-list]");
+  const searchInput = root.querySelector("[data-search]");
+
+  const trackLabel = {
+    main: ui.trackMain,
+    deep: ui.trackDeep,
+    legacy: ui.trackLegacy,
+    special: ui.trackSpecial,
+  };
+
+  const statusLabel = {
+    none: ui.statusNone,
+    learning: ui.statusLearning,
+    done: ui.statusDone,
+    review: ui.statusReview,
+  };
+
+  /** @type {Record<string, 'none'|'learning'|'done'|'review'|true>} */
+  let progress = loadProgress();
+  let view = "map";
+  let filter = "all";
+  let activeStageId = null;
+  let focusTopicId = null;
+
+  function reducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function loadProgress() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveProgress() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }
+
+  function getStatus(id) {
+    const v = progress[id];
+    if (v === true) return "done"; // legacy topic checks
+    if (v === "learning" || v === "done" || v === "review") return v;
+    return "none";
+  }
+
+  function getTopicStatus(topicId) {
+    const v = progress[topicId];
+    if (v === true || v === "done") return "done";
+    if (v === "learning" || v === "review") return v;
+    return "none";
+  }
+
+  function isTopicChecked(topicId) {
+    return getTopicStatus(topicId) === "done";
+  }
+
+  function syncStageFromTopics(stage) {
+    if (getStatus(stage.id) === "none" && stage.concepts.some((c) => getTopicStatus(c.id) !== "none")) {
+      progress[stage.id] = "learning";
+    }
+    const allDone = stage.concepts.every((c) => isTopicChecked(c.id));
+    if (allDone && stage.concepts.length) progress[stage.id] = "done";
+    else if (!allDone && getStatus(stage.id) === "done") progress[stage.id] = "learning";
+  }
+
+  function setStageStatus(stageId, status) {
+    if (!stageId || !stageById[stageId]) return;
+    if (status === "none") delete progress[stageId];
+    else progress[stageId] = status;
+    saveProgress();
+    paintStatuses();
+    updateProgressMeter();
+    applyFilter();
+    if (activeStageId === stageId) {
+      refreshDetailChrome(stageById[stageId]);
+    }
+  }
+
+  function setTopicStatus(topicId, status) {
+    const hit = topicById[topicId];
+    if (!hit) return;
+    if (status === "none") delete progress[topicId];
+    else progress[topicId] = status;
+    syncStageFromTopics(hit.stage);
+    saveProgress();
+    paintStatuses();
+    updateProgressMeter();
+    applyFilter();
+    focusTopicId = topicId;
+    if (activeStageId === hit.stage.id) refreshDetailChrome(hit.stage, topicId);
+  }
+
+  function toggleTopicCheck(topicId) {
+    setTopicStatus(topicId, isTopicChecked(topicId) ? "none" : "done");
+  }
+
+  function updateProgressMeter() {
+    const essential = tracks.main;
+    const done = essential.filter((s) => getStatus(s.id) === "done").length;
+    const pct = essential.length ? Math.round((done / essential.length) * 100) : 0;
+    const left = essential.length - done;
+    progressText.textContent = `${pct}%`;
+    progressBar.setAttribute("aria-valuenow", String(pct));
+    if (progressFill) progressFill.style.width = `${pct}%`;
+    remainingEl.textContent = String(left);
+  }
+
+  function paintStatuses() {
+    root.querySelectorAll("[data-status-for]").forEach((el) => {
+      const id = el.getAttribute("data-status-for");
+      const st = topicById[id] ? getTopicStatus(id) : getStatus(id);
+      el.dataset.state = st;
+      if (el.classList.contains("status-pill")) el.textContent = statusLabel[st];
+    });
+    root.querySelectorAll("[data-topic-status]").forEach((btn) => {
+      const id = btn.getAttribute("data-topic-status");
+      const want = btn.getAttribute("data-status");
+      btn.classList.toggle("active", getTopicStatus(id) === want);
+    });
+    root.querySelectorAll(".station[data-station]").forEach((li) => {
+      const id = li.getAttribute("data-station");
+      li.dataset.state = getStatus(id);
+    });
+  }
+
+  function expandStation(id, open) {
+    // Prefer map station (list items also use data-station).
+    const li =
+      root.querySelector(`.station[data-station="${id}"]`) ||
+      root.querySelector(`[data-station="${id}"]`);
+    if (!li) return;
+    const btn = li.querySelector("[data-select-stage]");
+    const branches = li.querySelector(".branches");
+    if (!btn || !branches) return;
+    const willOpen = open ?? !li.classList.contains("open");
+    li.classList.toggle("open", willOpen);
+    btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    branches.hidden = !willOpen;
+  }
+
+  function selectStage(id, { expand = true, updateHash = true, topicId = null } = {}) {
+    activeStageId = id;
+    focusTopicId = topicId;
+    root.querySelectorAll(".station-main, .branch").forEach((el) => el.classList.remove("active"));
+    const btn = root.querySelector(`.map-pane [data-select-stage="${id}"]`) || root.querySelector(`[data-select-stage="${id}"]`);
+    if (btn) btn.classList.add("active");
+    if (topicId) {
+      const tBtn = root.querySelector(`[data-select-topic="${topicId}"]`);
+      if (tBtn) tBtn.classList.add("active");
+    }
+    if (expand) expandStation(id, true);
+    renderDetail(stageById[id], topicId);
+    if (updateHash) history.replaceState(null, "", `#${topicId || id}`);
+    closeDetailBtn.hidden = false;
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      root.classList.add("detail-open");
+    }
+  }
+
+  function selectTopic(topicId, { updateHash = true } = {}) {
+    const hit = topicById[topicId];
+    if (!hit) return;
+    // Keep the same stage panel — only highlight the concept in the checklist.
+    selectStage(hit.stage.id, { expand: true, updateHash, topicId });
+  }
+
+  function renderDetail(stage, topicId) {
+    detailEmpty.hidden = true;
+    detailBody.hidden = false;
+    root.querySelector("[data-d-title]").textContent = stage.title;
+    root.querySelector("[data-d-sub]").textContent = stage.subtitle;
+    root.querySelector("[data-d-prereq]").textContent = stage.prerequisite;
+    root.querySelector("[data-d-goal]").textContent = stage.goal;
+    root.querySelector("[data-d-rec]").textContent = stage.tools.recommended.join(" · ");
+    root.querySelector("[data-d-alt]").textContent = stage.tools.alternatives.join(" · ");
+    root.querySelector("[data-d-exercise]").textContent = stage.exercise;
+    root.querySelector("[data-d-pass]").textContent = stage.passCriteria;
+    const docsUl = root.querySelector("[data-d-docs]");
+    docsUl.innerHTML = "";
+    (stage.docs || []).forEach((d) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = d.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "doc-link";
+      const title = document.createElement("span");
+      title.className = "doc-title";
+      title.textContent = d.label;
+      const host = document.createElement("span");
+      host.className = "doc-url muted tiny";
+      host.textContent = d.url.replace(/^https?:\/\//, "");
+      a.appendChild(title);
+      a.appendChild(host);
+      li.appendChild(a);
+      docsUl.appendChild(li);
+    });
+    if (!(stage.docs || []).length) {
+      const li = document.createElement("li");
+      li.className = "muted";
+      li.textContent = "—";
+      docsUl.appendChild(li);
+    }
+    refreshDetailChrome(stage, topicId);
+  }
+
+  function refreshDetailChrome(stage, topicId = focusTopicId) {
+    root.querySelector("[data-d-track]").textContent = trackLabel[stage.track];
+    root.querySelector("[data-d-level]").textContent = stage.essential ? ui.levelEssential : ui.levelOptional;
+    const st = getStatus(stage.id);
+    const statusEl = root.querySelector("[data-d-status]");
+    statusEl.textContent = statusLabel[st];
+    statusEl.dataset.state = st;
+
+    root.querySelectorAll("[data-set-status]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-set-status") === st);
+    });
+
+    const topicBlock = root.querySelector("[data-topic-status-block]");
+    if (topicId && topicById[topicId]) {
+      topicBlock.hidden = false;
+      const tSt = getTopicStatus(topicId);
+      root.querySelector("[data-d-topic-name]").textContent = topicById[topicId].topic.label;
+      root.querySelectorAll("[data-set-topic-status]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-set-topic-status") === tSt);
+      });
+    } else {
+      topicBlock.hidden = true;
+    }
+
+    const checked = stage.concepts.filter((c) => isTopicChecked(c.id)).length;
+    root.querySelector("[data-d-topic-count]").textContent = `${checked}/${stage.concepts.length} ${ui.topicsProgress}`;
+
+    const ul = root.querySelector("[data-d-concepts]");
+    ul.innerHTML = "";
+    stage.concepts.forEach((c) => {
+      const li = document.createElement("li");
+      const tSt = getTopicStatus(c.id);
+      const on = tSt === "done";
+      li.className = "check-item" + (on ? " checked" : "") + (topicId === c.id ? " focus-item" : "");
+      li.dataset.state = tSt;
+      li.innerHTML = `
+        <button type="button" class="check-btn" data-toggle-topic="${c.id}" aria-pressed="${on ? "true" : "false"}">
+          <span class="check-box" aria-hidden="true"></span>
+          <span class="check-label">${c.label}</span>
+          <span class="status-pill tiny-pill">${statusLabel[tSt]}</span>
+        </button>
+        <div class="branch-actions in-panel" role="group">
+          <button type="button" class="mini-status ${tSt === "learning" ? "active" : ""}" data-topic-status="${c.id}" data-status="learning">${ui.markLearning}</button>
+          <button type="button" class="mini-status primary ${tSt === "done" ? "active" : ""}" data-topic-status="${c.id}" data-status="done">${ui.markDoneTopic}</button>
+          <button type="button" class="mini-status ${tSt === "review" ? "active" : ""}" data-topic-status="${c.id}" data-status="review">${ui.markReview}</button>
+        </div>
+      `;
+      ul.appendChild(li);
+    });
+
+    if (topicId) {
+      const focusEl = ul.querySelector(`[data-toggle-topic="${topicId}"]`);
+      focusEl?.scrollIntoView({ block: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
+    }
+  }
+
+  function closeDetail() {
+    root.classList.remove("detail-open");
+    activeStageId = null;
+    focusTopicId = null;
+    detailEmpty.hidden = false;
+    detailBody.hidden = true;
+    closeDetailBtn.hidden = true;
+    root.querySelectorAll(".station-main, .branch").forEach((el) => el.classList.remove("active"));
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  function buildFlatList() {
+    flatList.innerHTML = "";
+    for (const s of allStages) {
+      const li = document.createElement("li");
+      li.className = "flat-item";
+      li.dataset.station = s.id;
+      li.dataset.essential = s.essential ? "1" : "0";
+      li.innerHTML = `
+        <button type="button" class="flat-btn" data-select-stage="${s.id}">
+          <span class="flat-title">${s.title}</span>
+          <span class="muted flat-track">${trackLabel[s.track]}</span>
+          <span class="status-pill" data-status-for="${s.id}">${statusLabel[getStatus(s.id)]}</span>
+        </button>
+      `;
+      flatList.appendChild(li);
+    }
+  }
+
+  function setView(next) {
+    view = next;
+    root.querySelectorAll("[data-view]").forEach((btn) => {
+      const on = btn.getAttribute("data-view") === next;
+      btn.classList.toggle("active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    root.querySelector('[data-pane="map"]').hidden = next !== "map";
+    root.querySelector('[data-pane="list"]').hidden = next !== "list";
+  }
+
+  function matchesSearch(stage, q) {
+    if (!q) return true;
+    const hay = [
+      stage.title,
+      stage.titleEn,
+      stage.titleFa,
+      stage.subtitle,
+      ...stage.concepts.flatMap((c) => [c.label, c.labelEn, c.labelFa]),
+      ...stage.tools.recommended,
+      ...stage.tools.alternatives,
+    ]
+      .join(" ")
+      .toLowerCase();
+    return hay.includes(q);
+  }
+
+  function applySearchAndFilter() {
+    const q = (searchInput.value || "").trim().toLowerCase();
+    root.querySelectorAll("[data-station]").forEach((li) => {
+      const id = li.getAttribute("data-station");
+      const stage = stageById[id];
+      if (!stage) return;
+      const st = getStatus(id);
+      const okFilter =
+        filter === "all" ||
+        (filter === "done" && st === "done") ||
+        (filter === "open" && st !== "done");
+      const okSearch = matchesSearch(stage, q);
+      li.hidden = !(okFilter && okSearch);
+      if (okSearch && q) expandStation(id, true);
+    });
+  }
+
+  function applyFilter() {
+    applySearchAndFilter();
+  }
+
+  function continuePath() {
+    const next = tracks.main.find((s) => getStatus(s.id) !== "done");
+    if (!next) {
+      selectStage(tracks.main[tracks.main.length - 1].id);
+      return;
+    }
+    setView("map");
+    selectStage(next.id);
+    const el = root.querySelector(`.station[data-station="${next.id}"]`);
+    el?.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "center" });
+  }
+
+  function openFromHash() {
+    const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    if (!hash) return;
+    if (stageById[hash]) selectStage(hash, { updateHash: false });
+    else if (topicById[hash]) selectTopic(hash, { updateHash: false });
+  }
+
+  // Events
+  root.addEventListener("click", (e) => {
+    const viewBtn = e.target.closest("[data-view]");
+    if (viewBtn) {
+      setView(viewBtn.getAttribute("data-view"));
+      return;
+    }
+    const filterBtn = e.target.closest("[data-filter]");
+    if (filterBtn) {
+      filter = filterBtn.getAttribute("data-filter");
+      root.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b === filterBtn));
+      applyFilter();
+      return;
+    }
+    if (e.target.closest("[data-expand-all]")) {
+      allStages.forEach((s) => expandStation(s.id, true));
+      return;
+    }
+    if (e.target.closest("[data-collapse-all]")) {
+      allStages.forEach((s) => expandStation(s.id, false));
+      return;
+    }
+    if (e.target.closest("[data-continue]")) {
+      continuePath();
+      return;
+    }
+    if (e.target.closest("[data-close-detail]")) {
+      closeDetail();
+      return;
+    }
+    const topicStatusBtn = e.target.closest("[data-topic-status]");
+    if (topicStatusBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      setTopicStatus(
+        topicStatusBtn.getAttribute("data-topic-status"),
+        topicStatusBtn.getAttribute("data-status"),
+      );
+      return;
+    }
+    const panelTopicStatus = e.target.closest("[data-set-topic-status]");
+    if (panelTopicStatus && focusTopicId) {
+      setTopicStatus(focusTopicId, panelTopicStatus.getAttribute("data-set-topic-status"));
+      return;
+    }
+    const checkBtn = e.target.closest("[data-toggle-topic]");
+    if (checkBtn) {
+      const topicId = checkBtn.getAttribute("data-toggle-topic");
+      focusTopicId = topicId;
+      toggleTopicCheck(topicId);
+      return;
+    }
+    const statusBtn = e.target.closest("[data-set-status]");
+    if (statusBtn && activeStageId) {
+      // Progress % only cares about stage status — never the sub-topic id.
+      setStageStatus(activeStageId, statusBtn.getAttribute("data-set-status"));
+      return;
+    }
+    const topicBtn = e.target.closest("[data-select-topic]");
+    if (topicBtn) {
+      selectTopic(topicBtn.getAttribute("data-select-topic"));
+      return;
+    }
+    const stageBtn = e.target.closest("[data-select-stage]");
+    if (stageBtn) {
+      const id = stageBtn.getAttribute("data-select-stage");
+      const li = root.querySelector(`.station[data-station="${id}"]`);
+      const isOpen = !!li?.classList.contains("open");
+
+      if (view === "map") {
+        expandStation(id, !isOpen);
+        selectStage(id, { expand: false, topicId: null });
+        return;
+      }
+
+      selectStage(id, { expand: false });
+    }
+  });
+
+  searchInput.addEventListener("input", () => {
+    applySearchAndFilter();
+  });
+
+  window.addEventListener("hashchange", openFromHash);
+
+  buildFlatList();
+  paintStatuses();
+  updateProgressMeter();
+  setView("map");
+  openFromHash();
+</script>
+
+<style>
+  .hero {
+    padding-top: 2.5rem;
+    padding-bottom: 1rem;
+  }
+  .eyebrow {
+    color: var(--accent, #7c9cff);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+  .lead {
+    max-width: 46rem;
+    font-size: 1.1rem;
+  }
+  .note {
+    max-width: 46rem;
+  }
+
+  .map-app {
+    padding-bottom: 3rem;
+  }
+
+  .toolbar {
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: 0.85rem;
+  }
+  @media (min-width: 900px) {
+    .toolbar {
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+    }
+    .progress-box {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .view-toggle {
+    display: inline-flex;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 80%, transparent);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .seg {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+  }
+  .seg.active {
+    background: color-mix(in oklab, var(--accent, #7c9cff) 22%, transparent);
+  }
+
+  .search input {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 80%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 90%, transparent);
+    color: inherit;
+    padding: 0.65rem 0.9rem;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .progress-box {
+    border: 1px solid color-mix(in oklab, var(--border, #334) 70%, transparent);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    background: color-mix(in oklab, var(--card, #12141c) 88%, transparent);
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .progress-bar {
+    height: 0.45rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--fg, #fff) 12%, transparent);
+    overflow: hidden;
+  }
+  .progress-bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #3d8bfd, #62d2a2);
+    border-radius: inherit;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .progress-bar span {
+      transition: width 280ms ease;
+    }
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+  .chip {
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 80%, transparent);
+    background: transparent;
+    color: inherit;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .chip.active {
+    background: color-mix(in oklab, var(--accent, #7c9cff) 20%, transparent);
+    border-color: color-mix(in oklab, var(--accent, #7c9cff) 50%, transparent);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    color: color-mix(in oklab, var(--fg, #fff) 75%, transparent);
+  }
+  .leg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .leg::before {
+    content: "";
+    width: 1.4rem;
+    height: 0;
+    border-top: 2px solid currentColor;
+  }
+  .leg.main::before {
+    border-color: #6ea8ff;
+  }
+  .leg.alt::before {
+    border-style: dashed;
+    border-color: #a78bfa;
+  }
+  .leg.legacy::before {
+    border-color: #f0b429;
+  }
+
+  .workspace {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 960px) {
+    .workspace {
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      align-items: start;
+    }
+    .detail {
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow: auto;
+    }
+  }
+
+  .track-block {
+    margin-bottom: 1.5rem;
+  }
+  .track-head h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.15rem;
+  }
+  .track-head p {
+    margin: 0 0 0.85rem;
+  }
+
+  .path {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  .path::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 1.15rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 0;
+    border-inline-start: 2px solid #6ea8ff;
+  }
+  .path.kind-optional::before {
+    border-inline-start-style: dashed;
+    border-color: #a78bfa;
+  }
+  .path.kind-legacy::before {
+    border-color: #f0b429;
+  }
+
+  .station {
+    position: relative;
+    margin: 0 0 0.55rem;
+  }
+  .station-main {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 0.65rem;
+    align-items: center;
+    text-align: start;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 75%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 92%, transparent);
+    color: inherit;
+    border-radius: 0.95rem;
+    padding: 0.7rem 0.85rem;
+    cursor: pointer;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .station-main,
+    .branch,
+    .detail {
+      transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+  }
+  .station-main:hover,
+  .station-main:focus-visible,
+  .branch:hover,
+  .branch:focus-visible {
+    border-color: color-mix(in oklab, var(--accent, #7c9cff) 55%, transparent);
+    outline: none;
+  }
+  .station-main.active,
+  .branch.active {
+    border-color: #6ea8ff;
+    box-shadow: 0 0 0 1px color-mix(in oklab, #6ea8ff 45%, transparent);
+  }
+  .station[data-state="done"] > .station-row .station-main {
+    border-color: color-mix(in oklab, #62d2a2 55%, transparent);
+  }
+  .dot {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    background: #6ea8ff;
+    box-shadow: 0 0 0 4px color-mix(in oklab, #6ea8ff 18%, transparent);
+  }
+  .kind-optional .dot {
+    background: #a78bfa;
+    box-shadow: 0 0 0 4px color-mix(in oklab, #a78bfa 18%, transparent);
+  }
+  .kind-legacy .dot {
+    background: #f0b429;
+    box-shadow: 0 0 0 4px color-mix(in oklab, #f0b429 18%, transparent);
+  }
+  .station-text {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .station-title {
+    font-weight: 650;
+  }
+  .station-sub {
+    font-size: 0.85rem;
+  }
+  .chev {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-inline-end: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+  .station.open .chev {
+    transform: rotate(-135deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .chev {
+      transition: transform 200ms ease;
+    }
+  }
+
+  .status-pill {
+    font-size: 0.72rem;
+    border-radius: 999px;
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    background: color-mix(in oklab, var(--fg, #fff) 8%, transparent);
+  }
+  .status-pill[data-state="learning"] {
+    background: color-mix(in oklab, #6ea8ff 25%, transparent);
+  }
+  .status-pill[data-state="done"] {
+    background: color-mix(in oklab, #62d2a2 28%, transparent);
+  }
+  .status-pill[data-state="review"] {
+    background: color-mix(in oklab, #f0b429 28%, transparent);
+  }
+
+  .branches {
+    list-style: none;
+    margin: 0.35rem 0 0.2rem 1.9rem;
+    padding: 0;
+    display: none;
+    gap: 0.55rem;
+  }
+  .station.open .branches {
+    display: grid;
+  }
+  /* display:grid above would otherwise defeat the hidden attribute */
+  .branches[hidden] {
+    display: none !important;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .station.open .branches {
+      animation: branchIn 320ms ease;
+    }
+  }
+  @keyframes branchIn {
+    from {
+      opacity: 0;
+      transform: translateY(-0.35rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .branch-row {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .branch {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.55rem;
+    align-items: center;
+    text-align: start;
+    border: 1px dashed color-mix(in oklab, #a78bfa 45%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 70%, transparent);
+    color: inherit;
+    border-radius: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+  }
+  .branch-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: #a78bfa;
+  }
+  .branch-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding-inline-start: 0.15rem;
+  }
+  .branch-actions.in-panel {
+    margin-top: 0.3rem;
+  }
+  .mini-status {
+    border: 1px solid color-mix(in oklab, var(--border, #334) 75%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 80%, transparent);
+    color: inherit;
+    border-radius: 999px;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.72rem;
+    cursor: pointer;
+  }
+  .mini-status.primary {
+    border-color: color-mix(in oklab, #62d2a2 45%, transparent);
+  }
+  .mini-status.active {
+    background: color-mix(in oklab, var(--accent, #7c9cff) 24%, transparent);
+    border-color: color-mix(in oklab, var(--accent, #7c9cff) 55%, transparent);
+  }
+  .mini-status.primary.active {
+    background: color-mix(in oklab, #62d2a2 28%, transparent);
+    border-color: color-mix(in oklab, #62d2a2 55%, transparent);
+  }
+  .tiny-pill {
+    font-size: 0.68rem !important;
+    padding: 0.12rem 0.4rem !important;
+  }
+
+  .list-pane .flat-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .flat-btn {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 0.6rem;
+    align-items: center;
+    text-align: start;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 75%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 92%, transparent);
+    color: inherit;
+    border-radius: 0.85rem;
+    padding: 0.7rem 0.85rem;
+    cursor: pointer;
+  }
+  .flat-title {
+    font-weight: 600;
+  }
+  .flat-track {
+    font-size: 0.8rem;
+  }
+
+  .detail {
+    border: 1px solid color-mix(in oklab, var(--border, #334) 75%, transparent);
+    border-radius: 1.1rem;
+    background: color-mix(in oklab, var(--card, #12141c) 94%, transparent);
+    padding: 1rem 1.1rem 1.2rem;
+    min-height: 12rem;
+  }
+  .detail-close {
+    margin-bottom: 0.5rem;
+  }
+  .detail-empty {
+    padding: 1.5rem 0.5rem;
+  }
+  .detail-head h2 {
+    margin: 0.35rem 0 0.25rem;
+    font-size: 1.25rem;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .badge {
+    font-size: 0.75rem;
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    background: color-mix(in oklab, #6ea8ff 22%, transparent);
+  }
+  .badge.soft {
+    background: color-mix(in oklab, var(--fg, #fff) 10%, transparent);
+  }
+  .badge.status[data-state="learning"] {
+    background: color-mix(in oklab, #6ea8ff 28%, transparent);
+  }
+  .badge.status[data-state="done"] {
+    background: color-mix(in oklab, #62d2a2 30%, transparent);
+  }
+  .badge.status[data-state="review"] {
+    background: color-mix(in oklab, #f0b429 30%, transparent);
+  }
+
+  .status-block {
+    margin-top: 0.85rem;
+  }
+  .status-label {
+    margin: 0 0 0.4rem;
+    font-size: 0.82rem;
+    opacity: 0.85;
+  }
+  .status-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  .status-seg {
+    border: 1px solid color-mix(in oklab, var(--border, #334) 75%, transparent);
+    background: transparent;
+    color: inherit;
+    border-radius: 0.7rem;
+    padding: 0.55rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .status-seg.primary {
+    border-color: color-mix(in oklab, #62d2a2 50%, transparent);
+  }
+  .status-seg.quiet {
+    opacity: 0.75;
+  }
+  .status-seg.active {
+    background: color-mix(in oklab, var(--accent, #7c9cff) 22%, transparent);
+    border-color: color-mix(in oklab, var(--accent, #7c9cff) 55%, transparent);
+  }
+  .status-seg.primary.active {
+    background: color-mix(in oklab, #62d2a2 28%, transparent);
+    border-color: color-mix(in oklab, #62d2a2 60%, transparent);
+  }
+
+  .field {
+    margin-top: 0.95rem;
+  }
+  .field h3 {
+    margin: 0 0 0.3rem;
+    font-size: 0.92rem;
+  }
+  .field p,
+  .field ul {
+    margin: 0;
+  }
+  .hero-goal {
+    border-radius: 0.85rem;
+    padding: 0.75rem 0.85rem;
+    background: color-mix(in oklab, #6ea8ff 10%, transparent);
+  }
+  .checklist-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+  .checklist-head h3 {
+    margin: 0;
+  }
+  .hint {
+    margin: 0.35rem 0 0.55rem !important;
+  }
+  .checklist {
+    list-style: none;
+    padding: 0 !important;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .check-btn {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.55rem;
+    align-items: center;
+    text-align: start;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 70%, transparent);
+    background: color-mix(in oklab, var(--card, #12141c) 70%, transparent);
+    color: inherit;
+    border-radius: 0.7rem;
+    padding: 0.55rem 0.65rem;
+    cursor: pointer;
+  }
+  .check-item.focus-item .check-btn {
+    border-color: color-mix(in oklab, #a78bfa 55%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, #a78bfa 35%, transparent);
+  }
+  .check-item.checked .check-btn {
+    border-color: color-mix(in oklab, #62d2a2 45%, transparent);
+  }
+  .check-box {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.15rem;
+    border-radius: 0.25rem;
+    border: 1.5px solid color-mix(in oklab, var(--fg, #fff) 45%, transparent);
+    background: transparent;
+  }
+  .check-item.checked .check-box {
+    border-color: #62d2a2;
+    background: #62d2a2;
+    box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--card, #12141c) 90%, transparent);
+  }
+  .label {
+    opacity: 0.75;
+  }
+  .field.exercise,
+  .field.pass {
+    border-radius: 0.75rem;
+    padding: 0.7rem 0.8rem;
+    background: color-mix(in oklab, var(--fg, #fff) 4%, transparent);
+  }
+  .doc-links {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .doc-links a.doc-link {
+    display: grid;
+    gap: 0.2rem;
+    color: #8eb6ff;
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .doc-links a.doc-link .doc-title {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+  .doc-links a.doc-link:hover,
+  .doc-links a.doc-link:focus-visible {
+    color: #b6d0ff;
+  }
+  .doc-links a.doc-link:hover .doc-title,
+  .doc-links a.doc-link:focus-visible .doc-title {
+    text-decoration-thickness: 2px;
+  }
+  .doc-url {
+    display: block;
+    word-break: break-all;
+    opacity: 0.85;
+  }
+  .tools-fold {
+    margin-top: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--border, #334) 70%, transparent);
+    padding: 0.55rem 0.75rem;
+  }
+  .tools-fold summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .tools-fold p {
+    margin: 0.45rem 0 0;
+    font-size: 0.92rem;
+  }
+
+  .cta {
+    margin-top: 1.5rem;
+  }
+  .cta.final {
+    border-color: color-mix(in oklab, #62d2a2 35%, transparent);
+  }
+  .tiny {
+    font-size: 0.85rem;
+  }
+  .muted {
+    color: color-mix(in oklab, var(--fg, #fff) 68%, transparent);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  @media (max-width: 959px) {
+    .map-app.detail-open .workspace {
+      position: relative;
+    }
+    .map-app.detail-open .detail {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      border-radius: 0;
+      max-height: none;
+      overflow: auto;
+      padding-top: 1rem;
+    }
+    .map-app.detail-open .detail-close {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: color-mix(in oklab, var(--card, #12141c) 95%, transparent);
+    }
+  }
+</style>

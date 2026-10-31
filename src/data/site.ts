@@ -36,11 +36,13 @@ export const ui = {
     work: { en: "Work", fa: "نمونه‌کارها" },
     challenge: { en: "30-Day Challenge", fa: "چالش ۳۰ روزه" },
     quiz: { en: "Kotlin Quiz", fa: "آزمون کاتلین" },
+    roadmap: { en: "Roadmap 2026", fa: "نقشهٔ راه ۲۰۲۶" },
     articles: { en: "Articles", fa: "مقاله‌ها" },
     about: { en: "About", fa: "درباره" },
     contact: { en: "Contact", fa: "تماس" },
     switchLang: { en: "فارسی", fa: "English" },
   },
+
   footer: {
     en: "Remote · Iran (UTC+3:30) · English & Persian",
     fa: "دورکاری، ایران (UTC+3:30)، فارسی و انگلیسی",
