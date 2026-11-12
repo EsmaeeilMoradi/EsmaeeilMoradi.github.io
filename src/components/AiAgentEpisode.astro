@@ -1,0 +1,206 @@
+---
+import Base from "../layouts/Base.astro";
+import { links, t, href, type Lang } from "../data/site";
+import { aiAgentsMeta } from "../data/ai-agents";
+import { getAiEpisode, getAiEpisodes } from "../lib/ai-agents";
+import { num } from "../lib/challenge";
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+const { lang, slug } = Astro.props;
+const episode = getAiEpisode(slug, lang)!;
+const all = getAiEpisodes(lang);
+const i = all.findIndex((e) => e.slug === slug);
+const prev = all[i - 1];
+const next = all[i + 1];
+const L = {
+  prev: { en: "Previous", fa: "قبلی" },
+  next: { en: "Next", fa: "بعدی" },
+  watchAlong: {
+    en: "Watch along while you read — or finish the article first, then replay the video.",
+    fa: "هم‌زمان با خواندن ببین — یا اول مقاله را تمام کن، بعد ویدیو را دوباره پخش کن.",
+  },
+};
+---
+
+<Base
+  lang={lang}
+  path={`/ai-agents/${slug}/`}
+  title={episode.titleLocal}
+  description={episode.descriptionLocal}
+  image={`https://i.ytimg.com/vi/${episode.videoId}/hqdefault.jpg`}
+>
+  <article class="section container layout">
+    <div class="text">
+      <a class="back" href={href("/ai-agents/", lang)}>{t(aiAgentsMeta.back, lang)}</a>
+      <p class="eyebrow">
+        {t(aiAgentsMeta.episodeWord, lang)} {num(episode.episode, lang)}
+        {lang === "fa" ? "، " : " · "}
+        {episode.dateLabel}
+        {lang === "fa" ? " · " : " · "}
+        {t(aiAgentsMeta.articleLabel, lang)} + {t(aiAgentsMeta.videoLabel, lang)}
+      </p>
+      <h1>{episode.titleLocal}</h1>
+      {lang === "fa" && <p class="en-title ltr">{episode.title.en}</p>}
+      <p class="lead">{episode.descriptionLocal}</p>
+
+      <aside class="video-card">
+        <p class="muted watch-note">{t(L.watchAlong, lang)}</p>
+        <div class="video-frame">
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${episode.videoId}`}
+            title={episode.titleLocal}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="btn-row">
+          <a class="btn btn-ghost" href={episode.watchUrl} target="_blank" rel="noopener">{t(aiAgentsMeta.watch, lang)}</a>
+          <a class="btn btn-ghost" href={links.youtube} target="_blank" rel="noopener">YouTube</a>
+        </p>
+      </aside>
+
+      <div class="prose" set:html={episode.bodyHtml} />
+
+      <nav class="pager">
+        {prev ? <a href={href(`/ai-agents/${prev.slug}/`, lang)}><small>{t(L.prev, lang)}</small>{prev.titleLocal}</a> : <span />}
+        {next ? <a class="next" href={href(`/ai-agents/${next.slug}/`, lang)}><small>{t(L.next, lang)}</small>{next.titleLocal}</a> : <span />}
+      </nav>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .layout {
+    max-width: 760px;
+  }
+  .back {
+    display: block;
+    width: fit-content;
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(1.7rem, 3.4vw, 2.45rem);
+    line-height: 1.15;
+  }
+  .en-title {
+    color: var(--muted);
+    margin-top: -0.5rem;
+  }
+  .lead {
+    font-size: 1.18rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .video-card {
+    margin: 1.5rem 0 2.25rem;
+    padding: 1rem 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface-2);
+  }
+  .watch-note {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+  }
+  .video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #0b1220;
+  }
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .video-card .btn-row {
+    margin-top: 0.85rem;
+  }
+  .prose :global(h2) {
+    margin-top: 2rem;
+    font-size: 1.35rem;
+  }
+  .prose :global(h3) {
+    margin-top: 1.35rem;
+    font-size: 1.12rem;
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .prose :global(p) {
+    margin: 0.85rem 0;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-inline-start: 1.25rem;
+    margin: 0.75rem 0 1rem;
+  }
+  .prose :global(strong) {
+    font-weight: 700;
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.25rem;
+    font-size: 0.95rem;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    border: 1px solid var(--border);
+    padding: 0.55rem 0.65rem;
+    text-align: start;
+  }
+  .prose :global(th) {
+    background: var(--surface-2);
+  }
+  .prose :global(pre) {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font-size: 0.92rem;
+  }
+  .prose :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .pager a {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .pager small {
+    display: block;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  .pager .next {
+    text-align: end;
+  }
+</style>

@@ -6,8 +6,34 @@ export const links = {
   linkedin: "https://www.linkedin.com/in/esmaeeil-moradi700/",
   github: "https://github.com/EsmaeeilMoradi",
   telegram: "https://t.me/esmaeeilmoradi",
+  youtube: "https://www.youtube.com/@esmaeeilmoradi-code",
   azma: "https://azmaapp.ir",
   bazaar: "https://cafebazaar.ir/app/ir.azmaapp.nabz",
+};
+
+/** Homepage series: Android × AI Agents (YouTube) */
+export const aiAgentsSeries = {
+  id: "ai-agents",
+  eyebrow: { en: "New series", fa: "سری جدید" },
+  title: {
+    en: "Android development with AI agents",
+    fa: "توسعهٔ اندروید با AI Agent",
+  },
+  lead: {
+    en: "We're starting a practical series for Android engineers: how to brief an agent, keep architecture under control, and verify on a real device — not vibe-coding demos.",
+    fa: "یک سری عملی برای برنامه‌نویس‌های اندروید شروع کرده‌ایم: چطور به Agent brief بدهی، معماری را حفظ کنی، و روی دستگاه واقعی verify کنی — نه دموهای vibe coding.",
+  },
+  episodeLabel: { en: "Episode 0", fa: "قسمت ۰" },
+  episodeTitle: {
+    en: "How Android Engineers Should Work With AI Agents",
+    fa: "برنامه‌نویس اندروید چطور باید با AI Agent کار کند",
+  },
+  watchCta: { en: "Open Episode 0", fa: "باز کردن قسمت ۰" },
+  channelCta: { en: "All AI sessions", fa: "همهٔ جلسات AI" },
+  videoId: "sag58x1rktY",
+  watchUrl: "https://www.youtube.com/watch?v=sag58x1rktY",
+  episodePath: "/ai-agents/episode-0-how-android-engineers-work-with-ai-agents/",
+  indexPath: "/ai-agents/",
 };
 
 /**
@@ -35,6 +61,7 @@ export const ui = {
   nav: {
     work: { en: "Work", fa: "نمونه‌کارها" },
     challenge: { en: "30-Day Challenge", fa: "چالش ۳۰ روزه" },
+    ai: { en: "AI Agents", fa: "AI Agent" },
     quiz: { en: "Kotlin Quiz", fa: "آزمون کاتلین" },
     roadmap: { en: "Roadmap 2026", fa: "نقشهٔ راه ۲۰۲۶" },
     articles: { en: "Articles", fa: "مقاله‌ها" },

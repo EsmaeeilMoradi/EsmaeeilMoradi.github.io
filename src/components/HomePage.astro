@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "./Icon.astro";
-import { ui, hero, offersIntro, offers, projects, experience, about, contact, links, t, href, type Lang } from "../data/site";
+import { ui, hero, offersIntro, offers, projects, experience, about, contact, links, aiAgentsSeries, t, href, type Lang } from "../data/site";
 import { getDays, num } from "../lib/challenge";
 
 interface Props {
@@ -130,7 +130,38 @@ const L = {
     </div>
   </section>
 
-  <section class="section alt" id="about">
+  <section class="section alt" id="ai-agents">
+    <div class="container agents">
+      <div class="agents-text">
+        <span class="eyebrow">{t(aiAgentsSeries.eyebrow, lang)}</span>
+        <h2>{t(aiAgentsSeries.title, lang)}</h2>
+        <p class="muted lead">{t(aiAgentsSeries.lead, lang)}</p>
+        <p class="who">{t(aiAgentsSeries.episodeLabel, lang)}</p>
+        <h3 class="ep-title">{t(aiAgentsSeries.episodeTitle, lang)}</h3>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={href(aiAgentsSeries.episodePath, lang)}>
+            {t(aiAgentsSeries.watchCta, lang)}
+          </a>
+          <a class="btn btn-ghost" href={href(aiAgentsSeries.indexPath, lang)}>
+            {t(aiAgentsSeries.channelCta, lang)}
+          </a>
+        </div>
+      </div>
+      <a class="agents-video" href={href(aiAgentsSeries.episodePath, lang)} aria-label={t(aiAgentsSeries.episodeTitle, lang)}>
+        <div class="video-frame poster">
+          <img
+            src={`https://i.ytimg.com/vi/${aiAgentsSeries.videoId}/hqdefault.jpg`}
+            alt=""
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="about">
     <div class="container about">
       <div>
         <h2>{t(about.title, lang)}</h2>
@@ -336,6 +367,47 @@ const L = {
   }
   @media (max-width: 820px) {
     .challenge {
+      grid-template-columns: 1fr;
+    }
+  }
+  .agents {
+    display: grid;
+    grid-template-columns: 1.05fr 1.2fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .agents .lead {
+    margin-bottom: 1rem;
+  }
+  .agents .ep-title {
+    margin: 0.25rem 0 1.25rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    background: #0b1220;
+  }
+  .video-frame.poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  a.agents-video {
+    color: inherit;
+  }
+  a.agents-video:hover .video-frame {
+    border-color: var(--accent);
+  }
+  @media (max-width: 820px) {
+    .agents {
       grid-template-columns: 1fr;
     }
   }

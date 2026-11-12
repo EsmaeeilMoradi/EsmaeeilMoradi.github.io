@@ -1,0 +1,95 @@
+---
+import Base from "../layouts/Base.astro";
+import { links, t, href, type Lang } from "../data/site";
+import { aiAgentsMeta } from "../data/ai-agents";
+import { getAiEpisodes } from "../lib/ai-agents";
+import { num } from "../lib/challenge";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const episodes = getAiEpisodes(lang);
+---
+
+<Base lang={lang} path="/ai-agents/" title={t(aiAgentsMeta.title, lang)} description={t(aiAgentsMeta.lead, lang)}>
+  <section class="section container">
+    <div class="section-head wide">
+      <span class="eyebrow">{t(aiAgentsMeta.eyebrow, lang)}</span>
+      <h1>{t(aiAgentsMeta.title, lang)}</h1>
+      <p>{t(aiAgentsMeta.lead, lang)}</p>
+      <a class="arrow" href={links.youtube} target="_blank" rel="noopener">YouTube </a>
+    </div>
+
+    <div class="list">
+      {
+        episodes.map((ep) => (
+          <a class="card ep" href={href(`/ai-agents/${ep.slug}/`, lang)}>
+            <div class="thumb">
+              <img
+                src={`https://i.ytimg.com/vi/${ep.videoId}/hqdefault.jpg`}
+                alt=""
+                loading="lazy"
+                width="480"
+                height="360"
+              />
+            </div>
+            <div class="meta">
+              <p class="who">
+                {t(aiAgentsMeta.episodeWord, lang)} {num(ep.episode, lang)}
+                {lang === "fa" ? "، " : " · "}
+                {ep.dateLabel}
+              </p>
+              <h2>{ep.titleLocal}</h2>
+              <p class="muted">{ep.descriptionLocal}</p>
+              <span class="arrow">{t(aiAgentsMeta.readOn, lang)} </span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wide {
+    max-width: 820px;
+  }
+  .list {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  a.ep {
+    display: grid;
+    grid-template-columns: minmax(180px, 280px) 1fr;
+    gap: 1.25rem;
+    align-items: center;
+    color: var(--text);
+  }
+  .thumb {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #0b1220;
+  }
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .meta h2 {
+    font-size: 1.25rem;
+    margin: 0.2rem 0 0.5rem;
+  }
+  .meta .arrow {
+    font-weight: 600;
+  }
+  @media (max-width: 700px) {
+    a.ep {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

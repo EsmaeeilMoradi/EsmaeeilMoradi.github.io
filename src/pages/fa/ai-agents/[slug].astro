@@ -1,0 +1,11 @@
+---
+import AiAgentEpisode from "../../../components/AiAgentEpisode.astro";
+import { getAiEpisodes } from "../../../lib/ai-agents";
+
+export function getStaticPaths() {
+  return getAiEpisodes("fa").map((e) => ({ params: { slug: e.slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<AiAgentEpisode lang="fa" slug={slug!} />
